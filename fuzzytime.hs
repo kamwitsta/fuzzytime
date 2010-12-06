@@ -11,7 +11,7 @@
 ---- Prints the current time in a more casual way (the \"ten past six\"-style).
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-module Fuzzytime (
+module Main (
 	-- * Description
 	-- $description
 	  main

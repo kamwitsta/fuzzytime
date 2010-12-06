@@ -1,6 +1,6 @@
 A small utility to print the current time in a more casual way (the "ten past six"-style).
 
-v0.1, 2010.05.12, kamil.stachowski you know what gmail.com, GPL3+
+v0.1.1, 2010.12.06, kamil.stachowski you know what gmail.com, GPL3+
 
 fuzzytime [OPTIONS]
 

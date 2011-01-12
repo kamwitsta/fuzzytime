@@ -1,10 +1,11 @@
 A small utility to print the current time in a more casual way (the "ten past six"-style).
 
-v0.1.1, 2010.12.06, kamil.stachowski you know what gmail.com, GPL3+
+v0.2, 2011.01.12, kamil.stachowski you know what gmail.com, GPL3+
 
 fuzzytime [OPTIONS]
 
 Common flags:
+  -c --clock=INT  12 or 24-hour clock; default 12-hour.
   -l --lang=ITEM  Language (currently en and pl); default en.
   -p --prec=INT   Precision (1 < prec < 60 [minutes]); default 5.
   -? --help       Display help message

@@ -32,7 +32,7 @@ import System.Time
 --
 -- To add a new language, two things need to be done:
 --
--- (1) The new language has to be added to the instance of Show FuzzyTime. (And to the help message.)
+-- (1) The new language has to be added to the instance of Show FuzzyTime, and to the help message.
 --
 -- (2) An appropriate function has to be created to turn FuzzyTime -> String.
 
@@ -41,8 +41,10 @@ import System.Time
 -- TODO
 -- 		noon, midnight
 -- 		more languages
+-- 		wrong cli options
 -- 0.2	2011.01.12
 -- 		added French and German
+-- 		added 12 vs. 24-hour clock
 -- 0.1	2010.12.05
 -- 		initial release: two languages (en and pl), 1 < precision < 60
 -- 		0.1.1	2010.12.06
@@ -61,6 +63,10 @@ confDefaultLang = "en"
 confDefaultPrec :: Int
 confDefaultPrec = 5
 
+-- | \[config] The default for 12 vs. 24-hour clock.
+confDefaultClock :: Int
+confDefaultClock = 12
+
 
 -- main =================================================================================
 
@@ -70,8 +76,7 @@ main :: IO ()
 main = do
 	cl <- cmdArgs clOpts
 	now <- getClockTime >>= toCalendarTime
-	-- print $ toFuzzyTime (prec cl) (lang cl) now
-	print $ toFuzzyTime (prec cl) (lang cl) (CalendarTime 2002 March 25 24 00 10 0 Monday 3 "" 0 False)
+	print $ toFuzzyTime (clock cl) (lang cl) (prec cl) now
 
 
 -- cl args ==============================================================================
@@ -79,16 +84,18 @@ main = do
 
 -- | Two options can be set via the command line: language and precision.
 data CLOpts = CLOpts {
-	  lang :: String
-	, prec :: Int
+	  clock	:: Int
+	, lang	:: String
+	, prec	:: Int
 	} deriving (Show, Data, Typeable)
 
 clOpts = CLOpts {
-	  lang=confDefaultLang	&= help "Language (currently de, en, fr and pl); default en."
-	, prec=confDefaultPrec	&= help "Precision (1 < prec < 60 [minutes]); default 5."
+	  clock	=confDefaultClock	&= help "12 or 24-hour clock; default 12-hour."
+	, lang	=confDefaultLang	&= help "Language (currently de, en, fr and pl); default en."
+	, prec	=confDefaultPrec	&= help "Precision (1 < prec < 60 [minutes]); default 5."
 	}
 	&= program "fuzzytime"
-	&= summary "Print fuzzy time, e.g. 10:52 -> ten to eleven.\nv0.1, 2010.05.12, kamil.stachowski@gmail.com, GPL3+"
+	&= summary "Print fuzzy time, e.g. 10:52 -> ten to eleven.\nv0.2, 2011.01.12, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- FuzzyTime – main =====================================================================
@@ -116,20 +123,20 @@ instance Show FuzzyTime where
 
 -- | Converts CalendarTime to FuzzyTime using the given precision. The language is also set, so that Show knows how to display it.
 toFuzzyTime ::
-	   Int			-- ^ precision
+	   Int			-- ^ clock
 	-> String		-- ^ language
+	-> Int			-- ^ precision
 	-> CalendarTime	-- ^ time
 	-> FuzzyTime
-toFuzzyTime cPrec cLang time =
-	if fuzzdM min /= 60 then
-		FuzzyTime hour (fuzzdM min) cLang
-	else
-		FuzzyTime (hour+1) 0 cLang
+toFuzzyTime cClock cLang cPrec time = FuzzyTime hour (fuzzdM min) cLang
 	where
 	min :: Int
 	min = (ctMin time)
 	hour :: Int
-	hour = (ctHour time) `mod` 12
+	hour = if cClock==24 then
+		(ctHour time)
+		else
+		(ctHour time) `mod` 12
 	fuzzdM :: Int -> Int
 	fuzzdM m =
 		let

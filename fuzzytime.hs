@@ -22,6 +22,7 @@ module Main (
 import System.Console.CmdArgs
 import System.Time
 
+
 -- $description
 -- A small utility to print the current time in a more casual way (the \"ten past six\"-style).
 --
@@ -37,6 +38,11 @@ import System.Time
 
 
 -- CHANGELOG
+-- TODO
+-- 		noon, midnight
+-- 		more languages
+-- 0.2	2011.01.12
+-- 		added French and German
 -- 0.1	2010.12.05
 -- 		initial release: two languages (en and pl), 1 < precision < 60
 -- 		0.1.1	2010.12.06
@@ -64,8 +70,9 @@ main :: IO ()
 main = do
 	cl <- cmdArgs clOpts
 	now <- getClockTime >>= toCalendarTime
-	print $ toFuzzyTime (prec cl) (lang cl) now
-	
+	-- print $ toFuzzyTime (prec cl) (lang cl) now
+	print $ toFuzzyTime (prec cl) (lang cl) (CalendarTime 2002 March 25 24 00 10 0 Monday 3 "" 0 False)
+
 
 -- cl args ==============================================================================
 
@@ -77,7 +84,7 @@ data CLOpts = CLOpts {
 	} deriving (Show, Data, Typeable)
 
 clOpts = CLOpts {
-	  lang=confDefaultLang	&= help "Language (currently en and pl); default en."
+	  lang=confDefaultLang	&= help "Language (currently de, en, fr and pl); default en."
 	, prec=confDefaultPrec	&= help "Precision (1 < prec < 60 [minutes]); default 5."
 	}
 	&= program "fuzzytime"
@@ -96,15 +103,18 @@ data FuzzyTime = FuzzyTime {
 	} deriving (Eq)
 
 -- | This is where FuzzyTime Int Int String is turned into the time String.
+-- It is assumed that by the time these functions are called, hour will be in [0..23] and min will be in [0..59].
 instance Show FuzzyTime where
 	show (FuzzyTime hour min lang) =
 		case lang of
+			"de" -> showFuzzyTimeDe hour min
 			"en" -> showFuzzyTimeEn hour min
+			"fr" -> showFuzzyTimeFr hour min
 			"pl" -> showFuzzyTimePl hour min
 			otherwise -> "Language " ++ lang ++ " is not supported."
 
 
--- | Converts CalendarTime to FuzzyTime using the given precision. The language is set, too, for Show to know how to display it.
+-- | Converts CalendarTime to FuzzyTime using the given precision. The language is also set, so that Show knows how to display it.
 toFuzzyTime ::
 	   Int			-- ^ precision
 	-> String		-- ^ language
@@ -155,6 +165,59 @@ numeralEn n
 	numeralEnHelper10 i = ["twenty", "thirty", "forty", "fifty"] !! (i-2)
 
 
+-- German -------------------------------------------------------------------------------
+
+
+showFuzzyTimeDe :: Int -> Int -> String
+showFuzzyTimeDe hour min
+	| min == 0	= numeralDe hour ++ " Uhr"
+	| min < 30	= numeralDe min ++ " nach " ++ numeralDe hour
+	| min == 30	= "halb " ++ numeralDe (hour+1)
+	| min > 30	= numeralDe (60-min) ++ " vor " ++ numeralDe (hour+1)
+	| otherwise	= "Oops, es sieht aus, dass es " ++ show hour ++ ":" ++ show min ++ " ist."
+
+
+numeralDe :: Int -> String
+numeralDe n
+	| n < 20			= numeralDeHelper1 n
+	| n `mod` 10 == 0	= numeralDeHelper10 (n `div` 10)
+	| otherwise			= numeralDeHelper1 (n `mod` 10) ++ "und" ++ numeralDeHelper10 (n `div` 10)
+	where
+	numeralDeHelper1 :: Int -> String
+	numeralDeHelper1 i = ["zwölf", "ein", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn", "elf", "zwőlf", "dreizehn", "vierzehn", "Viertel", "sechzehn", "siebzehn", "achtzehn", "neunzehn"] !! i
+	numeralDeHelper10 :: Int -> String
+	numeralDeHelper10 i = ["zwanzig", "dreissig", "vierzig", "fünfzig"] !! (i-2)
+
+
+-- French -------------------------------------------------------------------------------
+
+
+showFuzzyTimeFr :: Int -> Int -> String
+showFuzzyTimeFr hour min
+	| min == 0	= numeralFr hour ++ hourFr hour
+	| min == 15	= numeralFr hour ++ hourFr hour ++ " et quart"
+	| min < 30	= numeralFr hour ++ hourFr hour ++ " " ++ numeralFr min
+	| min == 30	= numeralFr hour ++ hourFr hour ++ " et demie"
+	| min == 45	= numeralFr (hour+1) ++ hourFr (hour+1) ++ " moins le quart"
+	| min > 30	= numeralFr (hour+1) ++ hourFr (hour+1) ++ " moins " ++ numeralFr (60-min)
+	| otherwise	= "Oops, il semble qu’il est " ++ show hour ++ ":" ++ show min ++ "."
+	where
+	hourFr :: Int -> String
+	hourFr h = if h==1 then " heure" else " heures"
+
+
+numeralFr :: Int -> String
+numeralFr n
+	| n < 20			= numeralFrHelper1 n
+	| n `mod` 10 == 0	= numeralFrHelper10 (n `div` 10)
+	| otherwise			= numeralFrHelper10 (n `div` 10) ++ "-" ++ numeralFrHelper1 (n `mod` 10)
+	where
+	numeralFrHelper1 :: Int -> String
+	numeralFrHelper1 i = ["douze", "une", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"] !! i
+	numeralFrHelper10 :: Int -> String
+	numeralFrHelper10 i = ["vingt", "trente", "quarante", "cinquante"] !! (i-2)
+
+
 -- Polish ------------------------------------------------------------------------------
 
 
@@ -169,17 +232,27 @@ showFuzzyTimePl hour min
 
 numeralPlCard :: Int -> String
 numeralPlCard n
-	| n < 20			= numeralPlHelper1 n
-	| n `mod` 10 == 0	= numeralPlHelper10 (n `div` 10)
-	| otherwise			= numeralPlHelper10 (n `div` 10) ++ " " ++ numeralPlHelper1 (n `mod` 10)
+	| n < 20			= numeralPlCardHelper1 n
+	| n `mod` 10 == 0	= numeralPlCardHelper10 (n `div` 10)
+	| otherwise			= numeralPlCardHelper10 (n `div` 10) ++ " " ++ numeralPlCardHelper1 (n `mod` 10)
 	where
-	numeralPlHelper1 :: Int -> String
-	numeralPlHelper1 i = ["jeden", "dwa", "trzy", "cztery", "pięć", "sześć", "siedem", "osiem", "dziewięć", "dziesięć", "jedenaście", "dwanaście", "trzynaście", "czternaście", "kwadrans", "szesnaście", "siedemnaście", "osiemnaście", "dziewiętnaście"] !! (i-1)
-	numeralPlHelper10 :: Int -> String
-	numeralPlHelper10 i = ["dwadzieścia", "trzydzieści", "czterdzieści", "pięćdziesiąt"] !! (i-2)
+	numeralPlCardHelper1 :: Int -> String
+	numeralPlCardHelper1 i = ["jeden", "dwa", "trzy", "cztery", "pięć", "sześć", "siedem", "osiem", "dziewięć", "dziesięć", "jedenaście", "dwanaście", "trzynaście", "czternaście", "kwadrans", "szesnaście", "siedemnaście", "osiemnaście", "dziewiętnaście"] !! (i-1)
+	numeralPlCardHelper10 :: Int -> String
+	numeralPlCardHelper10 i = ["dwadzieścia", "trzydzieści", "czterdzieści", "pięćdziesiąt"] !! (i-2)
 
 numeralPlOrdNom :: Int -> String
-numeralPlOrdNom n = ["pierwsza", "druga", "trzecia", "czwarta", "piąta", "szósta", "siódma", "ósma", "dziewiąta", "dziesiąta", "jedenasta", "dwunasta"] !! (n-1)
+numeralPlOrdNom n
+	| n <= 20			= numeralPlOrdNomHelper1 n
+	| otherwise			= "dwudziesta " ++ numeralPlOrdNomHelper1 (n `mod` 10)
+	where
+	numeralPlOrdNomHelper1 :: Int -> String
+	numeralPlOrdNomHelper1 n = ["dwunasta", "pierwsza", "druga", "trzecia", "czwarta", "piąta", "szósta", "siódma", "ósma", "dziewiąta", "dziesiąta", "jedenasta", "dwunasta", "trzynasta", "czternasta", "piętnasta", "szesnasta", "siedemnasta", "osiemnasta", "dziewiętnasta", "dwudziesta"] !! n
 
 numeralPlOrdPraep :: Int -> String
-numeralPlOrdPraep n = ["dwunastej","pierwszej", "drugiej", "trzeciej", "czwartej", "piątej", "szóstej", "siódmej", "ósmej", "dziewiątej", "dziesiątej", "jedenastej", "dwunastej"] !! n
+numeralPlOrdPraep n
+	| n <= 20			= numeralPlOrdPraepHelper1 n
+	| otherwise			= "dwudziestej " ++ numeralPlOrdPraepHelper1 (n `mod` 10)
+	where
+	numeralPlOrdPraepHelper1 :: Int -> String
+	numeralPlOrdPraepHelper1 n = ["dwunastej","pierwszej", "drugiej", "trzeciej", "czwartej", "piątej", "szóstej", "siódmej", "ósmej", "dziewiątej", "dziesiątej", "jedenastej", "dwunastej", "trzynastej", "czternastej", "piętnastej", "szesnastej", "siedemnastej", "osiemnastej", "dziewiętnastej", "dwudziestej"] !! n

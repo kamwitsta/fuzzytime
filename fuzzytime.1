@@ -1,0 +1,90 @@
+.TH fuzzytime 1 "January 15, 2011" "version 0.4" "Telling the time in a more humane way"
+
+.\" -------------------------------------------------------------------------------------
+
+.SH NAME
+fuzzytime \- telling the time in a more humane way
+
+.\" -------------------------------------------------------------------------------------
+
+.SH SYNOPSIS
+.B fuzzytime
+[OPTIONS]
+
+.\" -------------------------------------------------------------------------------------
+
+.SH DESCRIPTION
+Humans tend to be much more casual than computers when it comes to telling the time. The computers’ usual "22:15"-format requires a little extra processing as compared to the more familiar "quarter past ten".
+.PP
+fuzzytime attempts to remove this obstacle by telling you the time the way that a human would.
+.PP
+fuzzytime is neither the first nor the only program which can do this, but it hopes to get closer to the goal than others because the author is a linguist and expects that this should help him come up with localizations which do not sound like MS® Translator.
+
+.\" -------------------------------------------------------------------------------------
+
+.SH OPTIONS
+.TP
+\-c \--clock
+12 or 24-hour clock (22:00 -> "ten" or "twenty-two"); the default is 12.
+.TP
+\-l \--lang
+Language; currently Danish (da), English (en), French (fr), German (de) and Polish (pl); the default is en.
+.TP
+\-p \--prec
+Precision; should be between 1 and 60 [minutes]; the default is 5.
+.TP
+\-t \--time
+Time to fuzzify as HH:MM; the default is the current time.
+.TP
+\-? \--help
+Display help message
+.TP
+\-V \--version
+Print version information
+
+.\" -------------------------------------------------------------------------------------
+
+.SH EXAMPLES
+.TP
+Print the current time in Polish in 12-hour clock, with 10-minute precision.
+.B fuzzytime
+\-lpl -p10
+.PP
+.TP
+Print 23:50 in German in 24-hour clock, with 1-minute precision.
+.B fuzzytime
+\-c24 -lde -p1 -t23:50
+
+.\" -------------------------------------------------------------------------------------
+
+.SH LANGUAGES
+
+.SS Danish (M_ller + KS)
+No "midnight" or "noon". "Half. "Quarter".
+
+.SS English (KS)
+Always "midnight" and "noon". "Half". "Quarter".
+
+.SS German (KS)
+Always "midnight" and "noon". "Half". "Quarter".
+
+.SS French (KS)
+Always "midnight" and "noon". "Half". "Quarter".
+
+.SS Polish (KS)
+"Midnight" only for min < 30. No "noon". "Half". "Quarter".
+
+.\" -------------------------------------------------------------------------------------
+
+.SH DEPENDS
+(Arch Linux) cabal-install, ghc, haskell-cmdargs
+
+.\" -------------------------------------------------------------------------------------
+
+.SH BUGS
+No known bugs at this time.
+
+.\" -------------------------------------------------------------------------------------
+
+.SH AUTHOR
+Kamil Stachowski (kamil.stachowski@gmail.com)

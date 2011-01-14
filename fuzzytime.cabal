@@ -1,7 +1,7 @@
 Name:                fuzzytime
-Version:             0.3
-Description:         Print current time in a more casual way
-Synopsis:            Print current time in a more casual way
+Version:             0.4
+Description:         Telling the time in a more humane way
+Synopsis:            Telling the time in a more humane way
 Category:            Utils
 License:             GPL
 License-file:        LICENSE

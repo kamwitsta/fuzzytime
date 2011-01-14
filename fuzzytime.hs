@@ -1,3 +1,6 @@
+-- danish: some modifications; sure about "et" rather than "en" and "eleve" rather than "elleve"?
+-- not using noon and such?
+
 {-# LANGUAGE DeriveDataTypeable #-}
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -8,7 +11,7 @@
 ---- Maintainer		: Kamil Stachowski <kamil.stachowski@gmail.com>
 ---- Stability		: unstable
 ---- Portability	: unportable
----- Prints the current time in a more casual way (the \"ten past six\"-style).
+---- Tells the time in a more humane way (the \"ten past six\"-style).
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 module Main (
@@ -26,7 +29,7 @@ import System.Time
 
 
 -- $description
--- A small utility to print the current time in a more casual way (the \"ten past six\"-style).
+-- A small utility to tell the current time in a more humane way (the \"ten past six\"-style).
 --
 -- The whole thing works like this: the current time is read and turned into CalendarTime. This is fuzzified (i.e. the precision is reduced) and at the same time changed into FuzzyTime. FuzzyTime holds the time as two Ints (hour and min), the target language, the desired clock (12 vs. 24) and an information on whether it is am or pm (needed for the 12-hour clock). Custom functions show FuzzyTime as the \"ten past six\"-style String.
 --
@@ -34,7 +37,7 @@ import System.Time
 --
 -- To add a new language, two things need to be done:
 --
--- (1) The new language has to be added to FuzzyTimeConf, to the instance of Show FuzzyTime, and to the help message.
+-- (1) The new language has to be added to checkFTConf, to the instance of Show FuzzyTime, and to the help message.
 --
 -- (2) An appropriate function has to be created to turn FuzzyTime -> String.
 
@@ -43,8 +46,10 @@ import System.Time
 -- TODO
 -- 		more languages
 -- 		exit codes
+-- 		styles
 -- 0.4	2011.01.15
 -- 		added --time (thanks Daniel Fischer and Brent Yorgey from beginners@haskell.org!)
+-- 		added Danish (by M_ller with my modifications)
 -- 		removed "południe" from pl
 -- 		fixed the midnight vs. noon bug
 -- 0.3	2011.01.14
@@ -111,7 +116,7 @@ data FuzzyTimeConf = FuzzyTimeConf {
 checkFTConf :: FuzzyTimeConf -> String
 checkFTConf (FuzzyTimeConf clock lang prec time)
 	| not (clock `elem` [12, 24])	= "--clock must be either 12 or 24."
-	| not (lang `elem` ["de", "en", "fr", "pl"])	= "--lang must be de, en, fr or pl."
+	| not (lang `elem` ["da", "de", "en", "fr", "pl"])	= "--lang must be de, en, fr or pl."
 	| prec < 1 || prec > 60			= "--prec must be 1 < prec < 60."
 	| not checkTimeOk				= "--time must be given as HH:MM, where HH is in [0..23] and MM is in [0..59]"
 	| otherwise						= "ok"
@@ -127,21 +132,22 @@ checkFTConf (FuzzyTimeConf clock lang prec time)
 getFTConf :: FuzzyTimeConf
 getFTConf = FuzzyTimeConf {
 	  clock	= confDefClock	&= help "12 or 24-hour clock; default 12-hour."
-	, lang	= confDefLang	&= help "Language (currently de, en, fr and pl); default en."
+	, lang	= confDefLang	&= help "Language (currently da, de, en, fr and pl); default en."
 	, prec	= confDefPrec	&= help "Precision (1 < prec < 60 [minutes]); default 5."
 	, time	= confDefTime	&= help "Time to fuzzify as HH:MM; default current time."
 	}
 	&= program "fuzzytime"
-	&= summary "Print fuzzy time, e.g. 10:52 -> ten to eleven.\nv0.4, 2011.01.15, kamil.stachowski@gmail.com, GPL3+"
+	&= summary "Tell the time in a more humane way, e.g. 10:52 -> ten to eleven.\nv0.4, 2011.01.15, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- FuzzyTime – main =====================================================================
 
 
--- | Data for fuzzified time. Only keeps hour, minutes (both as Ints), night (Bool) and language.
+-- | Data for fuzzified time. Only keeps hour, minutes (both as Ints), clock (12 vs. 24-hour), night (Bool) and language.
 -- Can be created from CalendarTime with toFuzzyTime. The String output (the \"ten past six\"-style) is obtained through Show.
 data FuzzyTime = FuzzyTime {
-	  fzHour	:: Int
+	  fzClock	:: Int
+	, fzHour	:: Int
 	, fzLang	:: String
 	, fzMin		:: Int
 	, fzNight	:: Bool
@@ -150,7 +156,8 @@ data FuzzyTime = FuzzyTime {
 -- | This is where FuzzyTime Int Int String is turned into the time String.
 -- It is assumed that by the time these functions are called, hour will be in [0..23] and min will be in [0..59].
 instance Show FuzzyTime where
-	show ft@(FuzzyTime _ lang _ _) = case lang of
+	show ft@(FuzzyTime _ _ lang _ _) = case lang of
+		"da" -> showFuzzyTimeDa ft
 		"de" -> showFuzzyTimeDe ft
 		"en" -> showFuzzyTimeEn ft
 		"fr" -> showFuzzyTimeFr ft
@@ -161,7 +168,7 @@ instance Show FuzzyTime where
 -- | Converts CalendarTime to FuzzyTime using the given precision. The language and clock are also set, so that Show knows how to display it.
 toFuzzyTime :: FuzzyTimeConf -> FuzzyTime
 toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime) =
-	FuzzyTime fuzzdHour cLang (fuzzdMin min) (hour < 10 || hour > 22)
+	FuzzyTime cClock fuzzdHour cLang (fuzzdMin min) (hour < 10 || hour > 22)
 	where
 	hour = read $ takeWhile (/=':') cTime
 	min = read $ reverse . takeWhile (/=':') . reverse $ cTime
@@ -182,11 +189,47 @@ toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime) =
 
 -- FuzzyTime – shows ====================================================================
 
+-- Danish (by M_ller with my modifications) ---------------------------------------------
+
+
+showFuzzyTimeDa :: FuzzyTime -> String
+showFuzzyTimeDa (FuzzyTime clock hour _ min night)
+	| min == 0	= getHour hour
+	| min < 30	= getMin min ++ " over " ++ getHour hour
+	| min == 30	= "halv " ++ getHour (hour+1)
+	| min > 30	= getMin (60-min) ++ " i " ++ getHour (hour+1)
+	| otherwise	= "Ups, det ser ud til den er " ++ show hour ++ ":" ++ show min ++ "."
+	where
+	getHour :: Int -> String
+	getHour h
+		| h `mod` 12 == 0	= if clock == 12 then
+								numeralDa 12
+								else
+								if night then numeralDa 24 else numeralDa 12
+		| otherwise			= numeralDa h
+	getMin :: Int -> String
+	getMin m
+		| m `elem` [15, 45]	= "kvart"
+		| otherwise 		= numeralDa m
+
+
+numeralDa :: Int -> String
+numeralDa n
+	| n < 20			= numeralDaHelper1 n
+	| n `mod` 10 == 0	= numeralDaHelper10 (n `div` 10)
+	| otherwise			= numeralDaHelper1 (n `mod` 10) ++ "og" ++ numeralDaHelper10 (n `div` 10)
+	where
+	numeralDaHelper1 :: Int -> String
+	numeralDaHelper1 i = ["et", "to", "tre", "fire", "fem", "seks", "syv", "otte", "ni", "ti", "eleve", "tolv", "tretten", "fjorten", "femten", "seksten", "sytten", "atten", "nitten"] !! (i-1)
+	numeralDaHelper10 :: Int -> String
+	numeralDaHelper10 i = ["tyve", "tredive", "fyrre", "halvtreds"] !! (i-2)
+
+
 -- English ------------------------------------------------------------------------------
 
 
 showFuzzyTimeEn :: FuzzyTime -> String
-showFuzzyTimeEn (FuzzyTime hour _ min night)
+showFuzzyTimeEn (FuzzyTime clock hour _ min night)
 	| min == 0	= if (getHour hour) `elem` ["midnight", "noon"] then (getHour hour) else (getHour hour) ++ " o’clock"
 	| min <= 30	= getMin min ++ " past " ++ getHour hour
 	| min > 30	= getMin (60-min) ++ " to " ++ getHour (hour+1)
@@ -219,7 +262,7 @@ numeralEn n
 
 
 showFuzzyTimeDe :: FuzzyTime -> String
-showFuzzyTimeDe (FuzzyTime hour _ min night)
+showFuzzyTimeDe (FuzzyTime clock hour _ min night)
 	| min == 0	= if (getHour hour) `elem` ["Mitternacht", "Mittag"] then (getHour hour) else (getHour hour) ++ " Uhr"
 	| min < 30	= getMin min ++ " nach " ++ getHour hour
 	| min == 30	= "halb " ++ getHour (hour+1)
@@ -252,7 +295,7 @@ numeralDe n
 
 
 showFuzzyTimeFr :: FuzzyTime -> String
-showFuzzyTimeFr (FuzzyTime hour _ min night)
+showFuzzyTimeFr (FuzzyTime clock hour _ min night)
 	| min == 0	= getHour hour
 	| min <= 30	= getHour hour ++ " " ++ getMin min
 	| min > 30	= getHour (hour+1) ++ " moins " ++ getMin (60-min)
@@ -288,7 +331,7 @@ numeralFr n
 
 
 showFuzzyTimePl :: FuzzyTime -> String
-showFuzzyTimePl (FuzzyTime hour _ min night)
+showFuzzyTimePl (FuzzyTime clock hour _ min night)
 	| min == 0	= getHourEven hour
 	| min < 30	= getMin min ++ " po " ++ getHourOdd hour
 	| min == 30	= "wpół do " ++ getHourOdd (hour+1)

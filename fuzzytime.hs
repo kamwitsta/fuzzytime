@@ -21,6 +21,7 @@ module Main (
 	) where
 
 import System.Console.CmdArgs
+import System.IO.Unsafe (unsafePerformIO)
 import System.Time
 
 
@@ -42,7 +43,7 @@ import System.Time
 -- TODO
 -- 		more languages
 -- 		exit codes
--- 0.4
+-- 0.4	2011.01.15
 -- 		added --time (thanks Daniel Fischer and Brent Yorgey from beginners@haskell.org!)
 -- 		removed "południe" from pl
 -- 		fixed the midnight vs. noon bug
@@ -59,28 +60,39 @@ import System.Time
 -- 				added cabal
 
 
+-- config ===============================================================================
+
+
+-- | \[config] The default clock (12 vs. 24-hour).
+confDefClock :: Int
+confDefClock = 12
+
+-- | \[config] The default language.
+confDefLang :: String
+confDefLang = "en"
+
+-- | \[config] The default precision (should be in [1..60]).
+confDefPrec :: Int
+confDefPrec = 5
+
+-- | \[config] The default time (current).
+confDefTime :: String
+confDefTime = unsafePerformIO $ do
+	now <- getClockTime
+	return $ take 5 . drop 11 $ show now
+
+
 -- main =================================================================================
 
 
 -- | The main part. Only reads the command line args and the current time, fuzzifies and prints it.
 main :: IO ()
 main = do
-	conf <- cmdArgs =<< getFTConf
+	conf <- cmdArgs getFTConf
 	if (checkFTConf conf) /= "ok" then
 		putStrLn $ checkFTConf conf
 		else
 		print $ toFuzzyTime conf
-		-- calTime <- getClockTime >>= toCalendarTime
-		-- print $ toFuzzyTime conf (CalendarTime 1 January 1 23 30 1 1 Monday 1 "" 1 True)
-		-- print $ toFuzzyTime conf (CalendarTime 1 January 1 23 45 1 1 Monday 1 "" 1 True)
-		-- print $ toFuzzyTime conf (CalendarTime 1 January 1 00 00 1 1 Monday 1 "" 1 True)
-		-- print $ toFuzzyTime conf (CalendarTime 1 January 1 00 15 1 1 Monday 1 "" 1 True)
-		-- print ""
-		-- print $ toFuzzyTime conf (CalendarTime 1 January 1 11 30 1 1 Monday 1 "" 1 True)
-		-- print $ toFuzzyTime conf (CalendarTime 1 January 1 11 45 1 1 Monday 1 "" 1 True)
-		-- print $ toFuzzyTime conf (CalendarTime 1 January 1 12 00 1 1 Monday 1 "" 1 True)
-		-- print $ toFuzzyTime conf (CalendarTime 1 January 1 12 15 1 1 Monday 1 "" 1 True)
-		-- print $ toFuzzyTime conf calTime
 
 
 -- cl args ==============================================================================
@@ -112,18 +124,15 @@ checkFTConf (FuzzyTimeConf clock lang prec time)
 
 
 -- | Fill the config with the default values.
-getFTConf :: IO FuzzyTimeConf
-getFTConf = do
-	now <- getClockTime
-	let currTime = take 5 . drop 11 $ show now
-	return $ FuzzyTimeConf {
-	  clock	= 12		&= help "12 or 24-hour clock; default 12-hour."
-	, lang	= "en"		&= help "Language (currently de, en, fr and pl); default en."
-	, prec	= 5			&= help "Precision (1 < prec < 60 [minutes]); default 5."
-	, time	= currTime	&= help "Time to fuzzify as HH:MM; default current time."
+getFTConf :: FuzzyTimeConf
+getFTConf = FuzzyTimeConf {
+	  clock	= confDefClock	&= help "12 or 24-hour clock; default 12-hour."
+	, lang	= confDefLang	&= help "Language (currently de, en, fr and pl); default en."
+	, prec	= confDefPrec	&= help "Precision (1 < prec < 60 [minutes]); default 5."
+	, time	= confDefTime	&= help "Time to fuzzify as HH:MM; default current time."
 	}
-	-- &= program "fuzzytime"
-	-- &= summary "Print fuzzy time, e.g. 10:52 -> ten to eleven.\nv0.2, 2011.01.12, kamil.stachowski@gmail.com, GPL3+"
+	&= program "fuzzytime"
+	&= summary "Print fuzzy time, e.g. 10:52 -> ten to eleven.\nv0.4, 2011.01.15, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- FuzzyTime – main =====================================================================
@@ -168,7 +177,7 @@ toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime) =
 			mf = fromIntegral m
 			cf = fromIntegral cPrec
 		in
-			round(mf/cf) * cPrec
+			(round(mf/cf) * cPrec) `mod` 60
 
 
 -- FuzzyTime – shows ====================================================================

@@ -1,4 +1,7 @@
-Tell the time in a more humane way, e.g. 10:52 -> ten to eleven.
+Humans tend to be much more casual than computers when it comes to telling the time. The computers’ usual "22:15"-format requires a little extra processing as compared to the more familiar "quarter past ten".
+fuzzytime attempts to remove this obstacle by telling you the time the way that a human would.
+fuzzytime is neither the first nor the only program which can do this, but it hopes to get closer to the goal than others because the author is a linguist and expects that this should help him come up with localizations which do not sound like MS® Translator.
+
 v0.4, 2011.01.15, kamil.stachowski@gmail.com, GPL3+
 
 fuzzytime [OPTIONS]

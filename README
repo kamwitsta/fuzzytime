@@ -7,6 +7,7 @@ Common flags:
   -c --clock=INT  12 or 24-hour clock; default 12-hour.
   -l --lang=ITEM  Language (currently da, de, en, fr and pl); default en.
   -p --prec=INT   Precision (1 < prec < 60 [minutes]); default 5.
-  -t --time=ITEM  Time to fuzzify as HH:MM; default current time.
+  -t --time=ITEM
+  -s --style=INT  How the time is told (seem the man page); default 1.
   -? --help       Display help message
   -V --version    Print version information

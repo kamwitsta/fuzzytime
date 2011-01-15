@@ -36,6 +36,9 @@ Precision; should be between 1 and 60 [minutes]; the default is 5.
 \-t \--time
 Time to fuzzify as HH:MM; the default is the current time.
 .TP
+\-s \--style
+How the time is told; see below; the default is 1.
+.TP
 \-? \--help
 Display help message
 .TP
@@ -46,33 +49,48 @@ Print version information
 
 .SH EXAMPLES
 .TP
-Print the current time in Polish in 12-hour clock, with 10-minute precision.
+Print the current time in Polish in 12-hour clock, with 10-minute precision, in style 2.
 .B fuzzytime
-\-lpl -p10
+\-lpl -p10 -s2
 .PP
 .TP
-Print 23:50 in German in 24-hour clock, with 1-minute precision.
+Print 23:50 in German in 24-hour clock, with 1-minute precision, in style 1.
 .B fuzzytime
 \-c24 -lde -p1 -t23:50
+
+.\" -------------------------------------------------------------------------------------
+
+.SH STYLES
+In many languages, the time can be told in at least a few ways. E.g., in English the words "midnight" and "noon" can be used, the numerals "twenty-four" and "twelve" or "twelve" for both cases. The latter distinction is taken care of by --clock. The former – by --style. Currently, two styles are available. See LANGUAGES below for details.
 
 .\" -------------------------------------------------------------------------------------
 
 .SH LANGUAGES
 
 .SS Danish (M_ller + KS)
-No "midnight" or "noon". "Half. "Quarter".
+Style 1: No "midnight" or "noon". "Half". "Quarter". No "hour". E.g.: 11:45 = 23:45 = kvart i tolv.
+.PP
+Style 2: Always "Midnight". "Noon" only for min in [0, 30]. "Half". "Quarter". No "hour". E.g.: 11:30 = halv aften, 11:45 = kvart i tolv, 23:45 = kvart i midnat.
 
 .SS English (KS)
-Always "midnight" and "noon". "Half". "Quarter".
+Style 1: No "midnight" or "noon". "Half". "Quarter". No "hour". E.g.: 11:45 = 23:45 = quarter to twelve.
+.PP
+Style 2: Always "Midnight" and "noon". "Half". "Quarter". No "hour". E.g.: 11:45 = quarter to noon, 23:45 = quarter to midnight.
 
 .SS German (KS)
-Always "midnight" and "noon". "Half". "Quarter".
+Style 1: No "midnight" or "noon". "Half". "Quarter". No "hour". E.g.: 11:45 = 23:45 = Viertel vor zwölf.
+.PP
+Style 2: Always "Midnight". "Noon" only for min in [0, 30]. "Half". "Quarter". No "hour". E.g.: 11:30 = halb Mittag, 11:45 = Viertel vor zwölf, 23:45 = Viertel vor Mitternacht.
 
 .SS French (KS)
-Always "midnight" and "noon". "Half". "Quarter".
+Style 1: No "midnight" or "noon". "Half". "Quarter". Always "hour". E.g.: 11:45 = 23:45 = douze heures moins le quart.
+.PP
+Style 2: Always "midnight" and "noon". "Half". "Quarter". Always "hour". E.g.: 11:45 = midi moins le quart, 23:30 = onze heures et demie, 23:45 = minuit moins le quart.
 
 .SS Polish (KS)
-"Midnight" only for min < 30. No "noon". "Half". "Quarter".
+Style 1: No "midnight" or "noon". "Half". "Quarter". No "hour". E.g.: 11:45 = 23:45 = za kwadrans dwunasta.
+.PP
+Style 2: "Midnight" only for min < 30. No "noon". "Half". "Quarter". No "hour". E.g.: 11:30 = wpół do dwunastej; 23:30 = wpół do dwunastej, 23:45 = za kwadrans północ.
 
 .\" -------------------------------------------------------------------------------------
 

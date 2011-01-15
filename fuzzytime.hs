@@ -1,6 +1,3 @@
--- danish: some modifications; sure about "et" rather than "en" and "eleve" rather than "elleve"?
--- not using noon and such?
-
 {-# LANGUAGE DeriveDataTypeable #-}
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -24,7 +21,6 @@ module Main (
 	) where
 
 import System.Console.CmdArgs
-import System.IO.Unsafe (unsafePerformIO)
 import System.Time
 
 
@@ -49,9 +45,11 @@ import System.Time
 -- 		styles
 -- 0.4	2011.01.15
 -- 		added --time (thanks Daniel Fischer and Brent Yorgey from beginners@haskell.org!)
+-- 		added --style
 -- 		added Danish (by M_ller with my modifications)
 -- 		removed "południe" from pl
--- 		fixed the midnight vs. noon bug
+-- 		sorted out the representation of midnight and noon
+-- 		added a man page
 -- 0.3	2011.01.14
 -- 		added midnight and noon
 -- 		added checking cli options
@@ -80,11 +78,15 @@ confDefLang = "en"
 confDefPrec :: Int
 confDefPrec = 5
 
+-- | \[config] The default style (see man).
+confDefStyle :: Int
+confDefStyle = 1
+
 -- | \[config] The default time (current).
-confDefTime :: String
-confDefTime = unsafePerformIO $ do
+confSetCurrTime :: FuzzyTimeConf -> IO FuzzyTimeConf
+confSetCurrTime ft = do
 	now <- getClockTime
-	return $ take 5 . drop 11 $ show now
+	return $ ft { time = take 5 . drop 11 $ show now }
 
 
 -- main =================================================================================
@@ -93,7 +95,8 @@ confDefTime = unsafePerformIO $ do
 -- | The main part. Only reads the command line args and the current time, fuzzifies and prints it.
 main :: IO ()
 main = do
-	conf <- cmdArgs getFTConf
+	fullFTConf <- confSetCurrTime getFTConf		-- ^ required to avoid unsafePerformIO
+	conf <- cmdArgs fullFTConf
 	if (checkFTConf conf) /= "ok" then
 		putStrLn $ checkFTConf conf
 		else
@@ -109,16 +112,18 @@ data FuzzyTimeConf = FuzzyTimeConf {
 	, lang	:: String
 	, prec	:: Int
 	, time	:: String
+	, style	:: Int
 	} deriving (Show, Data, Typeable)
 
 
 -- | Check that arguments given at cli are correct.
 checkFTConf :: FuzzyTimeConf -> String
-checkFTConf (FuzzyTimeConf clock lang prec time)
+checkFTConf (FuzzyTimeConf clock lang prec time style)
 	| not (clock `elem` [12, 24])	= "--clock must be either 12 or 24."
 	| not (lang `elem` ["da", "de", "en", "fr", "pl"])	= "--lang must be de, en, fr or pl."
 	| prec < 1 || prec > 60			= "--prec must be 1 < prec < 60."
 	| not checkTimeOk				= "--time must be given as HH:MM, where HH is in [0..23] and MM is in [0..59]"
+	| not (style `elem` [1, 2])		= "--style must be either 1 or 2 (see the man page)."
 	| otherwise						= "ok"
 	where
 	checkTimeOk :: Bool
@@ -134,7 +139,8 @@ getFTConf = FuzzyTimeConf {
 	  clock	= confDefClock	&= help "12 or 24-hour clock; default 12-hour."
 	, lang	= confDefLang	&= help "Language (currently da, de, en, fr and pl); default en."
 	, prec	= confDefPrec	&= help "Precision (1 < prec < 60 [minutes]); default 5."
-	, time	= confDefTime	&= help "Time to fuzzify as HH:MM; default current time."
+	, time	= ""			&= help "Time to fuzzify as HH:MM; default current time."			-- ^ time is set via confSetCurrTime to avoid unsafePerformIO
+	, style	= confDefStyle	&= help "How the time is told (seem the man page); default 1."
 	}
 	&= program "fuzzytime"
 	&= summary "Tell the time in a more humane way, e.g. 10:52 -> ten to eleven.\nv0.4, 2011.01.15, kamil.stachowski@gmail.com, GPL3+"
@@ -151,12 +157,13 @@ data FuzzyTime = FuzzyTime {
 	, fzLang	:: String
 	, fzMin		:: Int
 	, fzNight	:: Bool
+	, fzStyle	:: Int
 	} deriving (Eq)
 
 -- | This is where FuzzyTime Int Int String is turned into the time String.
 -- It is assumed that by the time these functions are called, hour will be in [0..23] and min will be in [0..59].
 instance Show FuzzyTime where
-	show ft@(FuzzyTime _ _ lang _ _) = case lang of
+	show ft@(FuzzyTime _ _ lang _ _ _) = case lang of
 		"da" -> showFuzzyTimeDa ft
 		"de" -> showFuzzyTimeDe ft
 		"en" -> showFuzzyTimeEn ft
@@ -167,17 +174,19 @@ instance Show FuzzyTime where
 
 -- | Converts CalendarTime to FuzzyTime using the given precision. The language and clock are also set, so that Show knows how to display it.
 toFuzzyTime :: FuzzyTimeConf -> FuzzyTime
-toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime) =
-	FuzzyTime cClock fuzzdHour cLang (fuzzdMin min) (hour < 10 || hour > 22)
+toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime cStyle) =
+	FuzzyTime cClock fuzzdHour cLang (fuzzdMin min) (hour < 10 || hour > 22) cStyle
 	where
+	hour :: Int
 	hour = read $ takeWhile (/=':') cTime
+	min :: Int
 	min = read $ reverse . takeWhile (/=':') . reverse $ cTime
 	fuzzdHour :: Int
 	fuzzdHour =
 		if cClock==24 then
-			hour
+			if hour==0 then 24 else hour
 			else
-			hour `mod` 12
+			if hour==12 then hour else hour `mod` 12
 	fuzzdMin :: Int -> Int
 	fuzzdMin m =
 		let
@@ -186,6 +195,12 @@ toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime) =
 		in
 			(round(mf/cf) * cPrec) `mod` 60
 
+-- | Makes sure that midnight is always represented as 0 or 24, depending on the clock, and noon always as 12.
+nextFTHour :: FuzzyTime -> Int
+nextFTHour (FuzzyTime clock hour _ _ night _)
+	| clock == 12 && hour == 11		= if night then 0 else 12
+	| otherwise						= hour + 1
+				
 
 -- FuzzyTime – shows ====================================================================
 
@@ -193,19 +208,22 @@ toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime) =
 
 
 showFuzzyTimeDa :: FuzzyTime -> String
-showFuzzyTimeDa (FuzzyTime clock hour _ min night)
+showFuzzyTimeDa ft@(FuzzyTime clock hour _ min night style)
 	| min == 0	= getHour hour
 	| min < 30	= getMin min ++ " over " ++ getHour hour
-	| min == 30	= "halv " ++ getHour (hour+1)
-	| min > 30	= getMin (60-min) ++ " i " ++ getHour (hour+1)
+	| min == 30	= "halv " ++ getHour (nextFTHour ft)
+	| min > 30	= getMin (60-min) ++ " i " ++ getHour (nextFTHour ft)
 	| otherwise	= "Ups, det ser ud til den er " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
 	getHour h
-		| h `mod` 12 == 0	= if clock == 12 then
-								numeralDa 12
+		| h `mod` 12 == 0	= if style==1 then
+								if clock==12 then numeralDa 12 else numeralDa h
 								else
-								if night then numeralDa 24 else numeralDa 12
+								if night then
+									"midnat"
+									else
+									if min `elem` [0, 30] then "aften" else numeralDa h
 		| otherwise			= numeralDa h
 	getMin :: Int -> String
 	getMin m
@@ -220,7 +238,7 @@ numeralDa n
 	| otherwise			= numeralDaHelper1 (n `mod` 10) ++ "og" ++ numeralDaHelper10 (n `div` 10)
 	where
 	numeralDaHelper1 :: Int -> String
-	numeralDaHelper1 i = ["et", "to", "tre", "fire", "fem", "seks", "syv", "otte", "ni", "ti", "eleve", "tolv", "tretten", "fjorten", "femten", "seksten", "sytten", "atten", "nitten"] !! (i-1)
+	numeralDaHelper1 i = ["en", "to", "tre", "fire", "fem", "seks", "syv", "otte", "ni", "ti", "elleve", "tolv", "tretten", "fjorten", "femten", "seksten", "sytten", "atten", "nitten"] !! (i-1)
 	numeralDaHelper10 :: Int -> String
 	numeralDaHelper10 i = ["tyve", "tredive", "fyrre", "halvtreds"] !! (i-2)
 
@@ -229,15 +247,18 @@ numeralDa n
 
 
 showFuzzyTimeEn :: FuzzyTime -> String
-showFuzzyTimeEn (FuzzyTime clock hour _ min night)
+showFuzzyTimeEn ft@(FuzzyTime clock hour _ min night style)
 	| min == 0	= if (getHour hour) `elem` ["midnight", "noon"] then (getHour hour) else (getHour hour) ++ " o’clock"
 	| min <= 30	= getMin min ++ " past " ++ getHour hour
-	| min > 30	= getMin (60-min) ++ " to " ++ getHour (hour+1)
+	| min > 30	= getMin (60-min) ++ " to " ++ getHour (nextFTHour ft)
 	| otherwise	= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
 	getHour h
-		| h `mod` 12 == 0	= if night then "midnight" else "noon"
+		| h `mod` 12 == 0	= if style==1 then
+								if clock==12 then numeralEn 12 else numeralEn h
+								else
+								if night then "midnight" else "noon"
 		| otherwise			= numeralEn h
 	getMin :: Int -> String
 	getMin m
@@ -262,16 +283,22 @@ numeralEn n
 
 
 showFuzzyTimeDe :: FuzzyTime -> String
-showFuzzyTimeDe (FuzzyTime clock hour _ min night)
+showFuzzyTimeDe ft@(FuzzyTime clock hour _ min night style)
 	| min == 0	= if (getHour hour) `elem` ["Mitternacht", "Mittag"] then (getHour hour) else (getHour hour) ++ " Uhr"
 	| min < 30	= getMin min ++ " nach " ++ getHour hour
-	| min == 30	= "halb " ++ getHour (hour+1)
-	| min > 30	= getMin (60-min) ++ " vor " ++ getHour (hour+1)
+	| min == 30	= "halb " ++ getHour (nextFTHour ft)
+	| min > 30	= getMin (60-min) ++ " vor " ++ getHour (nextFTHour ft)
 	| otherwise	= "Oops, es sieht aus, dass es " ++ show hour ++ ":" ++ show min ++ " ist."
 	where
 	getHour :: Int -> String
 	getHour h
-		| h `mod` 12 == 0	= if night then "Mitternacht" else "Mittag"
+		| h `mod` 12 == 0	= if style==1 then
+								if clock==12 then numeralDe 12 else numeralDe h
+								else
+								if night then
+									"Mitternacht"
+									else
+									if min `elem` [0, 30] then "Mittag" else numeralDe h
 		| otherwise			= numeralDe h
 	getMin :: Int -> String
 	getMin m
@@ -295,16 +322,19 @@ numeralDe n
 
 
 showFuzzyTimeFr :: FuzzyTime -> String
-showFuzzyTimeFr (FuzzyTime clock hour _ min night)
+showFuzzyTimeFr ft@(FuzzyTime clock hour _ min night style)
 	| min == 0	= getHour hour
 	| min <= 30	= getHour hour ++ " " ++ getMin min
-	| min > 30	= getHour (hour+1) ++ " moins " ++ getMin (60-min)
+	| min > 30	= getHour (nextFTHour ft) ++ " moins " ++ getMin (60-min)
 	| otherwise	= "Oops, il semble qu’il est " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
 	getHour h
-		| h `mod` 12 == 0	= if night then "minuit" else "midi"
-		| otherwise			= numeralFr h ++ if h==1 then " heure" else " heures"
+		| h `mod` 12 == 0	= if style==1 then
+								(if clock==12 then numeralFr 12 else numeralFr h) ++ getHourWord h
+								else
+								if night then "minuit" else "midi"
+		| otherwise			= numeralFr h ++ getHourWord h
 	getHourWord :: Int -> String
 	getHourWord h = if h==1 then " heure" else " heures"
 	getMin :: Int -> String
@@ -331,20 +361,26 @@ numeralFr n
 
 
 showFuzzyTimePl :: FuzzyTime -> String
-showFuzzyTimePl (FuzzyTime clock hour _ min night)
+showFuzzyTimePl ft@(FuzzyTime clock hour _ min night style)
 	| min == 0	= getHourEven hour
 	| min < 30	= getMin min ++ " po " ++ getHourOdd hour
-	| min == 30	= "wpół do " ++ getHourOdd (hour+1)
-	| min > 30	= "za " ++ getMin (60-min) ++ " " ++ getHourEven (hour+1)
+	| min == 30	= "wpół do " ++ getHourOdd (nextFTHour ft)
+	| min > 30	= "za " ++ getMin (60-min) ++ " " ++ getHourEven (nextFTHour ft)
 	| otherwise	= "Oops, wychodzi, że jest " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHourEven :: Int -> String
 	getHourEven h
-		| h `mod` 12 == 0	= if night then "północ" else numeralPlOrdNom h
+		| h `mod` 12 == 0	= if style==1 then
+								if clock==12 then numeralPlOrdNom 12 else numeralPlOrdNom h
+								else
+								if night then "północ" else numeralPlOrdNom h
 		| otherwise			= numeralPlOrdNom h
 	getHourOdd :: Int -> String
 	getHourOdd h
-		| h `mod` 12 == 0	= if night && min /= 30 then "północy" else numeralPlOrdPraep h
+		| h `mod` 12 == 0	= if style==1 then
+								if clock==12 then numeralPlOrdPraep 12 else numeralPlOrdPraep h
+								else
+								if night && min < 30 then "północy" else numeralPlOrdPraep h
 		| otherwise			= numeralPlOrdPraep h
 	getMin :: Int -> String
 	getMin m

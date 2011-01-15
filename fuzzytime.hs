@@ -43,6 +43,8 @@ import System.Time
 -- 		more languages
 -- 		exit codes
 -- 		styles
+-- 0.4.1	2011.01.15
+-- 		fixed nextFTHour
 -- 0.4	2011.01.15
 -- 		added --time (thanks Daniel Fischer and Brent Yorgey from beginners@haskell.org!)
 -- 		added --style
@@ -199,6 +201,8 @@ toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime cStyle) =
 nextFTHour :: FuzzyTime -> Int
 nextFTHour (FuzzyTime clock hour _ _ night _)
 	| clock == 12 && hour == 11		= if night then 0 else 12
+	| clock == 12 && hour == 12		= 1
+	| clock == 24 && hour == 24		= 1
 	| otherwise						= hour + 1
 				
 

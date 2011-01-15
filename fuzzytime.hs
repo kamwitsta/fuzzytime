@@ -145,7 +145,7 @@ getFTConf = FuzzyTimeConf {
 	, style	= confDefStyle	&= help "How the time is told (seem the man page); default 1."
 	}
 	&= program "fuzzytime"
-	&= summary "Tell the time in a more humane way, e.g. 10:52 -> ten to eleven.\nv0.4, 2011.01.15, kamil.stachowski@gmail.com, GPL3+"
+	&= summary "Tell the time in a more humane way, e.g. 10:52 -> ten to eleven.\nv0.4.1, 2011.01.15, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- FuzzyTime – main =====================================================================

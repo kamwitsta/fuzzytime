@@ -1,9 +1,9 @@
-.TH fuzzytime 1 "January 15, 2011" "version 0.4" "Telling the time in a more humane way"
+.TH fuzzytime 1 "January 15, 2011" "version 0.4" "A clock that tells the time in a more familiar way"
 
 .\" -------------------------------------------------------------------------------------
 
 .SH NAME
-fuzzytime \- telling the time in a more humane way
+fuzzytime \- a clock that tells the time in a more familiar way
 
 .\" -------------------------------------------------------------------------------------
 
@@ -67,30 +67,76 @@ In many languages, the time can be told in at least a few ways. E.g., in English
 
 .SH LANGUAGES
 
-.SS Danish (M_ller + KS)
-Style 1: No "midnight" or "noon". "Half". "Quarter". No "hour". E.g.: 11:45 = 23:45 = kvart i tolv.
-.PP
-Style 2: Always "Midnight". "Noon" only for min in [0, 30]. "Half". "Quarter". No "hour". E.g.: 11:30 = halv aften, 11:45 = kvart i tolv, 23:45 = kvart i midnat.
+.SS Comparison
+              midnight  noon    half   quarter  hour   halves
+                                                        base
 
-.SS English (KS)
-Style 1: No "midnight" or "noon". "Half". "Quarter". No "hour". E.g.: 11:45 = 23:45 = quarter to twelve.
-.PP
-Style 2: Always "Midnight" and "noon". "Half". "Quarter". No "hour". E.g.: 11:45 = quarter to noon, 23:45 = quarter to midnight.
+Danish (M_ller + KS)
+    style 1      –        –       +       +      –       –
+    style 2      +     [0, 30]    +       +      –       –
 
-.SS German (KS)
-Style 1: No "midnight" or "noon". "Half". "Quarter". No "hour". E.g.: 11:45 = 23:45 = Viertel vor zwölf.
-.PP
-Style 2: Always "Midnight". "Noon" only for min in [0, 30]. "Half". "Quarter". No "hour". E.g.: 11:30 = halb Mittag, 11:45 = Viertel vor zwölf, 23:45 = Viertel vor Mitternacht.
+English (KS)
+    style 1      –        –       +       +      –       –
+    style 2      +        +       +       +      –       –
 
-.SS French (KS)
-Style 1: No "midnight" or "noon". "Half". "Quarter". Always "hour". E.g.: 11:45 = 23:45 = douze heures moins le quart.
-.PP
-Style 2: Always "midnight" and "noon". "Half". "Quarter". Always "hour". E.g.: 11:45 = midi moins le quart, 23:30 = onze heures et demie, 23:45 = minuit moins le quart.
+German (KS)
+    style 1      –        –       +       +     [0]      –
+    style 2      +     [0, 30]    +       +     [0]      +
 
-.SS Polish (KS)
-Style 1: No "midnight" or "noon". "Half". "Quarter". No "hour". E.g.: 11:45 = 23:45 = za kwadrans dwunasta.
-.PP
-Style 2: "Midnight" only for min < 30. No "noon". "Half". "Quarter". No "hour". E.g.: 11:30 = wpół do dwunastej; 23:30 = wpół do dwunastej, 23:45 = za kwadrans północ.
+French (KS)
+    style 1      –        –       +       +      +       –
+    style 2      +        +       +       +      +       –
+
+Polish (KS)
+    style 1      –        –       +       +      –       –
+    style 2      +        –       +       +      –       +
+
+.SS Notes
+
+midnight, noon: the words "midnight" and "noon" are used; [0, 30] means that the word is only used for round hours and halves
+
+half, quarter: min % 15 = 0 is treated as a special case
+
+hour: the word "hour" is used; [0] means that the word is only used for round hours
+
+halves base: 23 < min < 38 are referred to half rather than full hours
+
+.SS Examples
+
+Danish
+
+Style 1: 11:45 = 23:45 = kvart i tolv.
+
+Style 2: 11:30 = halv aften, 11:45 = kvart i tolv, 23:45 = kvart i midnat.
+
+
+
+English
+
+Style 1: 11:45 = 23:45 = quarter to twelve.
+
+Style 2: 11:45 = quarter to noon, 23:45 = quarter to midnight.
+
+
+German
+
+Style 1: 11:45 = 23:45 = Viertel vor zwölf.
+
+Style 2: 11:30 = halb Mittag, 11:45 = Viertel vor zwölf, 23:45 = Viertel vor Mitternacht, 10:26 = fünf vor halb elf.
+
+
+French
+
+Style 1: 11:45 = 23:45 = douze heures moins le quart.
+
+Style 2: 11:45 = midi moins le quart, 23:30 = onze heures et demie, 23:45 = minuit moins le quart.
+
+
+Polish
+
+Style 1: 11:45 = 23:45 = za kwadrans dwunasta.
+
+Style 2: 11:30 = wpół do dwunastej; 23:30 = wpół do dwunastej, 23:45 = za kwadrans północ, 10:26 = za pięć wpół do jedenastej.
 
 .\" -------------------------------------------------------------------------------------
 

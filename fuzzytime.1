@@ -75,13 +75,17 @@ Danish (M_ller + KS)
     style 1      –        –       +       +      –       –
     style 2      +     [0, 30]    +       +      –       –
 
+Dutch (thanks litemotiv)
+    style 1      –        –       +       +     [0]      –
+    style 2    [≠ 30]     –       +       +     [0]    [±10]
+
 English (KS)
     style 1      –        –       +       +      –       –
     style 2      +        +       +       +      –       –
 
 German (KS)
     style 1      –        –       +       +     [0]      –
-    style 2      +     [0, 30]    +       +     [0]      +
+    style 2    [≠ 30]     –       +       +     [0]     [±7]
 
 French (KS)
     style 1      –        –       +       +      +       –
@@ -89,17 +93,17 @@ French (KS)
 
 Polish (KS)
     style 1      –        –       +       +      –       –
-    style 2      +        –       +       +      –       +
+    style 2    [≠ 30]     –       +       +      –      [±7]
 
 .SS Notes
 
-midnight, noon: the words "midnight" and "noon" are used; [0, 30] means that the word is only used for round hours and halves
+midnight, noon: the words "midnight" and "noon" are used; [≠ 30] means that the word used but for halves.
 
 half, quarter: min % 15 = 0 is treated as a special case
 
 hour: the word "hour" is used; [0] means that the word is only used for round hours
 
-halves base: 23 < min < 38 are referred to half rather than full hours
+halves base: min in a certain range around 30 is referred to half hours rather than to full ones
 
 .SS Examples
 
@@ -109,6 +113,12 @@ Style 1: 11:45 = 23:45 = kvart i tolv.
 
 Style 2: 11:30 = halv aften, 11:45 = kvart i tolv, 23:45 = kvart i midnat.
 
+
+Dutch
+
+Style 1: 11:45 = 23:45 = kwart voor twaalf.
+
+Style 2: 11:30 = half twaalf, 11:45 = kwart voor twaalf, 23:30 = half twaalf, 23:45 = kwart voor middernacht, 10:20 = tien voor half elf
 
 
 English
@@ -122,7 +132,7 @@ German
 
 Style 1: 11:45 = 23:45 = Viertel vor zwölf.
 
-Style 2: 11:30 = halb Mittag, 11:45 = Viertel vor zwölf, 23:45 = Viertel vor Mitternacht, 10:26 = fünf vor halb elf.
+Style 2: 11:30 = halb zwölf, 11:45 = Viertel vor zwölf, 23:30 = halb zwölf, 23:45 = Viertel vor Mitternacht, 10:25 = fünf vor halb elf.
 
 
 French
@@ -136,7 +146,7 @@ Polish
 
 Style 1: 11:45 = 23:45 = za kwadrans dwunasta.
 
-Style 2: 11:30 = wpół do dwunastej; 23:30 = wpół do dwunastej, 23:45 = za kwadrans północ, 10:26 = za pięć wpół do jedenastej.
+Style 2: 11:30 = wpół do dwunastej; 11:45 = za kwadrans dwunasta, 23:30 = wpół do dwunastej, 23:45 = za kwadrans północ, 10:25 = za pięć wpół do jedenastej.
 
 .\" -------------------------------------------------------------------------------------
 
@@ -152,3 +162,11 @@ No known bugs at this time.
 
 .SH AUTHOR
 Kamil Stachowski (kamil.stachowski@gmail.com)
+
+Thanks are due to:
+
+Daniel Fischer and Brent Yorger from beginners@haskell.org for Haskell help.
+
+litemotiv from bbs.archlinux.org for the Dutch translation.
+
+M_ller from bbs.archlinux.org for the Danish translation and most of the implementation.

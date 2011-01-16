@@ -41,11 +41,12 @@ import System.Time
 
 -- CHANGELOG
 -- TODO
--- 		more languages
 -- 		exit codes
+-- 		answers for Greek (:35, midnight, εντεκάμιση)
+--		check Danish: midnight + noon, halves
 -- 0.5
 -- 		added halves as base (de, nl and pl)
--- 		added Dutch and Turkish
+-- 		added Greek (thanks Gbak), Dutch (thanks litemotiv) and Turkish
 -- 		some corrections (thanks Daniel Fischer from beginners@haskell.org again)
 -- 		0.4.1	2011.01.15
 -- 				fixed nextFTHour
@@ -101,8 +102,8 @@ confSetCurrTime ft = do
 -- | The main part. Only reads the command line args and the current time, fuzzifies and prints it.
 main :: IO ()
 main = do
-	conf <- cmdArgs =<< (confSetCurrTime getFTConf)		-- ^ confSetCurrTime required to avoid unsafePerformIO
-	if (checkFTConf conf) /= "ok" then
+	conf <- cmdArgs =<< confSetCurrTime getFTConf		-- ^ confSetCurrTime required to avoid unsafePerformIO
+	if checkFTConf conf /= "ok" then
 		putStrLn $ checkFTConf conf
 		else
 		print $ toFuzzyTime conf
@@ -125,7 +126,7 @@ data FuzzyTimeConf = FuzzyTimeConf {
 checkFTConf :: FuzzyTimeConf -> String
 checkFTConf (FuzzyTimeConf clock lang prec time style)
 	| clock `notElem` [12, 24]	= "--clock must be either 12 or 24."
-	| lang `notElem` ["da", "de", "en", "fr", "nl", "pl", "tr"]	= "--lang must be de, en, fr, nl, pl or tr."
+	| lang `notElem` ["da", "de", "el", "en", "fr", "nl", "pl", "tr"]	= "--lang must be de, el, en, fr, nl, pl or tr."
 	| prec < 1 || prec > 60			= "--prec must be 1 < prec < 60."
 	| not checkTimeOk				= "--time must be given as HH:MM, where HH is in [0..23] and MM is in [0..59]"
 	| style `notElem` [1, 2]		= "--style must be either 1 or 2 (see the man page)."
@@ -133,12 +134,10 @@ checkFTConf (FuzzyTimeConf clock lang prec time style)
 	where
 	checkTimeOk :: Bool
 	checkTimeOk = case break (== ':') time of
-		(hh, _:mm)	->	if not (null hh || null mm)
+		(hh, _:mm)	->	not (null hh || null mm)
 						&& all isDigit hh && all isDigit mm
-						then
-						let h = read hh; m = read mm
-						in 0 <= h && h < 24 && 0 <= m && m < 60
-						else False
+						&& (let h = read hh; m = read mm
+							in 0 <= h && h < 24 && 0 <= m && m < 60)
 		_			->	False
 
 
@@ -176,6 +175,7 @@ instance Show FuzzyTime where
 	show ft@(FuzzyTime _ _ lang _ _ _) = case lang of
 		"da" -> showFuzzyTimeDa ft
 		"de" -> showFuzzyTimeDe ft
+		"el" -> showFuzzyTimeEl ft
 		"en" -> showFuzzyTimeEn ft
 		"fr" -> showFuzzyTimeFr ft
 		"nl" -> showFuzzyTimeNl ft
@@ -265,7 +265,7 @@ numeralDa n
 
 showFuzzyTimeDe :: FuzzyTime -> String
 showFuzzyTimeDe ft@(FuzzyTime clock hour _ min night style)
-	| min == 0				= if (getHour hour) `elem` ["Mitternacht", "Mittag"] then (getHour hour) else (getHour hour) ++ " Uhr"
+	| min == 0				= if getHour hour `elem` ["Mitternacht", "Mittag"] then getHour hour else getHour hour ++ " Uhr"
 	| min `elem` [23..29]	
 		&& style == 2		= getMin (30-min) ++ " vor halb " ++ getHour (nextFTHour ft)
 	| min < 30				= getMin min ++ " nach " ++ getHour hour
@@ -303,12 +303,45 @@ numeralDe n
 	numeralDeHelper10 i = ["zwanzig", "dreissig", "vierzig", "fünfzig"] !! (i-2)
 
 
+-- Greek (thanks Gbak from bbs.archlinux.org) -------------------------------------------------------------------------------------------------------------------------------------
+
+
+showFuzzyTimeEl :: FuzzyTime -> String
+showFuzzyTimeEl ft@(FuzzyTime clock hour _ min night style)
+	| min == 0	= getHour hour
+	| min <= 30	= getHour hour ++ " και " ++ getMin min
+	| min > 30	= getHour (nextFTHour ft) ++ " παρά " ++ getMin (60-min)
+	| otherwise	= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
+	where
+	getHour :: Int -> String
+	getHour h
+		| h `mod` 12 == 0	= if clock==12 then numeralEl 12 else numeralEl h
+		| otherwise			= numeralEl h
+	getMin :: Int -> String
+	getMin m
+		| m == 30			= "μισή"
+		| m `elem` [15, 45]	= "τέταρτο"
+		| otherwise			= numeralEl m
+
+
+numeralEl :: Int -> String
+numeralEl n
+	| n < 20			= numeralElHelper1 n
+	| n `mod` 10 == 0	= numeralElHelper10 (n `div` 10)
+	| otherwise			= numeralElHelper10 (n `div` 10) ++ " " ++ numeralElHelper1 (n `mod` 10)
+	where
+	numeralElHelper1 :: Int -> String
+	numeralElHelper1 i = ["ένας", "δυο", "τρεις", "τέσσερις", "πέντε", "έξι", "εφτά", "οχτώ", "εννιά", "δέκα", "έντεκα", "δώδεκα", "δεκατρείς", "δεκατέσσερις", "δεκαπέντε", "δεκάξι", "δεκαεφτά", "δεκαοχτώ", "δεκαεννιά"] !! (i-1)
+	numeralElHelper10 :: Int -> String
+	numeralElHelper10 i = ["είκοσι", "τριάντα", "σαράντα", "πενήντα"] !! (i-2)
+
+
 -- Dutch (thanks litemotiv from bbs.archlinux.org)---------------------------------------------------------------------------------------------------------------------------------
 
 
 showFuzzyTimeNl :: FuzzyTime -> String
 showFuzzyTimeNl ft@(FuzzyTime clock hour _ min night style)
-	| min == 0				= if getHour hour == "middernacht" then getHour hour else (getHour hour) ++ " uur"
+	| min == 0				= if getHour hour == "middernacht" then getHour hour else getHour hour ++ " uur"
 	| min `elem` [20..29]	
 		&& style == 2		= getMin (30-min) ++ " voor half " ++ getHour (nextFTHour ft)
 	| min < 30				= getMin min ++ " over " ++ getHour hour
@@ -353,7 +386,7 @@ numeralNl n
 
 showFuzzyTimeEn :: FuzzyTime -> String
 showFuzzyTimeEn ft@(FuzzyTime clock hour _ min night style)
-	| min == 0	= if (getHour hour) `elem` ["midnight", "noon"] then (getHour hour) else (getHour hour) ++ " o’clock"
+	| min == 0	= if getHour hour `elem` ["midnight", "noon"] then getHour hour else getHour hour ++ " o’clock"
 	| min <= 30	= getMin min ++ " past " ++ getHour hour
 	| min > 30	= getMin (60-min) ++ " to " ++ getHour (nextFTHour ft)
 	| otherwise	= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
@@ -430,11 +463,11 @@ showFuzzyTimePl :: FuzzyTime -> String
 showFuzzyTimePl ft@(FuzzyTime clock hour _ min night style)
 	| min == 0			= getHourEven hour
 	| min `elem` [23..29]
-		&& style == 2	= "za " ++ getMin (30-min) ++ " wpół do " ++ getHourOdd (nextFTHour ft)
+		&& style == 2	= "za " ++ getMin (30-min) ++ " w pół do " ++ getHourOdd (nextFTHour ft)
 	| min < 30			= getMin min ++ " po " ++ getHourOdd hour
-	| min == 30			= "wpół do " ++ getHourOdd (nextFTHour ft)
+	| min == 30			= "w pół do " ++ getHourOdd (nextFTHour ft)
 	| min `elem` [31..37]
-		&& style == 2	= getMin (min-30) ++ " po wpół do " ++ getHourOdd (nextFTHour ft)
+		&& style == 2	= getMin (min-30) ++ " po w pół do " ++ getHourOdd (nextFTHour ft)
 	| min > 30			= "za " ++ getMin (60-min) ++ " " ++ getHourEven (nextFTHour ft)
 	| otherwise			= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where

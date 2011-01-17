@@ -1,18 +1,18 @@
+-- Turkish ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 module FuzzyTime.Turkish (showFuzzyTimeTr) where
 
 import {-# SOURCE #-} FuzzyTime
-
--- Turkish ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 showFuzzyTimeTr :: FuzzyTime -> String
 showFuzzyTimeTr ft@(FuzzyTime clock hour _ min night style)
 	| min == 0			= "saat " ++ getHour "Nom" hour
-	| min `elem` [22..29]
+	| min `elem` [20..29]
 		&& style == 2	= getHour "Nom" hour ++ " buçuğa " ++ getMin (30-min) ++ " var"
 	| min < 30			= getHour "Acc" hour ++ " " ++ getMin min ++ " geçiyor"
-	| min == 30			= if hour `mod` 12 == 0 then "yarım" else getHour "Nom" hour ++ " buçuk"
-	| min `elem` [31..38]
+	| min == 30			= if hour `mod` 12 == 0 then "saat yarım" else getHour "Nom" hour ++ " buçuk"
+	| min `elem` [31..40]
 		&& style == 2	= getHour "Nom" hour ++ " buçuğu " ++ getMin (min-30) ++ " geçiyor"
 	| min > 30			= getHour "Dat" (nextFTHour ft) ++ " " ++ getMin (60-min) ++ " var"
 	| otherwise			= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."

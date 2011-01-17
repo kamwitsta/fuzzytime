@@ -1,9 +1,8 @@
+-- Danish (by M_ller from bbs.archlinux.org, with my modifications) ---------------------------------------------------------------------------------------------------------------
+
 module FuzzyTime.Danish (showFuzzyTimeDa) where
 
 import {-# SOURCE #-} FuzzyTime
-
-
--- Danish (by M_ller from bbs.archlinux.org, with my modifications) ---------------------------------------------------------------------------------------------------------------
 
 
 showFuzzyTimeDa :: FuzzyTime -> String
@@ -16,13 +15,7 @@ showFuzzyTimeDa ft@(FuzzyTime clock hour _ min night style)
 	where
 	getHour :: Int -> String
 	getHour h
-		| h `mod` 12 == 0	= if style==1 then
-								if clock==12 then numeralDa 12 else numeralDa h
-								else
-								if night then
-									"midnat"
-									else
-									if min `elem` [0, 30] then "aften" else numeralDa h
+		| h `mod` 12 == 0	= if clock==12 then numeralDa 12 else numeralDa h
 		| otherwise			= numeralDa h
 	getMin :: Int -> String
 	getMin m

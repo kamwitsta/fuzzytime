@@ -1,4 +1,4 @@
-.TH fuzzytime 1 "January 15, 2011" "version 0.4" "A clock that tells the time in a more familiar way"
+.TH fuzzytime 1 "January 17, 2011" "version 0.5" "A clock that tells the time in a more familiar way"
 
 .\" -------------------------------------------------------------------------------------
 
@@ -68,12 +68,11 @@ In many languages, the time can be told in at least a few ways. E.g., in English
 .SH LANGUAGES
 
 .SS Comparison
-              midnight  noon    half   quarter  hour   halves
-                                                        base
+                                                       halves
+              midnight  noon    half   quarter  hour    base 
 
 Danish (M_ller + KS)
-    style 1      –        –       +       +      –       –
-    style 2      +     [0, 30]    +       +      –       –
+                 –        –       +       +      –       –
 
 Dutch (thanks litemotiv)
     style 1      –        –       +       +     [0]      –
@@ -83,35 +82,40 @@ English (KS)
     style 1      –        –       +       +      –       –
     style 2      +        +       +       +      –       –
 
+French (KS)
+    style 1      –        –       +       +      +       –
+    style 2      +        +       +       +      +       –
+
 German (KS)
     style 1      –        –       +       +     [0]      –
     style 2    [≠ 30]     –       +       +     [0]     [±7]
 
-French (KS)
-    style 1      –        –       +       +      +       –
-    style 2      +        +       +       +      +       –
+Greek (thanks Gbak)
+                 –        –       +       +      –       –
 
 Polish (KS)
     style 1      –        –       +       +      –       –
     style 2    [≠ 30]     –       +       +      –      [±7]
 
+Turkish (KS)
+    style 1      –        –       +       + [0, 12:30]   –
+    style 2      –        –       +       + [0, 12:30] [±10]
+
 .SS Notes
 
-midnight, noon: the words "midnight" and "noon" are used; [≠ 30] means that the word used but for halves.
+midnight, noon: the words "midnight" and "noon" are used; [≠ 30]: the word is used except for halves.
 
-half, quarter: min % 15 = 0 is treated as a special case
+half, quarter: min % 15 = 0 is treated as a special case.
 
-hour: the word "hour" is used; [0] means that the word is only used for round hours
+hour: the word "hour" is used; [0]: the word is only used for round hours; [0, 12:30]: the word is only used for round hours, 12:30 and 0:30.
 
-halves base: min in a certain range around 30 is referred to half hours rather than to full ones
+halves base: min in a certain range around 30 is referred to half hours rather than to full ones.
 
 .SS Examples
 
 Danish
 
-Style 1: 11:45 = 23:45 = kvart i tolv.
-
-Style 2: 11:30 = halv aften, 11:45 = kvart i tolv, 23:45 = kvart i midnat.
+11:45 = 23:45 = kvart i tolv.
 
 
 Dutch
@@ -128,13 +132,6 @@ Style 1: 11:45 = 23:45 = quarter to twelve.
 Style 2: 11:45 = quarter to noon, 23:45 = quarter to midnight.
 
 
-German
-
-Style 1: 11:45 = 23:45 = Viertel vor zwölf.
-
-Style 2: 11:30 = halb zwölf, 11:45 = Viertel vor zwölf, 23:30 = halb zwölf, 23:45 = Viertel vor Mitternacht, 10:25 = fünf vor halb elf.
-
-
 French
 
 Style 1: 11:45 = 23:45 = douze heures moins le quart.
@@ -142,11 +139,30 @@ Style 1: 11:45 = 23:45 = douze heures moins le quart.
 Style 2: 11:45 = midi moins le quart, 23:30 = onze heures et demie, 23:45 = minuit moins le quart.
 
 
+German
+
+Style 1: 11:45 = 23:45 = Viertel vor zwölf.
+
+Style 2: 11:30 = halb zwölf, 11:45 = Viertel vor zwölf, 23:30 = halb zwölf, 23:45 = Viertel vor Mitternacht, 10:25 = fünf vor halb elf.
+
+
+Greek
+
+11:45 = 23:45 = δώδεκα παρά τέταρτο
+
+
 Polish
 
 Style 1: 11:45 = 23:45 = za kwadrans dwunasta.
 
-Style 2: 11:30 = wpół do dwunastej; 11:45 = za kwadrans dwunasta, 23:30 = wpół do dwunastej, 23:45 = za kwadrans północ, 10:25 = za pięć wpół do jedenastej.
+Style 2: 11:30 = w pół do dwunastej; 11:45 = za kwadrans dwunasta, 23:30 = w pół do dwunastej, 23:45 = za kwadrans północ, 10:25 = za pięć w pół do jedenastej.
+
+
+Turkish
+
+Style 1: 11:45 = 23:45 = on ikiye çeyrek var.
+
+Style 2: 12:00 = saat on iki, 12:30 = saat yarım, 11:20 = on bir buçuğa on var, 12:25 = on iki buçuğa beş var.
 
 .\" -------------------------------------------------------------------------------------
 
@@ -166,6 +182,8 @@ Kamil Stachowski (kamil.stachowski@gmail.com)
 Thanks are due to:
 
 Daniel Fischer and Brent Yorger from beginners@haskell.org for Haskell help.
+
+Gbak from bbs.archlinux.org for the Greek translation.
 
 litemotiv from bbs.archlinux.org for the Dutch translation.
 

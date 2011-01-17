@@ -1,7 +1,8 @@
+-- English ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 module FuzzyTime.English (showFuzzyTimeEn) where
 
 import {-# SOURCE #-} FuzzyTime
--- English ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 showFuzzyTimeEn :: FuzzyTime -> String
@@ -35,4 +36,3 @@ numeralEn n
 	numeralEnHelper1 i = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"] !! (i-1)
 	numeralEnHelper10 :: Int -> String
 	numeralEnHelper10 i = ["twenty", "thirty", "forty", "fifty"] !! (i-2)
-

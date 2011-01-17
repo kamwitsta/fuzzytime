@@ -1,7 +1,8 @@
+-- Dutch (thanks litemotiv from bbs.archlinux.org)---------------------------------------------------------------------------------------------------------------------------------
+
 module FuzzyTime.Dutch (showFuzzyTimeNl) where
 
 import {-# SOURCE #-} FuzzyTime
--- Dutch (thanks litemotiv from bbs.archlinux.org)---------------------------------------------------------------------------------------------------------------------------------
 
 
 showFuzzyTimeNl :: FuzzyTime -> String

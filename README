@@ -2,15 +2,17 @@ Humans tend to be much more casual than computers when it comes to telling the t
 fuzzytime attempts to remove this obstacle by telling you the time the way that a human would.
 fuzzytime is neither the first nor the only program which can do this, but it hopes to get closer to the goal than others because the author is a linguist and expects that this should help him come up with localizations which do not sound like MS® Translator.
 
-v0.4, 2011.01.15, kamil.stachowski@gmail.com, GPL3+
+A clock that tells the time in a more familiar way.
+v0.5, 2011.01.17, kamil.stachowski@gmail.com, GPL3+
 
 fuzzytime [OPTIONS]
 
 Common flags:
   -c --clock=INT  12 or 24-hour clock; default 12-hour.
-  -l --lang=ITEM  Language (currently da, de, en, fr and pl); default en.
-  -p --prec=INT   Precision (1 < prec < 60 [minutes]); default 5.
-  -t --time=ITEM
+  -l --lang=ITEM  Language (currently da, de, el, en, fr, nl, pl and tr);
+                  default en.
+  -p --prec=INT   Precision (1 <= prec <= 60 [minutes]); default 5.
+  -t --time=ITEM  Time to fuzzify as HH:MM; default current time.
   -s --style=INT  How the time is told (seem the man page); default 1.
   -? --help       Display help message
   -V --version    Print version information

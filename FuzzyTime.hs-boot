@@ -1,24 +1,14 @@
 module FuzzyTime (
 	  FuzzyTime (..)
-	, FuzzyTimeConf (..)
-	, checkFTConf
-	, getFTConf
-	, nextFTHour
 	, toFuzzyTime
+	, nextFTHour
+	, FuzzyTimeConf (..)
 	) where
 
 
-import Data.Char (isDigit)
-import System.Console.CmdArgs
-import System.Time
+import Data.Data
 
-data FuzzyTimeConf = FuzzyTimeConf {
-	  clock	:: Int
-	, lang	:: String
-	, prec	:: Int
-	, time	:: String
-	, style	:: Int
-	}
+
 data FuzzyTime = FuzzyTime {
 	  fzClock	:: Int
 	, fzHour	:: Int
@@ -28,8 +18,15 @@ data FuzzyTime = FuzzyTime {
 	, fzStyle	:: Int
 	}
 
-checkFTConf :: FuzzyTimeConf -> String
-
-getFTConf :: FuzzyTimeConf
 toFuzzyTime :: FuzzyTimeConf -> FuzzyTime
+
 nextFTHour :: FuzzyTime -> Int
+
+
+data FuzzyTimeConf = FuzzyTimeConf {
+	  clock	:: Int
+	, lang	:: String
+	, prec	:: Int
+	, time	:: String
+	, style	:: Int
+	}

@@ -1,8 +1,8 @@
+-- Greek (thanks Gbak from bbs.archlinux.org) -------------------------------------------------------------------------------------------------------------------------------------
+
 module FuzzyTime.Greek (showFuzzyTimeEl) where
 
 import {-# SOURCE #-} FuzzyTime
-
--- Greek (thanks Gbak from bbs.archlinux.org) -------------------------------------------------------------------------------------------------------------------------------------
 
 
 showFuzzyTimeEl :: FuzzyTime -> String

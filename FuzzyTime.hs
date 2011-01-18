@@ -62,11 +62,11 @@ toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime cStyle) =
 	min :: Int
 	min = read $ drop 1 (snd brokenCTime)
 	fuzzdHour :: Int
-	fuzzdHour =
+	fuzzdHour = let hh = if min+cPrec>=60 && fuzzdMin min==0 then hour+1 else hour in
 		if cClock==24 then
-			if hour==0 then 24 else hour
-			else
-			if hour==12 then hour else hour `mod` 12
+			if hh==0 then 24 else hh
+		else
+			if hh==12 then hh else hh `mod` 12
 	fuzzdMin :: Int -> Int
 	fuzzdMin m =
 		let
@@ -83,8 +83,7 @@ toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime cStyle) =
 nextFTHour :: FuzzyTime -> Int
 nextFTHour (FuzzyTime clock hour _ _ night _)
 	| clock == 12 && hour == 11		= if night then 0 else 12
-	| clock == 12 && hour == 12		= 1
-	| clock == 24 && hour == 24		= 1
+	| clock == hour					= 1
 	| otherwise						= hour + 1
 
 

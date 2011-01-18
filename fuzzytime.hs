@@ -39,6 +39,8 @@ import FuzzyTime
 
 
 -- CHANGELOG
+-- BUGS
+-- 		around even hours shows one hour back
 -- TODO
 -- 		exit codes
 -- 		answers for Greek (:35, midnight, εντεκάμιση)

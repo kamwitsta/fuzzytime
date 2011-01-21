@@ -8,7 +8,7 @@
 ---- Maintainer		: Kamil Stachowski <kamil.stachowski@gmail.com>
 ---- Stability		: unstable
 ---- Portability	: unportable
----- A clock that ells the time in a more familiar way (the \"ten past six\"-style).
+---- A clock that ells the time in a more human way (the \"ten past six\"-style).
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 {-# LANGUAGE DeriveDataTypeable #-}
@@ -22,7 +22,7 @@ module Main (
 
 import Data.Char (isDigit)
 import Data.List (intercalate)
-import Directory (removeFile)
+import System.Directory (removeFile)
 import System.Console.CmdArgs
 import System.Environment (getEnv)
 import System.Time (getClockTime)
@@ -130,7 +130,7 @@ showAvailLangs i = case length confAvailLangs of
 
 -- | \[config] Help message for the clock (showing) mode.
 confHelpClock :: String
-confHelpClock = "Print fuzzy time. (Disabled if timer is set.)"
+confHelpClock = "Print fuzzy time if timer is not set, and countdown if it is."
 
 -- | \[config] Help message for --clock.
 confHelpClockClock :: String
@@ -155,7 +155,7 @@ confHelpClockStyle = "How the time is told (seem the man page); default " ++ sho
 
 -- | \[config] Help message for the timer (setting) mode.
 confHelpTimer :: String
-confHelpTimer = "Set timer to END as HH:MM or \"unset\". (Disables clock.)"
+confHelpTimer = "Set timer to END as HH:MM or \"unset\". (Disables printing time.)"
 
 -- | \[config] Help message for END.
 confHelpTimerEnd :: String
@@ -168,7 +168,7 @@ confHelpProgram = "fuzzytime"
 
 -- | \[config] Help message for summary
 confHelpSummary :: String
-confHelpSummary = "A clock and timer that tell the time in a more familiar way.\nv0.6, 2011.01.21, kamil.stachowski@gmail.com, GPL3+"
+confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.6, 2011.01.21, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- check --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ checkFTConf c@(ClockConf clock lang prec time style)
 
 checkFTConf t@(TimerConf end lang now)
 	| not (checkTimeOk end)
-		&& end /= "unset"		= Left ("END must be given and in the same format as --time.")
+		&& end /= "unset"		= Left "END must be given and in the same format as --time."
 	| not (checkTimeOk now)		= Left "--time must be given as HH:MM, where HH is in [0..23] and MM is in [0..59]."
 	| otherwise					= Right t
 
@@ -215,7 +215,7 @@ main = do
 	timerConf <- getDefTimerConf
 	conf <- cmdArgs (modes [clockConf, timerConf] &= program confHelpProgram &= summary confHelpSummary)
 	case conf of
-		-- | Showing the time mode.
+		-- Showing the time mode.
 		cc@(ClockConf _ _ _ _ _)
 			->	do
 				let realConf = if end timerConf == "empty" then
@@ -228,7 +228,7 @@ main = do
 				case checkFTConf realConf of
 					Left e	-> putStrLn e
 					Right c	-> print $ toFuzzyTime c
-		-- | Setting the timer mode.
+		-- Setting the timer mode.
 		tc@(TimerConf end _ _)
 			->	do
 				path <- confTimerFileLoc

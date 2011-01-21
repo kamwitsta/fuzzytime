@@ -15,7 +15,7 @@ Say you have fuzzytime piped to your status bar and it serves as a usual clock a
 
 ### --help
 
-A clock and timer that tell the time in a more familiar way.
+A clock and timer that tell the time in a more human way.
 v0.6, 2011.01.21, kamil.stachowski@gmail.com, GPL3+
 
 fuzzytime [COMMAND] ... [OPTIONS]
@@ -25,7 +25,7 @@ Common flags:
   -V --version    Print version information
 
 fuzzytime clock [OPTIONS]
-  Print fuzzy time. (Disabled if timer is set.)
+  Print fuzzy time if timer is not set, and countdown if it is.
 
   -c --clock=INT  12 or 24-hour clock; default 12-hour.
   -l --lang=ITEM  Language (currently da, de, el, en, es, fr, nl, pl and tr);
@@ -35,4 +35,4 @@ fuzzytime clock [OPTIONS]
   -s --style=INT  How the time is told (seem the man page); default 1.
 
 fuzzytime timer [OPTIONS] [END]
-  Set timer to END as HH:MM or "unset". (Disables clock.)
+  Set timer to END as HH:MM or "unset". (Disables printing time.)

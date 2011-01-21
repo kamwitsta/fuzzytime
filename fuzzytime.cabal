@@ -1,7 +1,7 @@
 Name:                fuzzytime
 Version:             0.6
-Description:         A clock and timer that tell the time in a more familiar way
-Synopsis:            A clock and timer that tell the time in a more familiar way
+Description:         A clock and timer that tell the time in a more human way
+Synopsis:            A clock and timer that tell the time in a more human way
 Category:            Utils
 License:             GPL
 License-file:        LICENSE

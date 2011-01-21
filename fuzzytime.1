@@ -3,7 +3,7 @@
 .\" -------------------------------------------------------------------------------------
 
 .SH NAME
-fuzzytime \- a clock and timer that tell the time in a more familiar way
+fuzzytime \- a clock and timer that tell the time in a more human way
 
 .\" -------------------------------------------------------------------------------------
 
@@ -34,24 +34,24 @@ Say you have fuzzytime piped to your status bar and it serves as a usual clock a
 .SH OPTIONS
 .SS Modes
 .TP
-There are two: time-showing (clock) and timer-setting (timer). The name of the mode has to be put after the program name in the invocation, and before the options.
+There are two: time-showing (clock) and timer-setting (timer). The name of the mode has to be put after the program name in the invocation, and before the options. See below for separate descriptions of both.
 
 .SS Clock mode (print the time)
 .TP
 \-c \--clock
-12 or 24-hour clock (22:00 -> "ten" or "twenty-two"); the default is 12.
+12 or 24-hour clock (22:00 -> "ten" or "twenty-two"); the default is 12. Does not affect timer.
 .TP
 \-l \--lang
-Language; currently Danish (da), English (en), French (fr), German (de) and Polish (pl); the default is en.
+Language; currently Danish (da), English (en), French (fr), German (de) and Polish (pl); the default is en. Affects timer.
 .TP
 \-p \--prec
-Precision; should be between 1 and 60 [minutes]; the default is 5.
+Precision; should be between 1 and 60 [minutes]; the default is 5. Does not affect timer.
 .TP
 \-t \--time
-Time to fuzzify as HH:MM; the default is the current time.
+Time to fuzzify as HH:MM; the default is the current time. Affects timer.
 .TP
 \-s \--style
-How the time is told; see below; the default is 1.
+How the time is told; see below; the default is 1. Does not affect timer.
 .TP
 \-? \--help
 Display help message
@@ -226,7 +226,20 @@ Timer: 90 = bir buçuk saat sonra, 15 = bir çeyrek sonra, -20 = ! yirmi dakika 
 
 .\" -------------------------------------------------------------------------------------
 
-.SH DEPENDS
+.SH TIMER
+Timer is, like the rest of the program, fuzzy. Precision is not constant and grows give or take logarithmically. The exact intervals are as follows:
+
+   interval     precision
+
+   >4:30 h       60 m
+ 4:30–1:30 h     30 m
+ :45–1:15 h      15 m
+  :05–:40 h       5 m
+  :01–:05 h       1 m
+
+.\" -------------------------------------------------------------------------------------
+
+.SH DEPENDENCIES
 (Arch Linux) ghc, haskell-cmdargs
 
 .\" -------------------------------------------------------------------------------------

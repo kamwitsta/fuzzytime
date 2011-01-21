@@ -1,20 +1,26 @@
 -- German -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 module FuzzyTime.German (showFuzzyTimeDe) where
 
 import {-# SOURCE #-} FuzzyTime
 
 
+-- showFuzzyTimeDe ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 showFuzzyTimeDe :: FuzzyTime -> String
-showFuzzyTimeDe ft@(FuzzyTime clock hour _ min night style)
+
+
+showFuzzyTimeDe fc@(FuzzyClock clock hour _ min night style)
 	| min == 0				= if getHour hour `elem` ["Mitternacht", "Mittag"] then getHour hour else getHour hour ++ " Uhr"
 	| min `elem` [23..29]	
-		&& style == 2		= getMin (30-min) ++ " vor halb " ++ getHour (nextFTHour ft)
+		&& style == 2		= getMin (30-min) ++ " vor halb " ++ getHour (nextFTHour fc)
 	| min < 30				= getMin min ++ " nach " ++ getHour hour
 	| min `elem` [31..37]
-		&& style == 2		= getMin (min-30) ++ " nach halb " ++ getHour (nextFTHour ft)
-	| min == 30				= "halb " ++ getHour (nextFTHour ft)
-	| min > 30				= getMin (60-min) ++ " vor " ++ getHour (nextFTHour ft)
+		&& style == 2		= getMin (min-30) ++ " nach halb " ++ getHour (nextFTHour fc)
+	| min == 30				= "halb " ++ getHour (nextFTHour fc)
+	| min > 30				= getMin (60-min) ++ " vor " ++ getHour (nextFTHour fc)
 	| otherwise	= 			"Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
@@ -31,6 +37,12 @@ showFuzzyTimeDe ft@(FuzzyTime clock hour _ min night style)
 	getMin m
 		| m `elem` [15, 45]	= "Viertel"
 		| otherwise			= numeralDe m
+
+
+showFuzzyTimeDe (FuzzyTimer _ mins) = "German is not supported in the timer mode."
+
+
+-- numeralDe ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 numeralDe :: Int -> String

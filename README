@@ -1,18 +1,38 @@
+### DESCRIPTION
+
 Humans tend to be much more casual than computers when it comes to telling the time. The computers’ usual "22:15"-format requires a little extra processing as compared to the more familiar "quarter past ten".
 fuzzytime attempts to remove this obstacle by telling you the time the way that a human would.
 fuzzytime is neither the first nor the only program which can do this, but it hopes to get closer to the goal than others because the author is a linguist and expects that this should help him come up with localizations which do not sound like MS® Translator.
 
-A clock that tells the time in a more familiar way.
-v0.5, 2011.01.17, kamil.stachowski@gmail.com, GPL3+
 
-fuzzytime [OPTIONS]
+### INTENDED USE
+
+The intended use for fuzzytimer is in an environment which does not provide a status bar with a built-in clock. It is expected to be piped to a status bar and run every minute or so in the clock mode.
+The timer can be set via the timer-setting mode. When the timer is set, the clock mode will show how much time there is left till some event. To get back to showing the actual time, timer has to be unset.
+
+
+### --help
+
+A clock and timer that tell the time in a more familiar way.
+v0.6, 2011.01.21, kamil.stachowski@gmail.com, GPL3+
+
+fuzzytime [COMMAND] ... [OPTIONS]
 
 Common flags:
+  -? --help       Display help message
+  -V --version    Print version information
+
+fuzzytime clock [OPTIONS]
+  Print fuzzy time. (Disabled if timer is set.)
+
   -c --clock=INT  12 or 24-hour clock; default 12-hour.
   -l --lang=ITEM  Language (currently da, de, el, en, fr, nl, pl and tr);
                   default en.
   -p --prec=INT   Precision (1 <= prec <= 60 [minutes]); default 5.
   -t --time=ITEM  Time to fuzzify as HH:MM; default current time.
   -s --style=INT  How the time is told (seem the man page); default 1.
-  -? --help       Display help message
-  -V --version    Print version information
+
+fuzzytime timer [OPTIONS] [END]
+  Set timer to END as HH:MM or "unset". (Disables clock.)
+
+  -n --now=ITEM   Time to pretend it is now, as HH:MM; default current time.

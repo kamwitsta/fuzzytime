@@ -1,7 +1,7 @@
 Name:                fuzzytime
-Version:             0.5
-Description:         A clock which tells the time in a more familiar way
-Synopsis:            A clock which tells the time in a more familiar way
+Version:             0.6
+Description:         A clock and timer that tell the time in a more familiar way
+Synopsis:            A clock and timer that tell the time in a more familiar way
 Category:            Utils
 License:             GPL
 License-file:        LICENSE
@@ -12,4 +12,4 @@ Cabal-Version:       >=1.8
 
 Executable fuzzytime
     Main-is:           fuzzytime.hs
-    Build-Depends:     base >= 4 && < 5, cmdargs, old-time
+    Build-Depends:     base >= 4 && < 5, cmdargs, haskell98, old-time

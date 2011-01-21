@@ -1,20 +1,26 @@
 -- Polish -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 module FuzzyTime.Polish (showFuzzyTimePl) where
 
 import {-# SOURCE #-} FuzzyTime
 
 
+-- showFuzzyTimePl ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 showFuzzyTimePl :: FuzzyTime -> String
-showFuzzyTimePl ft@(FuzzyTime clock hour _ min night style)
+
+
+showFuzzyTimePl fc@(FuzzyClock clock hour _ min night style)
 	| min == 0			= getHourEven hour
 	| min `elem` [23..29]
-		&& style == 2	= "za " ++ getMin (30-min) ++ " w pół do " ++ getHourOdd (nextFTHour ft)
+		&& style == 2	= "za " ++ getMin (30-min) ++ " w pół do " ++ getHourOdd (nextFTHour fc)
 	| min < 30			= getMin min ++ " po " ++ getHourOdd hour
-	| min == 30			= "w pół do " ++ getHourOdd (nextFTHour ft)
+	| min == 30			= "w pół do " ++ getHourOdd (nextFTHour fc)
 	| min `elem` [31..37]
-		&& style == 2	= getMin (min-30) ++ " po w pół do " ++ getHourOdd (nextFTHour ft)
-	| min > 30			= "za " ++ getMin (60-min) ++ " " ++ getHourEven (nextFTHour ft)
+		&& style == 2	= getMin (min-30) ++ " po w pół do " ++ getHourOdd (nextFTHour fc)
+	| min > 30			= "za " ++ getMin (60-min) ++ " " ++ getHourEven (nextFTHour fc)
 	| otherwise			= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHourEven :: Int -> String
@@ -40,6 +46,12 @@ showFuzzyTimePl ft@(FuzzyTime clock hour _ min night style)
 		| otherwise			= numeralPlCard m
 
 
+showFuzzyTimePl (FuzzyTimer _ mins) = "a"
+
+
+-- numeralPl ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 numeralPlCard :: Int -> String
 numeralPlCard n
 	| n < 20			= numeralPlCardHelper1 n
@@ -50,6 +62,7 @@ numeralPlCard n
 	numeralPlCardHelper1 i = ["jeden", "dwa", "trzy", "cztery", "pięć", "sześć", "siedem", "osiem", "dziewięć", "dziesięć", "jedenaście", "dwanaście", "trzynaście", "czternaście", "kwadrans", "szesnaście", "siedemnaście", "osiemnaście", "dziewiętnaście"] !! (i-1)
 	numeralPlCardHelper10 :: Int -> String
 	numeralPlCardHelper10 i = ["dwadzieścia", "trzydzieści", "czterdzieści", "pięćdziesiąt"] !! (i-2)
+
 
 numeralPlOrd :: String -> Int -> String
 numeralPlOrd c n

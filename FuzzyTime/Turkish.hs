@@ -1,12 +1,18 @@
 -- Turkish ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 module FuzzyTime.Turkish (showFuzzyTimeTr) where
 
 import {-# SOURCE #-} FuzzyTime
 
 
+-- showFuzzyTimeTr ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 showFuzzyTimeTr :: FuzzyTime -> String
-showFuzzyTimeTr ft@(FuzzyTime clock hour _ min night style)
+
+
+showFuzzyTimeTr ft@(FuzzyClock clock hour _ min night style)
 	| min == 0			= "saat " ++ getHour "Nom" hour
 	| min `elem` [20..29]
 		&& style == 2	= getHour "Nom" hour ++ " buçuğa " ++ getMin (30-min) ++ " var"
@@ -25,6 +31,12 @@ showFuzzyTimeTr ft@(FuzzyTime clock hour _ min night style)
 	getMin m
 		| m `elem` [15, 45]	= "çeyrek"
 		| otherwise			= numeralTr "Nom" m
+
+
+showFuzzyTimeTr (FuzzyTimer _ mins) = "Turkish is not supported in the timer mode."
+
+
+-- numeralTr ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 numeralTr :: String -> Int -> String

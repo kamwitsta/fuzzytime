@@ -1,16 +1,22 @@
 -- Danish (by M_ller from bbs.archlinux.org, with my modifications) ---------------------------------------------------------------------------------------------------------------
 
+
 module FuzzyTime.Danish (showFuzzyTimeDa) where
 
 import {-# SOURCE #-} FuzzyTime
 
 
+-- showFuzzyTimeDa ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 showFuzzyTimeDa :: FuzzyTime -> String
-showFuzzyTimeDa ft@(FuzzyTime clock hour _ min night style)
+
+
+showFuzzyTimeDa fc@(FuzzyClock clock hour _ min night style)
 	| min == 0	= getHour hour
 	| min < 30	= getMin min ++ " over " ++ getHour hour
-	| min == 30	= "halv " ++ getHour (nextFTHour ft)
-	| min > 30	= getMin (60-min) ++ " i " ++ getHour (nextFTHour ft)
+	| min == 30	= "halv " ++ getHour (nextFTHour fc)
+	| min > 30	= getMin (60-min) ++ " i " ++ getHour (nextFTHour fc)
 	| otherwise	= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
@@ -21,6 +27,12 @@ showFuzzyTimeDa ft@(FuzzyTime clock hour _ min night style)
 	getMin m
 		| m `elem` [15, 45]	= "kvart"
 		| otherwise 		= numeralDa m
+
+
+showFuzzyTimeDa (FuzzyTimer _ mins) = "Danish is not supported in the timer mode."
+
+
+-- numeralDa ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 numeralDa :: Int -> String

@@ -1,15 +1,15 @@
-.TH fuzzytime 1 "January 17, 2011" "version 0.5" "A clock that tells the time in a more familiar way"
+.TH fuzzytime 1 "January 21, 2011" "version 0.6" "A fuzzy clock and timer"
 
 .\" -------------------------------------------------------------------------------------
 
 .SH NAME
-fuzzytime \- a clock that tells the time in a more familiar way
+fuzzytime \- a clock and timer that tell the time in a more familiar way
 
 .\" -------------------------------------------------------------------------------------
 
 .SH SYNOPSIS
 .B fuzzytime
-[OPTIONS]
+COMMAND [OPTIONS]
 
 .\" -------------------------------------------------------------------------------------
 
@@ -18,11 +18,23 @@ Humans tend to be much more casual than computers when it comes to telling the t
 .PP
 fuzzytime attempts to remove this obstacle by telling you the time the way that a human would.
 .PP
-fuzzytime is neither the first nor the only program which can do this, but it hopes to get closer to the goal than others because the author is a linguist and expects that this should help him come up with localizations which do not sound like MS® Translator.
+fuzzytime is neither the first nor the only program which can do this, but it hopes to get closer to the goal than others because the author is a linguist and expects that this should help him come up with localizations which do not sound like MS® Translator. Besides, it also has the timer mode which can be very handy.
+
+.\" -------------------------------------------------------------------------------------
+
+.SH INTENDED USE
+The intended use for fuzzytimer is in an environment which does not provide a status bar with a built-in clock. It is expected to be piped to a status bar and run every minute or so in the clock mode.
+.PP
+The timer can be set via the timer-setting mode. When the timer is set, the clock mode will show how much time there is left till some event. To get back to showing the actual time, timer has to be unset.
 
 .\" -------------------------------------------------------------------------------------
 
 .SH OPTIONS
+.SS Modes
+.TP
+There are two: time-showing (clock) and timer-setting (timer). The name of the mode has to be put after the program name in the invocation, and before the options.
+
+.SS Clock mode (print the time)
 .TP
 \-c \--clock
 12 or 24-hour clock (22:00 -> "ten" or "twenty-two"); the default is 12.
@@ -45,23 +57,40 @@ Display help message
 \-V \--version
 Print version information
 
+.SS Timer mode (set the timer)
+.TP
+END
+The time to set the timer to count down to, as HH:MM; this is obligatory and there is no default. To unset the timer, END must be "unset".
+
 .\" -------------------------------------------------------------------------------------
 
 .SH EXAMPLES
 .TP
 Print the current time in Polish in 12-hour clock, with 10-minute precision, in style 2.
-.B fuzzytime
+.B fuzzytime clock
 \-lpl -p10 -s2
 .PP
 .TP
 Print 23:50 in German in 24-hour clock, with 1-minute precision, in style 1.
-.B fuzzytime
+.B fuzzytime clock
 \-c24 -lde -p1 -t23:50
+.PP
+.TP
+Set the timer to count down to 12:30 (showing the time will be disabled).
+.B fuzzytime timer
+12:30
+.PP
+.TP
+Unset the timer (re-enable showing the time).
+.B fuzzytime timer
+unset
 
 .\" -------------------------------------------------------------------------------------
 
 .SH STYLES
 In many languages, the time can be told in at least a few ways. E.g., in English the words "midnight" and "noon" can be used, the numerals "twenty-four" and "twelve" or "twelve" for both cases. The latter distinction is taken care of by --clock. The former – by --style. Currently, two styles are available. See LANGUAGES below for details.
+
+As of now, styles are not available (= the setting is ignored) in the timer mode.
 
 .\" -------------------------------------------------------------------------------------
 
@@ -131,6 +160,8 @@ Style 1: 11:45 = 23:45 = quarter to twelve.
 
 Style 2: 11:45 = quarter to noon, 23:45 = quarter to midnight.
 
+Timer: 90 = in an hour and a half, 15 = in a quarter, -20 = ! a quarter ago !
+
 
 French
 
@@ -167,7 +198,7 @@ Style 2: 12:00 = saat on iki, 12:30 = saat yarım, 11:20 = on bir buçuğa on va
 .\" -------------------------------------------------------------------------------------
 
 .SH DEPENDS
-(Arch Linux) cabal-install, ghc, haskell-cmdargs
+(Arch Linux) ghc, haskell-cmdargs
 
 .\" -------------------------------------------------------------------------------------
 

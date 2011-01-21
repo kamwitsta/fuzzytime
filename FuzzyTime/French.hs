@@ -1,15 +1,21 @@
 -- French -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 module FuzzyTime.French (showFuzzyTimeFr) where
 
 import {-# SOURCE #-} FuzzyTime
 
 
+-- showFuzzyTimeFr ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 showFuzzyTimeFr :: FuzzyTime -> String
-showFuzzyTimeFr ft@(FuzzyTime clock hour _ min night style)
+
+
+showFuzzyTimeFr fc@(FuzzyClock clock hour _ min night style)
 	| min == 0	= getHour hour
 	| min <= 30	= getHour hour ++ " " ++ getMin min
-	| min > 30	= getHour (nextFTHour ft) ++ " moins " ++ getMin (60-min)
+	| min > 30	= getHour (nextFTHour fc) ++ " moins " ++ getMin (60-min)
 	| otherwise	= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
@@ -27,6 +33,12 @@ showFuzzyTimeFr ft@(FuzzyTime clock hour _ min night style)
 		| min == 30			= "et demie"
 		| min == 45			= "le quart"
 		| otherwise			= numeralFr m
+
+
+showFuzzyTimeFr (FuzzyTimer _ mins) = "French is not supported in the timer mode."
+
+
+-- numeralFr ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 numeralFr :: Int -> String

@@ -1,20 +1,26 @@
 -- Dutch (thanks litemotiv from bbs.archlinux.org)---------------------------------------------------------------------------------------------------------------------------------
 
+
 module FuzzyTime.Dutch (showFuzzyTimeNl) where
 
 import {-# SOURCE #-} FuzzyTime
 
 
+-- showFuzzyTimeNl ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 showFuzzyTimeNl :: FuzzyTime -> String
-showFuzzyTimeNl ft@(FuzzyTime clock hour _ min night style)
+
+
+showFuzzyTimeNl fc@(FuzzyClock clock hour _ min night style)
 	| min == 0				= if getHour hour == "middernacht" then getHour hour else getHour hour ++ " uur"
 	| min `elem` [20..29]	
-		&& style == 2		= getMin (30-min) ++ " voor half " ++ getHour (nextFTHour ft)
+		&& style == 2		= getMin (30-min) ++ " voor half " ++ getHour (nextFTHour fc)
 	| min < 30				= getMin min ++ " over " ++ getHour hour
 	| min `elem` [31..40]
-		&& style == 2		= getMin (min-30) ++ " over half " ++ getHour (nextFTHour ft)
-	| min == 30				= "half " ++ getHour (nextFTHour ft)
-	| min > 30				= getMin (60-min) ++ " voor " ++ getHour (nextFTHour ft)
+		&& style == 2		= getMin (min-30) ++ " over half " ++ getHour (nextFTHour fc)
+	| min == 30				= "half " ++ getHour (nextFTHour fc)
+	| min > 30				= getMin (60-min) ++ " voor " ++ getHour (nextFTHour fc)
 	| otherwise	= 			"Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
@@ -31,6 +37,12 @@ showFuzzyTimeNl ft@(FuzzyTime clock hour _ min night style)
 	getMin m
 		| m `elem` [15, 45]	= "kwart"
 		| otherwise			= numeralNl m
+
+
+showFuzzyTimeNl (FuzzyTimer _ mins) = "Dutch is not supported in the timer mode."
+
+
+-- numeralNl ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 numeralNl :: Int -> String

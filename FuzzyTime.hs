@@ -20,26 +20,30 @@ import FuzzyTime.Polish
 import FuzzyTime.Turkish
 
 
--- FuzzyTime ======================================================================================================================================================================
+-- FuzzyTime =======================================================================================================================================================================
 
 
--- | Data for fuzzified time. Only keeps hour, minutes (both as Ints), clock (12 vs. 24-hour), night (Bool) and language.
--- Can be created from CalendarTime with toFuzzyTime. The String output (the \"ten past six\"-style) is obtained through Show.
-data FuzzyTime = FuzzyTime {
-	  fzClock	:: Int
-	, fzHour	:: Int
-	, fzLang	:: String
-	, fzMin		:: Int
-	, fzNight	:: Bool
-	, fzStyle	:: Int
-	} deriving (Eq)
+-- | Data for fuzzified time. There are two modes: FuzzyClock for showing what time it is and FuzzyTimer for showing how much time there is left till something. The String output is obtained via Show.
+data FuzzyTime
+	= FuzzyClock {
+	  ftClock	:: Int
+	, ftHour	:: Int
+	, ftLang	:: String
+	, ftMin		:: Int
+	, ftNight	:: Bool
+	, ftStyle	:: Int
+	}
+	| FuzzyTimer {
+	  ftLang	:: String
+	, ftMins	:: Int
+	}
+	deriving Eq
 
 
--- | This is where FuzzyTime Int Int String is turned into the time String.
+-- | This is where FuzzyClock Int Int String is turned into the time String.
 -- It is assumed that by the time these functions are called, hour will be in [0..23] and min will be in [0..59].
 instance Show FuzzyTime where
-	show ft@(FuzzyTime _ _ lang _ _ _) = case lang of
-		"da" -> showFuzzyTimeDa ft
+	show ft = case ftLang ft of
 		"de" -> showFuzzyTimeDe ft
 		"el" -> showFuzzyTimeEl ft
 		"en" -> showFuzzyTimeEn ft
@@ -47,54 +51,86 @@ instance Show FuzzyTime where
 		"nl" -> showFuzzyTimeNl ft
 		"pl" -> showFuzzyTimePl ft
 		"tr" -> showFuzzyTimeTr ft
-		otherwise -> "Language " ++ lang ++ " is not supported."
+		otherwise -> "Language " ++ ftLang ft ++ " is not supported."
 
 
--- | Converts CalendarTime to FuzzyTime using the given precision. The language and clock are also set, so that Show knows how to display it.
+-- | Turns the config into a FuzzyTime instance. Works for both FuzzyClock and FuzzyTimer. Apart from the time, clock (12 vs. 24-hour), language, night (isNight?) and style are set so that show knows how to display the time.
 toFuzzyTime :: FuzzyTimeConf -> FuzzyTime
-toFuzzyTime (FuzzyTimeConf cClock cLang cPrec cTime cStyle) =
-	FuzzyTime cClock fuzzdHour cLang (fuzzdMin min) (hour < 10 || hour > 22) cStyle
-	where
-	brokenCTime :: (String, String)
-	brokenCTime = break (==':') cTime
-	hour :: Int
-	hour = read $ fst brokenCTime
-	min :: Int
-	min = read $ drop 1 (snd brokenCTime)
-	fuzzdHour :: Int
-	fuzzdHour = let hh = if min+cPrec>=60 && fuzzdMin min==0 then hour+1 else hour in
-		if cClock==24 then
-			if hh==0 then 24 else hh
-		else
-			if hh==12 then hh else hh `mod` 12
-	fuzzdMin :: Int -> Int
-	fuzzdMin m =
-		let
-			mf = fromIntegral m
-			cf = fromIntegral cPrec
-		in
-			(round(mf/cf) * cPrec) `mod` 60
+toFuzzyTime ftc = case ftc of
+	cc@(ClockConf cClock cLang cPrec cTime cStyle)
+		-> FuzzyClock cClock fuzzdHour cLang fuzzdMin night cStyle
+			where
+			fuzzdHour :: Int
+			fuzzdHour = let hh = if min+cPrec>=60 && fuzzdMin==0 then hour+1 else hour in
+				if cClock==24 then
+					if hh==0 then 24 else hh
+				else
+					if hh==12 then hh else hh `mod` 12
+			fuzzdMin :: Int
+			fuzzdMin =
+				let
+					mf = fromIntegral min
+					cf = fromIntegral cPrec
+				in
+					(round(mf/cf) * cPrec) `mod` 60
+			hour :: Int
+			hour = read $ fst (break (==':') cTime)
+			min :: Int
+			min = read $ drop 1 $ snd (break (==':') cTime)
+			night :: Bool
+			night = fuzzdHour < 10 || fuzzdHour > 22
+	tc@(TimerConf cEnd cLang cNow)
+		-> FuzzyTimer cLang fuzzdMins
+			where
+			fuzzdMins :: Int
+			fuzzdMins = 
+				let
+					mf = fromIntegral minsDiff
+					cf = fromIntegral getPrec
+				in
+					round(mf/cf) * getPrec
+			hourNow :: Int
+			hourNow = read $ fst (break (==':') cNow)
+			minNow :: Int
+			minNow = read $ drop 1 $ snd (break (==':') cNow)
+			hourEnd :: Int
+			hourEnd = read $ fst (break (==':') cEnd)
+			minEnd :: Int
+			minEnd = read $ drop 1 $ snd (break (==':') cEnd)
+			minsDiff :: Int
+			minsDiff = (hourEnd*60 + minEnd) - (hourNow*60 + minNow)
+			getPrec :: Int
+			getPrec
+				| abs minsDiff > 270	= 60
+				| abs minsDiff > 90		= 30
+				| abs minsDiff > 45		= 15
+				| abs minsDiff > 5		= 5
+				| otherwise				= 1
 
+			
 
--- usability functions ============================================================================================================================================================
-
-
--- | Makes sure that midnight is always represented as 0 or 24, depending on the clock, and noon always as 12.
+-- | Makes sure that midnight is always represented as 0 or 24 (depending on the clock) and noon always as 12.
 nextFTHour :: FuzzyTime -> Int
-nextFTHour (FuzzyTime clock hour _ _ night _)
+nextFTHour (FuzzyClock clock hour _ _ night _)
 	| clock == 12 && hour == 11		= if night then 0 else 12
 	| clock == hour					= 1
 	| otherwise						= hour + 1
 
 
--- FuzzyTimeConf ==================================================================================================================================================================
+-- FuzzyTimeConf ===================================================================================================================================================================
 
 
--- | Four options can be set via the command line: clock (12 vs. 24), language, precision and time.
-data FuzzyTimeConf = FuzzyTimeConf {
+data FuzzyTimeConf
+	= ClockConf {
 	  clock	:: Int
 	, lang	:: String
 	, prec	:: Int
 	, time	:: String
 	, style	:: Int
-	} deriving (Data, Show, Typeable)
+	}
+	| TimerConf {
+	  end	:: String
+	, lang	:: String
+	, now	:: String
+	}
+	deriving (Data, Show, Typeable)

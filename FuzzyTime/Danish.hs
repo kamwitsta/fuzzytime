@@ -11,6 +11,7 @@ import {-# SOURCE #-} FuzzyTime
 
 showFuzzyTimeDa :: FuzzyTime -> String
 
+-- FuzzyClock
 
 showFuzzyTimeDa fc@(FuzzyClock clock hour _ min night style)
 	| min == 0	= getHour hour
@@ -28,8 +29,9 @@ showFuzzyTimeDa fc@(FuzzyClock clock hour _ min night style)
 		| m `elem` [15, 45]	= "kvart"
 		| otherwise 		= numeralDa m
 
+-- FuzzyTimer
 
-showFuzzyTimeDa (FuzzyTimer _ mins) = "Danish is not supported in the timer mode."
+showFuzzyTimeDa (FuzzyTimer _ mins) = "Danish is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
 -- numeralDa ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

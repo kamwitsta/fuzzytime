@@ -11,6 +11,7 @@ import {-# SOURCE #-} FuzzyTime
 
 showFuzzyTimeEn :: FuzzyTime -> String
 
+-- FuzzyClock
 
 showFuzzyTimeEn fc@(FuzzyClock clock hour _ min night style)
 	| min == 0	= if getHour hour `elem` ["midnight", "noon"] then getHour hour else getHour hour ++ " o’clock"
@@ -31,6 +32,7 @@ showFuzzyTimeEn fc@(FuzzyClock clock hour _ min night style)
 		| m `elem` [15, 45]	= "quarter"
 		| otherwise			= numeralEn m
 
+-- FuzzyTimer
 
 showFuzzyTimeEn (FuzzyTimer _ mins)
 	| mins > 0	= "in " ++ showHelper
@@ -39,7 +41,6 @@ showFuzzyTimeEn (FuzzyTimer _ mins)
 	where
 	showHelper :: String
 	showHelper
-		| mm > 270	= numeralEn hours ++ " hours"
 		| mm > 90	= numeralEn hours ++ (if half then " and a half" else "") ++ " hours"
 		| mm == 90	= "an hour and a half"
 		| mm == 75	= "an hour and a quarter"
@@ -49,7 +50,7 @@ showFuzzyTimeEn (FuzzyTimer _ mins)
 		| mm == 15	= "a quarter"
 		| mm > 1	= numeralEn mm ++ " minutes"
 		| mm == 1	= "a minute"
-		| otherwise	= show mm
+		| otherwise	= "Oops, it looks like there's " ++ show mins ++ " left."
 	hours :: Int
 	hours = round $ fromIntegral mm / 60
 	mm :: Int

@@ -11,6 +11,7 @@ import {-# SOURCE #-} FuzzyTime
 
 showFuzzyTimeFr :: FuzzyTime -> String
 
+-- FuzzyClock
 
 showFuzzyTimeFr fc@(FuzzyClock clock hour _ min night style)
 	| min == 0	= getHour hour
@@ -34,8 +35,31 @@ showFuzzyTimeFr fc@(FuzzyClock clock hour _ min night style)
 		| min == 45			= "le quart"
 		| otherwise			= numeralFr m
 
+-- FuzzyTimer
 
-showFuzzyTimeFr (FuzzyTimer _ mins) = "French is not supported in the timer mode."
+showFuzzyTimeFr (FuzzyTimer _ mins)
+	| mins > 0	= "dans " ++ showHelper
+	| mins == 0	= "maintenant!"
+	| mins < 0	= "! il y a " ++ showHelper ++ " !"
+	where
+	showHelper :: String
+	showHelper
+		| mm > 90	= numeralFr hours ++ " heures " ++ (if half then " et demie" else "")
+		| mm == 90	= "une heure et demie"
+		| mm == 75	= "une heure et quart"
+		| mm == 60	= "une heure"
+		| mm == 45	= "trois quarts d’heure"
+		| mm == 30	= "une demie d’heure"
+		| mm == 15	= "un quart d’heure"
+		| mm > 1	= numeralFr mm ++ " minutes"
+		| mm == 1	= "une minute"
+		| otherwise	= "Oops, it looks like there's " ++ show mins ++ " left."
+	hours :: Int
+	hours = round $ fromIntegral mm / 60
+	mm :: Int
+	mm = abs mins
+	half :: Bool
+	half = mm `mod` 60 == 30
 
 
 -- numeralFr ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

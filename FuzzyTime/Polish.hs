@@ -11,6 +11,7 @@ import {-# SOURCE #-} FuzzyTime
 
 showFuzzyTimePl :: FuzzyTime -> String
 
+-- FuzzyClock
 
 showFuzzyTimePl fc@(FuzzyClock clock hour _ min night style)
 	| min == 0			= getHourEven hour
@@ -45,8 +46,37 @@ showFuzzyTimePl fc@(FuzzyClock clock hour _ min night style)
 		| m `elem` [15, 45]	= "kwadrans"
 		| otherwise			= numeralPlCard m
 
+-- FuzzyTimer
 
-showFuzzyTimePl (FuzzyTimer _ mins) = "a"
+showFuzzyTimePl (FuzzyTimer _ mins)
+	| mins > 0	= "za " ++ showHelper
+	| mins == 0	= "teraz!"
+	| mins < 0	= "! " ++ showHelper ++ " temu !"
+	where
+	showHelper :: String
+	showHelper
+		| mm == 1320	= "dwadzieścia dwie godziny"
+		| mm > 1260		= numeralPlCard hours ++ " godziny"
+		| mm > 270		= numeralPlCard hours ++ " godzin"
+		| mm == 150		= "dwie i pół godziny"
+		| mm == 120		= "dwie godziny"
+		| mm > 90		= numeralPlCard hours ++ (if half then " i pół" else "") ++ " godziny"
+		| mm == 90		= "półtorej godziny"
+		| mm == 75		= "godzinę piętnaście"
+		| mm == 60		= "godzinę"
+		| mm == 45		= "trzy kwadranse"
+		| mm == 30		= "pół godziny"
+		| mm == 15		= "kwadrans"
+		| mm > 4		= numeralPlCard mm ++ " minut"
+		| mm > 1		= numeralPlCard mm ++ " minuty"
+		| mm == 1		= "minutę"
+		| otherwise		= "Oops, it looks like there's " ++ show mins ++ " left."
+	hours :: Int
+	hours = round $ fromIntegral mm / 60
+	mm :: Int
+	mm = abs mins
+	half :: Bool
+	half = mm `mod` 60 == 30
 
 
 -- numeralPl ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

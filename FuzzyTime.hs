@@ -17,6 +17,7 @@ import FuzzyTime.German
 import FuzzyTime.Greek
 import FuzzyTime.French
 import FuzzyTime.Polish
+import FuzzyTime.Spanish
 import FuzzyTime.Turkish
 
 
@@ -47,6 +48,7 @@ instance Show FuzzyTime where
 		"de" -> showFuzzyTimeDe ft
 		"el" -> showFuzzyTimeEl ft
 		"en" -> showFuzzyTimeEn ft
+		"es" -> showFuzzyTimeEs ft
 		"fr" -> showFuzzyTimeFr ft
 		"nl" -> showFuzzyTimeNl ft
 		"pl" -> showFuzzyTimePl ft
@@ -78,7 +80,7 @@ toFuzzyTime ftc = case ftc of
 			min :: Int
 			min = read $ drop 1 $ snd (break (==':') cTime)
 			night :: Bool
-			night = fuzzdHour < 10 || fuzzdHour > 22
+			night = hour < 10 || hour > 22
 	tc@(TimerConf cEnd cLang cNow)
 		-> FuzzyTimer cLang fuzzdMins
 			where
@@ -120,6 +122,7 @@ nextFTHour (FuzzyClock clock hour _ _ night _)
 -- FuzzyTimeConf ===================================================================================================================================================================
 
 
+-- | Data for CmdArgs. Has the two modes of module FuzzyTime: showing the current time and showing the time left. Note that this is not the same as the two modes of module Main.
 data FuzzyTimeConf
 	= ClockConf {
 	  clock	:: Int

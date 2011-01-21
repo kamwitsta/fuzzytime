@@ -11,6 +11,7 @@ import {-# SOURCE #-} FuzzyTime
 
 showFuzzyTimeNl :: FuzzyTime -> String
 
+-- FuzzyClock
 
 showFuzzyTimeNl fc@(FuzzyClock clock hour _ min night style)
 	| min == 0				= if getHour hour == "middernacht" then getHour hour else getHour hour ++ " uur"
@@ -38,8 +39,9 @@ showFuzzyTimeNl fc@(FuzzyClock clock hour _ min night style)
 		| m `elem` [15, 45]	= "kwart"
 		| otherwise			= numeralNl m
 
+-- FuzzyTimer
 
-showFuzzyTimeNl (FuzzyTimer _ mins) = "Dutch is not supported in the timer mode."
+showFuzzyTimeNl (FuzzyTimer _ mins) = "Dutch is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
 -- numeralNl ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

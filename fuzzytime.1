@@ -23,9 +23,11 @@ fuzzytime is neither the first nor the only program which can do this, but it ho
 .\" -------------------------------------------------------------------------------------
 
 .SH INTENDED USE
-The intended use for fuzzytimer is in an environment which does not provide a status bar with a built-in clock. It is expected to be piped to a status bar and run every minute or so in the clock mode.
+The intended use for fuzzytime is in an environment which does not provide a status bar with a built-in clock. It is expected to be piped to a status bar and run every minute or so in the clock mode.
 .PP
 The timer can be set via the timer-setting mode. When the timer is set, the clock mode will show how much time there is left till some event. To get back to showing the actual time, timer has to be unset.
+.SS Example:
+Say you have fuzzytime piped to your status bar and it serves as a usual clock applet. Then you got an e-mail saying that you're going to have a meeting at one o'clock. You set the timer to 13:00 and instead of the current time, fuzzytime begins to show you how much time you have left till the meeting. After you come back, you unset the timer and have fuzzytime display the current time again.
 
 .\" -------------------------------------------------------------------------------------
 
@@ -107,26 +109,30 @@ Dutch (thanks litemotiv)
     style 1      –        –       +       +     [0]      –
     style 2    [≠ 30]     –       +       +     [0]    [±10]
 
-English (KS)
+English
     style 1      –        –       +       +      –       –
     style 2      +        +       +       +      –       –
 
-French (KS)
+French
     style 1      –        –       +       +      +       –
     style 2      +        +       +       +      +       –
 
-German (KS)
+German
     style 1      –        –       +       +     [0]      –
     style 2    [≠ 30]     –       +       +     [0]     [±7]
 
 Greek (thanks Gbak)
                  –        –       +       +      –       –
 
-Polish (KS)
+Polish
     style 1      –        –       +       +      –       –
     style 2    [≠ 30]     –       +       +      –      [±7]
 
-Turkish (KS)
+Spanish (thanks itsbrad212)
+    style 1      –        –       +       +      –       –
+    style 2      +        –       +       +      –       –
+
+Turkish
     style 1      –        –       +       + [0, 12:30]   –
     style 2      –        –       +       + [0, 12:30] [±10]
 
@@ -144,7 +150,9 @@ halves base: min in a certain range around 30 is referred to half hours rather t
 
 Danish
 
-11:45 = 23:45 = kvart i tolv.
+Clock: 11:45 = 23:45 = kvart i tolv.
+
+Timer: translation needed
 
 
 Dutch
@@ -153,6 +161,8 @@ Style 1: 11:45 = 23:45 = kwart voor twaalf.
 
 Style 2: 11:30 = half twaalf, 11:45 = kwart voor twaalf, 23:30 = half twaalf, 23:45 = kwart voor middernacht, 10:20 = tien voor half elf
 
+Timer: translation needed
+
 
 English
 
@@ -160,7 +170,7 @@ Style 1: 11:45 = 23:45 = quarter to twelve.
 
 Style 2: 11:45 = quarter to noon, 23:45 = quarter to midnight.
 
-Timer: 90 = in an hour and a half, 15 = in a quarter, -20 = ! a quarter ago !
+Timer: 90 = in an hour and a half, 15 = in a quarter, -20 = ! twenty minutes ago !
 
 
 French
@@ -169,6 +179,8 @@ Style 1: 11:45 = 23:45 = douze heures moins le quart.
 
 Style 2: 11:45 = midi moins le quart, 23:30 = onze heures et demie, 23:45 = minuit moins le quart.
 
+Timer: 90 = dans une heure et demie, 15 = dans un quart d’heure, -20 = ! il y a vingt minutes !
+
 
 German
 
@@ -176,17 +188,32 @@ Style 1: 11:45 = 23:45 = Viertel vor zwölf.
 
 Style 2: 11:30 = halb zwölf, 11:45 = Viertel vor zwölf, 23:30 = halb zwölf, 23:45 = Viertel vor Mitternacht, 10:25 = fünf vor halb elf.
 
+Timer : translation needed
+
 
 Greek
 
-11:45 = 23:45 = δώδεκα παρά τέταρτο
+Clock: 11:45 = 23:45 = δώδεκα παρά τέταρτο
+
+Timer: translation needed
 
 
 Polish
 
 Style 1: 11:45 = 23:45 = za kwadrans dwunasta.
 
-Style 2: 11:30 = w pół do dwunastej; 11:45 = za kwadrans dwunasta, 23:30 = w pół do dwunastej, 23:45 = za kwadrans północ, 10:25 = za pięć w pół do jedenastej.
+Style 2: 11:30 = w pół do dwunastej, 11:45 = za kwadrans dwunasta, 23:30 = w pół do dwunastej, 23:45 = za kwadrans północ, 10:25 = za pięć w pół do jedenastej.
+
+Timer: 90 = za półtorej godziny, 15 = za kwadrans, -20 = ! dwadzieścia minut temu !
+
+
+Spanish
+
+Style 1: 11:45 = 23:45 = las doce menos cuarto
+
+Style 2: 11:30 = las once y media, 11:45 = las doce menos cuarto, 23:30 = las once y media, 23:45 = la medianoche.
+
+Timer: translation needed
 
 
 Turkish
@@ -194,6 +221,8 @@ Turkish
 Style 1: 11:45 = 23:45 = on ikiye çeyrek var.
 
 Style 2: 12:00 = saat on iki, 12:30 = saat yarım, 11:20 = on bir buçuğa on var, 12:25 = on iki buçuğa beş var.
+
+Timer: 90 = bir buçuk saat sonra, 15 = bir çeyrek sonra, -20 = ! yirmi dakika önce !
 
 .\" -------------------------------------------------------------------------------------
 
@@ -215,6 +244,8 @@ Thanks are due to:
 Daniel Fischer and Brent Yorger from beginners@haskell.org for Haskell help.
 
 Gbak from bbs.archlinux.org for the Greek translation.
+
+itsbrad212 from bbs.archlinux.org for the Spanish translation.
 
 litemotiv from bbs.archlinux.org for the Dutch translation.
 

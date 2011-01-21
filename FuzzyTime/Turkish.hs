@@ -11,6 +11,7 @@ import {-# SOURCE #-} FuzzyTime
 
 showFuzzyTimeTr :: FuzzyTime -> String
 
+-- FuzzyClock
 
 showFuzzyTimeTr ft@(FuzzyClock clock hour _ min night style)
 	| min == 0			= "saat " ++ getHour "Nom" hour
@@ -32,8 +33,29 @@ showFuzzyTimeTr ft@(FuzzyClock clock hour _ min night style)
 		| m `elem` [15, 45]	= "çeyrek"
 		| otherwise			= numeralTr "Nom" m
 
+-- FuzzyTimer
 
-showFuzzyTimeTr (FuzzyTimer _ mins) = "Turkish is not supported in the timer mode."
+showFuzzyTimeTr (FuzzyTimer _ mins)
+	| mins > 0	= showHelper ++ " sonra"
+	| mins == 0	= "şimdi!"
+	| mins < 0	= "! " ++ showHelper ++ " önce !"
+	where
+	showHelper :: String
+	showHelper
+		| mm > 75	= numeralTr "Nom" hours ++ (if half then " buçuk" else "") ++ " saat"
+		| mm == 75	= "bir saat çeyrek"
+		| mm == 60	= "bir saat"
+		| mm == 45	= "üç çeyrek"
+		| mm == 30	= "yarım saat"
+		| mm == 15	= "bir çeyrek"
+		| mm >= 1	= numeralTr "Nom" mm ++ " dakika"
+		| otherwise	= "Oops, it looks like there's " ++ show mins ++ " left."
+	hours :: Int
+	hours = round $ fromIntegral mm / 60
+	mm :: Int
+	mm = abs mins
+	half :: Bool
+	half = mm `mod` 60 == 30
 
 
 -- numeralTr ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

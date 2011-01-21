@@ -33,7 +33,13 @@ import FuzzyTime
 -- $description
 -- fuzzytime is a small utility which tells what time it is or how much time there is left to something, in a more familiar way such as "ten to six" rather than 17:51 (telling the time), or "in five minutes" (telling the left time).
 --
--- There are two modes: telling the time / the left time, and setting the timer. See main below.
+-- There are two modes: telling the time / the time left till some event, and setting the timer. See main below.
+--
+-- The intended use is in an environment which does not provide a status bar with a built-in clock. It is expected to be piper to a status bar and run every minute or so in the clock mode.
+-- The timer can be set via the timer-setting mode. When the timer is set, the clock mode will show how much time there is left till some event. To get back to showing the actual time, timer has to be unset.
+--
+-- Example use:
+-- Say you have fuzzytime piped to your status bar and it serves as a usual clock applet. Then you got an e-mail saying that you're going to have a meeting at one o'clock. You set the timer to 13:00 and instead of the current time, fuzzytime begins to show you how much time you have left till the meeting. After you come back, you unset the timer and have fuzzytime display the current time again.
 --
 -- Depends on N. Mitchell's System.Console.CmdArds 0.6.4-1+.
 --
@@ -44,41 +50,6 @@ import FuzzyTime
 -- (2) A module FuzzyTime.NewLanguge needs to be created and added to the list of imports in FuzzyTime.hs.
 
 
--- CHANGELOG
--- TODO
--- 		exit codes
--- 		answers for Greek (:35, midnight, εντεκάμιση)
---		check Danish: midnight + noon, halves
---		Spanish
--- 0.6	2011.01.21
--- 		added the timer mode
--- 		fixed the almost-next-hour bug
--- 0.5	2011.01.17
--- 		added halves as base (de, nl and pl)
--- 		added Greek (thanks Gbak), Dutch (thanks litemotiv) and Turkish
--- 		some corrections (thanks Daniel Fischer from beginners@haskell.org again)
--- 		0.4.1	2011.01.15
--- 				fixed nextFTHour
--- 0.4	2011.01.15
--- 		added --time (thanks Daniel Fischer and Brent Yorgey from beginners@haskell.org!)
--- 		added --style
--- 		added Danish (by M_ller with my modifications)
--- 		removed "południe" from pl
--- 		sorted out the representation of midnight and noon
--- 		added a man page
--- 0.3	2011.01.14
--- 		added midnight and noon
--- 		added checking cli options
--- 		fixed the "quarter past quarter" bug
--- 0.2	2011.01.12
--- 		added French and German
--- 		added 12 vs. 24-hour clock
--- 		0.1.1	2010.12.06
--- 				added cabal
--- 0.1	2010.12.05
--- 		initial release: two languages (en and pl), 1 < precision < 60
-
-
 -- config =========================================================================================================================================================================
 
 -- available ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -86,7 +57,7 @@ import FuzzyTime
 
 -- | \[config] Languages available.
 confAvailLangs :: [String]
-confAvailLangs = ["da", "de", "el", "en", "fr", "nl", "pl", "tr"]
+confAvailLangs = ["da", "de", "el", "en", "es", "fr", "nl", "pl", "tr"]
 
 
 -- defaults -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -237,6 +208,7 @@ checkTimeOk time = case break (== ':') time of
 -- | There are two modes: telling the time, and setting the timer.
 -- Telling the time happens when invoked as "fuzzytime clock". If the timer is set (if ~/.fuzzytimer exists), the countdown is shown. Otherwise, time is shown.
 -- Setting the timer happens when invoked as "fuzzytime timer END", where END can be either the time to countdown to (as HH:MM), or "unset" to disable the timer.
+-- Note that they are different from the two modes of FuzzyTime: telling the time can invoke both FuzzyTime's ClockConf and TimerConf, and setting the timer only happens here.
 main :: IO ()
 main = do
 	clockConf <- getDefClockConf

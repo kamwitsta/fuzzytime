@@ -11,6 +11,7 @@ import {-# SOURCE #-} FuzzyTime
 
 showFuzzyTimeDe :: FuzzyTime -> String
 
+-- FuzzyClock
 
 showFuzzyTimeDe fc@(FuzzyClock clock hour _ min night style)
 	| min == 0				= if getHour hour `elem` ["Mitternacht", "Mittag"] then getHour hour else getHour hour ++ " Uhr"
@@ -38,8 +39,9 @@ showFuzzyTimeDe fc@(FuzzyClock clock hour _ min night style)
 		| m `elem` [15, 45]	= "Viertel"
 		| otherwise			= numeralDe m
 
+-- FuzzyTimer
 
-showFuzzyTimeDe (FuzzyTimer _ mins) = "German is not supported in the timer mode."
+showFuzzyTimeDe (FuzzyTimer _ mins) = "German is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
 -- numeralDe ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

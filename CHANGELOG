@@ -1,0 +1,44 @@
+TODO
+	exit codes
+	check Greek: :35, midnight, εντεκάμιση
+	check Danish: midnight + noon, halves
+	check Spanish: 21 (las? la?), halves
+	timer for Danish, Dutch, German, Greek and Spanish
+	alsa support
+	default language from system default – or as the only one?
+
+0.6		2011.01.21
+	added the timer mode (en, fr, pl and tr)
+	added Spanish (thanks itsbrad212)
+	fixed the almost-next-hour bug
+
+0.5		2011.01.17
+	added halves as base (de, nl and pl)
+	added Greek (thanks Gbak), Dutch (thanks litemotiv) and Turkish
+	some corrections (thanks Daniel Fischer from beginners@haskell.org again)
+
+0.4.1	2011.01.15
+	fixed nextFTHour
+
+0.4		2011.01.15
+	added --time (thanks Daniel Fischer and Brent Yorgey from beginners@haskell.org!)
+	added --style
+	added Danish (by M_ller with my modifications)
+	removed "południe" from pl
+	sorted out the representation of midnight and noon
+	added a man page
+
+0.3		2011.01.14
+	added midnight and noon
+	added checking cli options
+	fixed the "quarter past quarter" bug
+
+0.2		2011.01.12
+	added French and German
+	added 12 vs. 24-hour clock
+
+0.1.1	2010.12.06
+	added cabal
+
+0.1		2010.12.05
+	initial release: two languages (en and pl), 1 < precision < 60

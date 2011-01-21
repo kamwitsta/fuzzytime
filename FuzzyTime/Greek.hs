@@ -11,6 +11,7 @@ import {-# SOURCE #-} FuzzyTime
 
 showFuzzyTimeEl :: FuzzyTime -> String
 
+-- FuzzyClock
 
 showFuzzyTimeEl fc@(FuzzyClock clock hour _ min night style)
 	| min == 0	= getHour hour
@@ -28,8 +29,9 @@ showFuzzyTimeEl fc@(FuzzyClock clock hour _ min night style)
 		| m `elem` [15, 45]	= "τέταρτο"
 		| otherwise			= numeralEl m
 
+-- FuzzyTimer
 
-showFuzzyTimeEl (FuzzyTimer _ mins) = "Greek is not supported in the timer mode."
+showFuzzyTimeEl (FuzzyTimer _ mins) = "Greek is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
 -- numeralEl ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -22,7 +22,7 @@ module Main (
 
 import Data.Char (isDigit)
 import Data.List (intercalate)
-import System.Directory (removeFile)
+import Directory (removeFile)
 import System.Console.CmdArgs
 import System.Environment (getEnv)
 import System.Time (getClockTime)

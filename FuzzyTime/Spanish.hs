@@ -1,4 +1,4 @@
--- Spanish ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Spanish (thanks xenofungus and itsbrad212 from bbs.archlinux.org) --------------------------------------------------------------------------------------------------------------
 
 
 module FuzzyTime.Spanish (showFuzzyTimeEs) where
@@ -13,19 +13,25 @@ showFuzzyTimeEs :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeEs fc@(FuzzyClock clock hour _ min night style)
-	| min == 0	= if getHour hour == "la medianoche" then getHour hour else getHour hour
-	| min <= 30	= getHour hour ++ " y " ++ getMin min
-	| min > 30	= getHour (nextFTHour fc) ++ " menos " ++ getMin (60-min)
+showFuzzyTimeEs fc@(FuzzyClock am clock hour _ min style)
+	| min == 0	= if getHour hour == "la medianoche" then getHour hour else getHour hour ++ getAm hour
+	| min <= 30	= getHour hour ++ " y " ++ getMin min ++ getAm hour
+	| min > 30	= getHour (nextFTHour fc) ++ " menos " ++ getMin (60-min) ++ getAm (nextFTHour fc)
 	| otherwise	= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
+	getAm :: Int -> String
+	getAm h =
+		if style==3 && getHour h /= "la medianoche" then
+			if hh < 13 then " de la mañana" else
+				if hh < 21 then " de la tarde" else " de la noche"
+			else ""
+		where
+		hh :: Int
+		hh = if clock==12 && h < 12 && not am then h+12 else h
 	getHour :: Int -> String
 	getHour h
 		| h `mod` clock == 1= "la una"
-		| h `mod` 12 == 0	= if style==1 then
-								"las " ++ if clock==12 then numeralEs 12 else numeralEs h
-								else
-								if night then "la medianoche" else "las " ++ numeralEs 12
+		| h `elem` [0, 24]	= if style==1 then "las " ++ numeralEs clock else "la medianoche"
 		| otherwise			= "las " ++ numeralEs h
 	getMin :: Int -> String
 	getMin m
@@ -38,7 +44,7 @@ showFuzzyTimeEs fc@(FuzzyClock clock hour _ min night style)
 showFuzzyTimeEs (FuzzyTimer _ mins) = "Spanish is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
--- numeralDe ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- numeralEs ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 numeralEs :: Int -> String

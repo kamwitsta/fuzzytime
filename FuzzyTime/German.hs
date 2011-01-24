@@ -1,4 +1,4 @@
--- German -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- German (thanks Clad in the sky, ichbinsisyphos and marens from forums.gentoo.org) ----------------------------------------------------------------------------------------------
 
 
 module FuzzyTime.German (showFuzzyTimeDe) where
@@ -13,26 +13,27 @@ showFuzzyTimeDe :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeDe fc@(FuzzyClock clock hour _ min night style)
+showFuzzyTimeDe fc@(FuzzyClock _ clock hour _ min style)
 	| min == 0				= if getHour hour `elem` ["Mitternacht", "Mittag"] then getHour hour else getHour hour ++ " Uhr"
+	| min == 15
+		&& style == 3		= "Viertel " ++ getHour (nextFTHour fc)
 	| min `elem` [23..29]	
-		&& style == 2		= getMin (30-min) ++ " vor halb " ++ getHour (nextFTHour fc)
+		&& style >= 2		= getMin (30-min) ++ " vor halb " ++ getHour (nextFTHour fc)
 	| min < 30				= getMin min ++ " nach " ++ getHour hour
 	| min `elem` [31..37]
-		&& style == 2		= getMin (min-30) ++ " nach halb " ++ getHour (nextFTHour fc)
+		&& style >= 2		= getMin (min-30) ++ " nach halb " ++ getHour (nextFTHour fc)
 	| min == 30				= "halb " ++ getHour (nextFTHour fc)
+	| min == 45
+		&& style == 3		= "Dreiviertel " ++ getHour (nextFTHour fc)
 	| min > 30				= getMin (60-min) ++ " vor " ++ getHour (nextFTHour fc)
-	| otherwise	= 			"Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
+	| otherwise				= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
 	getHour h
-		| h `mod` 12 == 0	= if style==1 then
-								if clock==12 then numeralDe 12 else numeralDe h
+		| h `elem` [0, 24]	= if style==1 then
+								numeralDe clock
 								else
-								if night then
-									if min /=30  then "Mitternacht" else numeralDe clock
-								else
-									numeralDe 12
+								if min /=30 then "Mitternacht" else numeralDe clock
 		| otherwise			= numeralDe h
 	getMin :: Int -> String
 	getMin m
@@ -41,7 +42,28 @@ showFuzzyTimeDe fc@(FuzzyClock clock hour _ min night style)
 
 -- FuzzyTimer
 
-showFuzzyTimeDe (FuzzyTimer _ mins) = "German is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
+showFuzzyTimeDe (FuzzyTimer _ mins)
+	| mins > 0	= "in " ++ showHelper
+	| mins == 0	= "jetzt!"
+	| mins < 0	= "! vor " ++ showHelper ++ " !"
+	where
+	showHelper :: String
+	showHelper
+		| mm >= 90	= numeralDe hours ++ (if half then "einhalb" else "") ++ " Stunden"
+		| mm == 75	= "einer Stunde und fünfzehn Minuten"
+		| mm == 60	= "einer Stunde"
+		| mm == 45	= "einer Dreiviertelstunde"
+		| mm == 30	= "eine halbe Stunde"
+		| mm == 15	= "einer ViertelStunde"
+		| mm > 1	= numeralDe mm ++ " Minuten"
+		| mm == 1	= "einer Minute"
+		| otherwise	= "Oops, it looks like there's " ++ show mins ++ " left."
+	hours :: Int
+	hours = round $ fromIntegral mm / 60
+	mm :: Int
+	mm = abs mins
+	half :: Bool
+	half = mm `mod` 60 == 30
 
 
 -- numeralDe ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -13,7 +13,7 @@ showFuzzyTimePl :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimePl fc@(FuzzyClock clock hour _ min night style)
+showFuzzyTimePl fc@(FuzzyClock _ clock hour _ min style)
 	| min == 0			= getHourEven hour
 	| min `elem` [23..29]
 		&& style == 2	= "za " ++ getMin (30-min) ++ " w pół do " ++ getHourOdd (nextFTHour fc)
@@ -26,21 +26,15 @@ showFuzzyTimePl fc@(FuzzyClock clock hour _ min night style)
 	where
 	getHourEven :: Int -> String
 	getHourEven h
-		| h `mod` 12 == 0	= if style==1 then
-								if clock==12 then numeralPlOrd "Nom" 12 else numeralPlOrd "Nom" h
-								else
-								if night then "północ" else numeralPlOrd "Nom" h
-		| otherwise			= numeralPlOrd "Nom" h
+		| h `elem` [0, 24]	= if style==1 then numeralPlOrd Nom clock else "północ"
+		| otherwise			= numeralPlOrd Nom h
 	getHourOdd :: Int -> String
 	getHourOdd h
-		| h `mod` 12 == 0	= if style==1 then
-								if clock==12 then numeralPlOrd "Praep" 12 else numeralPlOrd "Praep" h
+		| h `elem` [0, 24]	= if style==1 then
+								numeralPlOrd Praep clock
 								else
-								if night then
-									if min < 30 then "północy" else numeralPlOrd "Praep" clock
-								else
-									numeralPlOrd "Praep" 12
-		| otherwise			= numeralPlOrd "Praep" h
+								if min < 30 then "północy" else numeralPlOrd Praep clock
+		| otherwise			= numeralPlOrd Praep h
 	getMin :: Int -> String
 	getMin m
 		| m `elem` [15, 45]	= "kwadrans"
@@ -82,6 +76,9 @@ showFuzzyTimePl (FuzzyTimer _ mins)
 -- numeralPl ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+data Case = Nom | Praep
+
+
 numeralPlCard :: Int -> String
 numeralPlCard n
 	| n < 20			= numeralPlCardHelper1 n
@@ -94,15 +91,15 @@ numeralPlCard n
 	numeralPlCardHelper10 i = ["dwadzieścia", "trzydzieści", "czterdzieści", "pięćdziesiąt"] !! (i-2)
 
 
-numeralPlOrd :: String -> Int -> String
+numeralPlOrd :: Case -> Int -> String
 numeralPlOrd c n
 	| n <= 20			= numeralPlOrdHelper1 c n
 	| otherwise			= numeralPlOrdHelper10 c ++ " " ++ numeralPlOrdHelper1 c (n `mod` 10)
 	where
-	numeralPlOrdHelper1 :: String -> Int -> String
-	numeralPlOrdHelper1 "Nom" n = ["pierwsza", "druga", "trzecia", "czwarta", "piąta", "szósta", "siódma", "ósma", "dziewiąta", "dziesiąta", "jedenasta", "dwunasta", "trzynasta", "czternasta", "piętnasta", "szesnasta", "siedemnasta", "osiemnasta", "dziewiętnasta", "dwudziesta"] !! (n-1)
-	numeralPlOrdHelper1 "Praep" n = ["pierwszej", "drugiej", "trzeciej", "czwartej", "piątej", "szóstej", "siódmej", "ósmej", "dziewiątej", "dziesiątej", "jedenastej", "dwunastej", "trzynastej", "czternastej", "piętnastej", "szesnastej", "siedemnastej", "osiemnastej", "dziewiętnastej", "dwudziestej"] !! (n-1)
-	numeralPlOrdHelper10 :: String -> String
-	numeralPlOrdHelper10 "Nom" = "dwudziesta"
-	numeralPlOrdHelper10 "Praep" = "dwudziestej"
+	numeralPlOrdHelper1 :: Case -> Int -> String
+	numeralPlOrdHelper1 Nom n = ["pierwsza", "druga", "trzecia", "czwarta", "piąta", "szósta", "siódma", "ósma", "dziewiąta", "dziesiąta", "jedenasta", "dwunasta", "trzynasta", "czternasta", "piętnasta", "szesnasta", "siedemnasta", "osiemnasta", "dziewiętnasta", "dwudziesta"] !! (n-1)
+	numeralPlOrdHelper1 Praep n = ["pierwszej", "drugiej", "trzeciej", "czwartej", "piątej", "szóstej", "siódmej", "ósmej", "dziewiątej", "dziesiątej", "jedenastej", "dwunastej", "trzynastej", "czternastej", "piętnastej", "szesnastej", "siedemnastej", "osiemnastej", "dziewiętnastej", "dwudziestej"] !! (n-1)
+	numeralPlOrdHelper10 :: Case -> String
+	numeralPlOrdHelper10 Nom = "dwudziesta"
+	numeralPlOrdHelper10 Praep = "dwudziestej"
 

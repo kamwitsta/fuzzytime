@@ -1,12 +1,19 @@
 TODO
-	exit codes
-	check Greek: :35, midnight, εντεκάμιση
-	check Danish: midnight + noon, halves
 	check Spanish: 21 (las? la?), halves
-	timer for Danish, Dutch, German, Greek and Spanish
-	alsa support
+	timer for Danish, Greek and Spanish
 	default language from system default – or as the only one?
+	halv midnatt -> Swedish
+	config file (+ when to play the sound/s)
 
+
+0.7		2011.01.24
+	added Norwegian (thanks arnvidr)
+	added timer for Dutch (thanks Boris27) and German (thanks marens and ichbinsisyphos)
+	added Danish style 2
+	added German style 3 (thanks marens and ichbinsisyphos)
+	added Spanish style 3 (thanks xenofungus)
+	added timer alarm sound
+	fixed exit codes
 
 0.6		2011.01.21
 	added the timer mode (en, fr, pl and tr)

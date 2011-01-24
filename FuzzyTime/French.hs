@@ -13,7 +13,7 @@ showFuzzyTimeFr :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeFr fc@(FuzzyClock clock hour _ min night style)
+showFuzzyTimeFr fc@(FuzzyClock _ clock hour _ min style)
 	| min == 0	= getHour hour
 	| min <= 30	= getHour hour ++ " " ++ getMin min
 	| min > 30	= getHour (nextFTHour fc) ++ " moins " ++ getMin (60-min)
@@ -21,10 +21,8 @@ showFuzzyTimeFr fc@(FuzzyClock clock hour _ min night style)
 	where
 	getHour :: Int -> String
 	getHour h
-		| h `mod` 12 == 0	= if style==1 then
-								(if clock==12 then numeralFr 12 else numeralFr h) ++ getHourWord h
-								else
-								if night then "minuit" else "midi"
+		| h `elem` [0, 24]	= if style==1 then numeralFr clock ++ getHourWord clock else "minuit"
+		| h == 12			= if style==1 then numeralFr 12 else "midi"
 		| otherwise			= numeralFr h ++ getHourWord h
 	getHourWord :: Int -> String
 	getHourWord h = if h==1 then " heure" else " heures"

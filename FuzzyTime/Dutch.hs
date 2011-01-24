@@ -1,4 +1,4 @@
--- Dutch (thanks litemotiv from bbs.archlinux.org)---------------------------------------------------------------------------------------------------------------------------------
+-- Dutch (thanks Boris from forums.gentoo.org and litemotiv from bbs.archlinux.org) -----------------------------------------------------------------------------------------------
 
 
 module FuzzyTime.Dutch (showFuzzyTimeNl) where
@@ -13,7 +13,7 @@ showFuzzyTimeNl :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeNl fc@(FuzzyClock clock hour _ min night style)
+showFuzzyTimeNl fc@(FuzzyClock _ clock hour _ min style)
 	| min == 0				= if getHour hour == "middernacht" then getHour hour else getHour hour ++ " uur"
 	| min `elem` [20..29]	
 		&& style == 2		= getMin (30-min) ++ " voor half " ++ getHour (nextFTHour fc)
@@ -26,13 +26,10 @@ showFuzzyTimeNl fc@(FuzzyClock clock hour _ min night style)
 	where
 	getHour :: Int -> String
 	getHour h
-		| h `mod` 12 == 0	= if style==1 then
-								if clock==12 then numeralNl 12 else numeralNl h
+		| h `elem` [0, 24]	= if style==1 then
+								numeralNl clock
 								else
-								if night then
-									if min /= 30 then "middernacht" else numeralNl clock
-								else
-									numeralNl 12
+								if min /= 30 then "middernacht" else numeralNl clock
 		| otherwise			= numeralNl h
 	getMin :: Int -> String
 	getMin m
@@ -41,7 +38,29 @@ showFuzzyTimeNl fc@(FuzzyClock clock hour _ min night style)
 
 -- FuzzyTimer
 
-showFuzzyTimeNl (FuzzyTimer _ mins) = "Dutch is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
+showFuzzyTimeNl (FuzzyTimer _ mins)
+	| mins > 0	= "over " ++ showHelper
+	| mins == 0	= "nu!"
+	| mins < 0	= "! " ++ showHelper ++ " geleden !"
+	where
+	showHelper :: String
+	showHelper
+		| mm > 90	= numeralNl hours ++ (if half then " en een half" else "") ++ " uur"
+		| mm == 90	= "anderhalf uur"
+		| mm == 75	= "vijf kwartier"
+		| mm == 60	= "een uur"
+		| mm == 45	= "drie kwartier"
+		| mm == 30	= "een half uur"
+		| mm == 15	= "een kwartier"
+		| mm > 1	= numeralNl mm ++ " minuten"
+		| mm == 1	= "een minuut"
+		| otherwise	= "Oops, it looks like there's " ++ show mins ++ " left."
+	hours :: Int
+	hours = round $ fromIntegral mm / 60
+	mm :: Int
+	mm = abs mins
+	half :: Bool
+	half = mm `mod` 60 == 30
 
 
 -- numeralNl ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

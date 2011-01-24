@@ -13,7 +13,7 @@ showFuzzyTimeEl :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeEl fc@(FuzzyClock clock hour _ min night style)
+showFuzzyTimeEl fc@(FuzzyClock _ clock hour _ min _)
 	| min == 0	= getHour hour
 	| min <= 30	= getHour hour ++ " και " ++ getMin min
 	| min > 30	= getHour (nextFTHour fc) ++ " παρά " ++ getMin (60-min)

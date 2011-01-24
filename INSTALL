@@ -1,10 +1,13 @@
-fuzzytime 0.6 (2011.01.21)
+fuzzytime 0.7 (2011.01.24)
 A clock and timer that tell the time in a more human way (the 'ten past six'-style)
 
 
 DEPENDENCIES:
 – The Glasgow Haskell Compiler (http://www.haskell.org/ghc/)
 – CmdArgs (http://community.haskell.org/~ndm/cmdargs/)
+
+OPTIONAL DEPENDENCIES:
+– alsa-utils (aplay) to play the timer alarm sound
 
 
 INSTALL:

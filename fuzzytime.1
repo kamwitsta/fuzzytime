@@ -1,4 +1,4 @@
-.TH fuzzytime 1 "January 21, 2011" "version 0.6" "A fuzzy clock and timer"
+.TH fuzzytime 1 "January 24, 2011" "version 0.7" "A fuzzy clock and timer"
 
 .\" -------------------------------------------------------------------------------------
 
@@ -100,128 +100,143 @@ As of now, styles are not available (= the setting is ignored) in the timer mode
 
 .SS Comparison
                                                        halves
-              midnight  noon    half   quarter  hour    base 
+              midnight  noon    half   quarter  hour    base   am/pm
 
-Danish (M_ller + KS)
-                 –        –       +       +      –       –
+Danish
+    style 1      –        –       +       +      –       –       – 
+    style 2    [≠ 30]     –       +       +      –       –       –
 
-Dutch (thanks litemotiv)
-    style 1      –        –       +       +     [0]      –
-    style 2    [≠ 30]     –       +       +     [0]    [±10]
+Dutch
+    style 1      –        –       +       +     [0]      –       –
+    style 2    [≠ 30]     –       +       +     [0]    [±10]     –
 
 English
-    style 1      –        –       +       +      –       –
-    style 2      +        +       +       +      –       –
+    style 1      –        –       +       +      –       –       –
+    style 2      +        +       +       +      –       –       –
 
 French
-    style 1      –        –       +       +      +       –
-    style 2      +        +       +       +      +       –
+    style 1      –        –       +       +      +       –       –
+    style 2      +        +       +       +      +       –       –
 
 German
-    style 1      –        –       +       +     [0]      –
-    style 2    [≠ 30]     –       +       +     [0]     [±7]
+    style 1      –        –       +       +     [0]      –       –
+    style 2    [≠ 30]     –       +       +     [0]     [±7]     –
+    style 3    [≠ 30]     –       +     [next]  [0]     [±7]     –
 
-Greek (thanks Gbak)
-                 –        –       +       +      –       –
+Greek
+                 –        –       +       +      –       –       –
+
+Norwegian
+    style 1      –        –       +       +      –     [±10]     –
+    style 2      +        –       +       +      –     [±10]     –
 
 Polish
-    style 1      –        –       +       +      –       –
-    style 2    [≠ 30]     –       +       +      –      [±7]
+    style 1      –        –       +       +      –       –       –
+    style 2    [≠ 30]     –       +       +      –      [±7]     –
 
-Spanish (thanks itsbrad212)
-    style 1      –        –       +       +      –       –
-    style 2      +        –       +       +      –       –
+Spanish
+    style 1      –        –       +       +      –       –       –
+    style 2      +        –       +       +      –       –       –
+    style 3      +        –       +       +      –       –   [13/21/0]
 
 Turkish
-    style 1      –        –       +       + [0, 12:30]   –
-    style 2      –        –       +       + [0, 12:30] [±10]
+    style 1      –        –       +       + [0, 12:30]   –       –
+    style 2      –        –       +       + [0, 12:30] [±10]     –
 
 .SS Notes
 
 midnight, noon: the words "midnight" and "noon" are used; [≠ 30]: the word is used except for halves.
 
-half, quarter: min % 15 = 0 is treated as a special case.
+half, quarter: min % 15 = 0 is treated as a special case; [next]: quarters are always counted in reference to the next hour (German style 3).
 
 hour: the word "hour" is used; [0]: the word is only used for round hours; [0, 12:30]: the word is only used for round hours, 12:30 and 0:30.
 
 halves base: min in a certain range around 30 is referred to half hours rather than to full ones.
 
+am/pm: the words "in the morning/…" are used; [13/21/0]: morning is considered to last till hour is < 13, afternoon till hour is < 21, and night till hour is < 0 (= 24).
+
 .SS Examples
 
-Danish
-
-Clock: 11:45 = 23:45 = kvart i tolv.
-
+.TP
+Danish (thanks M_ller)
+Style 1: 11:45 = 23:45 = kvart i tolv.
+.IP
+Style 2: 11:30 = halv tolv, 11:45 = kvart i tolv, 23:30 = halv tolv, 23:45 = kvart i midnat.
+.IP
 Timer: translation needed
 
-
-Dutch
-
+.TP
+Dutch (thanks Boris27 and litemotiv)
 Style 1: 11:45 = 23:45 = kwart voor twaalf.
-
+.IP
 Style 2: 11:30 = half twaalf, 11:45 = kwart voor twaalf, 23:30 = half twaalf, 23:45 = kwart voor middernacht, 10:20 = tien voor half elf
-
+.IP
 Timer: translation needed
 
-
+.TP
 English
-
 Style 1: 11:45 = 23:45 = quarter to twelve.
-
+.IP
 Style 2: 11:45 = quarter to noon, 23:45 = quarter to midnight.
-
+.IP
 Timer: 90 = in an hour and a half, 15 = in a quarter, -20 = ! twenty minutes ago !
 
-
+.TP
 French
-
 Style 1: 11:45 = 23:45 = douze heures moins le quart.
-
+.IP
 Style 2: 11:45 = midi moins le quart, 23:30 = onze heures et demie, 23:45 = minuit moins le quart.
-
+.IP
 Timer: 90 = dans une heure et demie, 15 = dans un quart d’heure, -20 = ! il y a vingt minutes !
 
-
-German
-
+.TP
+German (thanks Clad in the sky, ichbinsisyphos and marens)
 Style 1: 11:45 = 23:45 = Viertel vor zwölf.
-
+.IP
 Style 2: 11:30 = halb zwölf, 11:45 = Viertel vor zwölf, 23:30 = halb zwölf, 23:45 = Viertel vor Mitternacht, 10:25 = fünf vor halb elf.
+.IP
+Style 3: 10:15 = Viertel elf, 10:45 = Dreiviertel elf.
+.IP
+Timer: 90 = in eineinhalb Stunden, 15 = in einer Viertel Stunde, -20 = ! vor zwanzig Minuten !
 
-Timer : translation needed
-
-
-Greek
-
+.TP
+Greek (thanks Gbak)
 Clock: 11:45 = 23:45 = δώδεκα παρά τέταρτο.
-
+.IP
 Timer: translation needed
 
+.TP
+Norwegian (thanks arnvidr)
+Style 1: 11:45 = 23:45 = kvart på tolv, 10:20 = ti på halv elleve.
+.IP
+Style 2: 11:30 = halv tolv, 11:45 = kvart på tolv, 23:30 = halv midnatt, 23:45 = kvart på midnatt, 10:20 = ti på halv elleve.
+.IP
+Timer: 90 = om halvannen time, 15 = om en kvarter, -20 = ! for tjue minutter siden !
 
+.TP
 Polish
-
 Style 1: 11:45 = 23:45 = za kwadrans dwunasta.
-
+.IP
 Style 2: 11:30 = w pół do dwunastej, 11:45 = za kwadrans dwunasta, 23:30 = w pół do dwunastej, 23:45 = za kwadrans północ, 10:25 = za pięć w pół do jedenastej.
-
+.IP
 Timer: 90 = za półtorej godziny, 15 = za kwadrans, -20 = ! dwadzieścia minut temu !
 
-
-Spanish
-
+.TP
+Spanish (thanks xenofungus and itsbrad212)
 Style 1: 11:45 = 23:45 = las doce menos cuarto.
-
+.IP
 Style 2: 11:30 = las once y media, 11:45 = las doce menos cuarto, 23:30 = las once y media, 23:45 = la medianoche.
-
+.IP
+Style 3: 11:30 = las once y media de la mañana, 13:00 = la una de la tarde, 23:30 = las once y media de la noche.
+.IP
 Timer: translation needed
 
-
+.TP
 Turkish
-
 Style 1: 11:45 = 23:45 = on ikiye çeyrek var.
-
+.IP
 Style 2: 12:00 = saat on iki, 12:30 = saat yarım, 11:20 = on bir buçuğa on var, 12:25 = on iki buçuğa beş var.
-
+.IP
 Timer: 90 = bir buçuk saat sonra, 15 = bir çeyrek sonra, -20 = ! yirmi dakika önce !
 
 .\" -------------------------------------------------------------------------------------
@@ -252,14 +267,30 @@ No known bugs at this time.
 .SH AUTHOR
 Kamil Stachowski (kamil.stachowski@gmail.com)
 
-Thanks are due to:
+The crow sound has been recorded by PsychoBird and uploaded to http://soundbible.com/1486-Black-Crows-Cawing.html under the rules of the Attribtion 3.0 license [downloaded by KS 2011.01.23]
 
-Daniel Fischer and Brent Yorger from beginners@haskell.org for Haskell help.
+.SS Thanks
 
-Gbak from bbs.archlinux.org for the Greek translation.
+arnvidr from forums.gentoo.org for Norwegian.
 
-itsbrad212 from bbs.archlinux.org for the Spanish translation.
+Boris27 from forums.gentoo.org for Dutch.
 
-litemotiv from bbs.archlinux.org for the Dutch translation.
+Brent Yorger from beginners@haskell.org for Haskell help.
 
-M_ller from bbs.archlinux.org for the Danish translation and most of the implementation.
+Clad in the sky from forums.gentoo.org for German.
+
+Daniel Fischer from beginners@haskell.org for Haskell help.
+
+Gbak from bbs.archlinux.org for Greek.
+
+ichbinsisyphos from forums.gentoo.org for German.
+
+itsbrad212 from bbs.archlinux.org for Spanish.
+
+litemotiv from bbs.archlinux.org for Dutch.
+
+marens from forums.gentoo.org for German.
+
+M_ller from bbs.archlinux.org for Danish.
+
+xenofungus from bbs.archlinux.org for Spanish.

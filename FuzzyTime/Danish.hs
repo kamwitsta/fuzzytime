@@ -1,4 +1,4 @@
--- Danish (by M_ller from bbs.archlinux.org, with my modifications) ---------------------------------------------------------------------------------------------------------------
+-- Danish (thanks M_ller from bbs.archlinux.org) ----------------------------------------------------------------------------------------------------------------------------------
 
 
 module FuzzyTime.Danish (showFuzzyTimeDa) where
@@ -13,7 +13,7 @@ showFuzzyTimeDa :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeDa fc@(FuzzyClock clock hour _ min night style)
+showFuzzyTimeDa fc@(FuzzyClock _ clock hour _ min style)
 	| min == 0	= getHour hour
 	| min < 30	= getMin min ++ " over " ++ getHour hour
 	| min == 30	= "halv " ++ getHour (nextFTHour fc)
@@ -22,7 +22,10 @@ showFuzzyTimeDa fc@(FuzzyClock clock hour _ min night style)
 	where
 	getHour :: Int -> String
 	getHour h
-		| h `mod` 12 == 0	= if clock==12 then numeralDa 12 else numeralDa h
+		| h `elem` [0, 24]	= if style==1 then
+								numeralDa clock
+								else
+								if min /=30 then "midnat" else numeralDa clock
 		| otherwise			= numeralDa h
 	getMin :: Int -> String
 	getMin m

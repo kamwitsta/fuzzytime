@@ -1,21 +1,25 @@
 module FuzzyTime (
 	  FuzzyTime (..)
 	, toFuzzyTime
+	, isTimerZero
 	, nextFTHour
 	, FuzzyTimeConf (..)
+	, Time
 	) where
 
 
 import Data.Data
 
 
+type Time = String
+
 data FuzzyTime
 	= FuzzyClock {
-	  ftClock	:: Int
+	  ftAm		:: Bool
+	, ftClock	:: Int
 	, ftHour	:: Int
 	, ftLang	:: String
 	, ftMin		:: Int
-	, ftNight	:: Bool
 	, ftStyle	:: Int
 	}
 	| FuzzyTimer {
@@ -26,7 +30,10 @@ data FuzzyTime
 
 toFuzzyTime :: FuzzyTimeConf -> FuzzyTime
 
+isTimerZero :: FuzzyTime -> Bool
+
 nextFTHour :: FuzzyTime -> Int
+
 
 data FuzzyTimeConf
 	= ClockConf {

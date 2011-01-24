@@ -40,11 +40,11 @@ data FuzzyTimeConf
 	  clock	:: Int
 	, lang	:: String
 	, prec	:: Int
-	, time	:: String
+	, time	:: Time
 	, style	:: Int
 	}
 	| TimerConf {
-	  end	:: String
+	  end	:: Time
 	, lang	:: String
-	, now	:: String
+	, now	:: Time
 	}

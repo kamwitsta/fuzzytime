@@ -245,7 +245,7 @@ main = do
 
 -- | The time-showing mode.
 runModeShow :: FuzzyTimeConf -> IO ()
-runModeShow conf = do
+runModeShow conf =
 	case checkFTConf conf of
 		Left e	->	exitWithError e
 		Right c	->	do
@@ -256,7 +256,7 @@ runModeShow conf = do
 
 -- | The timer-setting mode.
 runModeTimer :: FuzzyTimeConf -> IO ()
-runModeTimer conf@(TimerConf end _ _) = do
+runModeTimer conf@(TimerConf end _ _) =
 	case checkFTConf conf of
 		Left e	-> 	exitWithError e
 		Right c	->	do

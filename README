@@ -15,7 +15,7 @@ Say you have fuzzytime piped to your status bar and it serves as a usual clock a
 
 ### --help
 A clock and timer that tell the time in a more human way.
-v0.7, 2011.01.24, kamil.stachowski@gmail.com, GPL3+
+v0.7, 2011.01.24, *github antispam*, GPL3+
 
 fuzzytime [COMMAND] ... [OPTIONS]
 

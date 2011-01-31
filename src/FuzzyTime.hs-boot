@@ -8,7 +8,7 @@ module FuzzyTime (
 	) where
 
 
-import Data.Data
+import Data.Data ()
 
 
 type Time = String
@@ -37,14 +37,14 @@ nextFTHour :: FuzzyTime -> Int
 
 data FuzzyTimeConf
 	= ClockConf {
-	  clock	:: Int
-	, lang	:: String
-	, prec	:: Int
-	, time	:: Time
-	, style	:: Int
+	  cClock	:: Int
+	, cLang	:: String
+	, cPrec	:: Int
+	, cTime	:: Time
+	, cStyle	:: Int
 	}
 	| TimerConf {
-	  end	:: Time
-	, lang	:: String
-	, now	:: Time
+	  cEnd	:: Time
+	, cLang	:: String
+	, cNow	:: Time
 	}

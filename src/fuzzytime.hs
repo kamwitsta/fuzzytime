@@ -87,11 +87,11 @@ getDefClockConf = do
 	nowClock <- getClockTime
 	let nowString = take 5 . drop 11 $ show nowClock
 	return $ ClockConf {
-		  clock	= confDefClockClock	&= help confHelpClockClock
-		, lang	= confDefLang		&= help confHelpClockLang
-		, prec	= confDefClockPrec	&= help confHelpClockPrec
-		, time	= nowString			&= help confHelpClockTime
-		, style	= confDefClockStyle	&= help confHelpClockStyle
+		  cClock	= confDefClockClock	&= help confHelpClockClock
+		, cLang		= confDefLang		&= help confHelpClockLang
+		, cPrec		= confDefClockPrec	&= help confHelpClockPrec
+		, cTime		= nowString			&= help confHelpClockTime
+		, cStyle	= confDefClockStyle	&= help confHelpClockStyle
 		} &= name "clock" &= help confHelpClock
 
 -- | \[config] Get the default config for either showing the time or setting the timer.
@@ -102,9 +102,9 @@ getDefTimerConf = do
 	endFile <- (readFile =<< confTimerFileLoc) `catch` (\_ -> return "empty")
 	let endString = take 5 endFile
 	return $ TimerConf {
-		  end	= endString			&= args &= typ "END"
-		, lang	= confDefLang		&= ignore				-- will be taken from ClockConf anyway
-		, now	= nowString			&= ignore				-- will be taken from ClockConf anyway
+		  cEnd		= endString			&= args &= typ "END"
+		, cLang		= confDefLang		&= ignore				-- will be taken from ClockConf anyway
+		, cNow		= nowString			&= ignore				-- will be taken from ClockConf anyway
 		} &= name "timer" &= help confHelpTimer
 
 
@@ -163,10 +163,6 @@ confHelpClockStyle = "How the time is told (seem the man page); default " ++ sho
 confHelpTimer :: String
 confHelpTimer = "Set timer to END as HH:MM or \"unset\". (Disables printing time.)"
 
--- | \[config] Help message for END.
-confHelpTimerEnd :: String
-confHelpTimerEnd = "Set the timer to countdown to END as HH:MM; obligatory."
-
 
 -- | \[config] Help message for program
 confHelpProgram :: String
@@ -191,7 +187,7 @@ checkFTConf c@(ClockConf clock lang prec time style)
 	| style < 1 || style > 3	= Left "--style must be in [1..3] (see the man page)."
 	| otherwise					= Right c
 
-checkFTConf t@(TimerConf end lang now)
+checkFTConf t@(TimerConf end _ now)
 	| not (checkTimeOk end)
 		&& end /= "unset"		= Left "END must be given and in the same format as --time."
 	| not (checkTimeOk now)		= Left "--time must be given as HH:MM, where HH is in [0..23] and MM is in [0..59]."
@@ -200,10 +196,10 @@ checkFTConf t@(TimerConf end lang now)
 
 -- | \[config] Check that a string is a properly formatted time (HH:MM).
 checkTimeOk :: Time -> Bool
-checkTimeOk time = case break (== ':') time of
+checkTimeOk t = case break (== ':') t of
 	(hh, _:mm)	->	not (null hh || null mm)
 					&& all isDigit hh && all isDigit mm
-					&& (let h = read hh; m = read mm
+					&& (let h = read hh :: Int; m = read mm :: Int
 						in 0 <= h && h < 24 && 0 <= m && m < 60)
 	_			->	False
 
@@ -212,8 +208,8 @@ checkTimeOk time = case break (== ':') time of
 
 
 exitWithError :: String -> IO ()
-exitWithError error = do
-	putStrLn error
+exitWithError err = do
+	putStrLn err
 	exitFailure
 
 
@@ -230,14 +226,14 @@ main = do
 	timerConf <- getDefTimerConf
 	conf <- cmdArgs (modes [clockConf, timerConf] &= program confHelpProgram &= summary confHelpSummary)
 	case conf of
-		cc@(ClockConf _ _ _ _ _)	-> runModeShow $ if end timerConf == "empty" then
+		(ClockConf _ _ _ _ _)	-> runModeShow $ if cEnd timerConf == "empty" then
 														conf
 														else
 														timerConf {
-															lang = lang conf,
-															now = time conf
+															cLang = cLang conf,
+															cNow = cTime conf
 														}
-		tc@(TimerConf _ _ _)		-> runModeTimer tc
+		tc@(TimerConf _ _ _)	-> runModeTimer tc
 
 
 -- modes --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -249,9 +245,9 @@ runModeShow conf =
 	case checkFTConf conf of
 		Left e	->	exitWithError e
 		Right c	->	do
-					let time = toFuzzyTime c
-					when (isTimerZero time) (do system confTimerSoundCmd; return ())
-					print time
+					let ftime = toFuzzyTime c
+					when (isTimerZero ftime) (do _ <- system confTimerSoundCmd; return ())
+					print ftime
 
 
 -- | The timer-setting mode.
@@ -259,7 +255,7 @@ runModeTimer :: FuzzyTimeConf -> IO ()
 runModeTimer conf@(TimerConf end _ _) =
 	case checkFTConf conf of
 		Left e	-> 	exitWithError e
-		Right c	->	do
+		Right _	->	do
 					path <- confTimerFileLoc
 					removeFile path `catch` (\_ -> return ())
 					if end == "unset" then
@@ -267,3 +263,4 @@ runModeTimer conf@(TimerConf end _ _) =
 						else do
 						writeFile path end
 						putStrLn $ "Timer has been set to " ++ end ++ "."
+runModeTimer (ClockConf _ _ _ _ _) = exitWithError "The timer mode shouldn't have been given a ClockConf."

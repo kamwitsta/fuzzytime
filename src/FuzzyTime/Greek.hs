@@ -4,6 +4,7 @@
 module FuzzyTime.Greek (showFuzzyTimeEl) where
 
 import {-# SOURCE #-} FuzzyTime
+import Prelude hiding (min)
 
 
 -- showFuzzyTimeEl ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,7 +32,7 @@ showFuzzyTimeEl fc@(FuzzyClock _ clock hour _ min _)
 
 -- FuzzyTimer
 
-showFuzzyTimeEl (FuzzyTimer _ mins) = "Greek is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
+showFuzzyTimeEl (FuzzyTimer _ _) = "Greek is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
 -- numeralEl ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

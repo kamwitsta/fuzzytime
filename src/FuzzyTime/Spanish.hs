@@ -4,6 +4,7 @@
 module FuzzyTime.Spanish (showFuzzyTimeEs) where
 
 import {-# SOURCE #-} FuzzyTime
+import Prelude hiding (min)
 
 
 -- showFuzzyTimeEs ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ showFuzzyTimeEs fc@(FuzzyClock am clock hour _ min style)
 
 -- FuzzyTimer
 
-showFuzzyTimeEs (FuzzyTimer _ mins) = "Spanish is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
+showFuzzyTimeEs (FuzzyTimer _ _) = "Spanish is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
 -- numeralEs ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

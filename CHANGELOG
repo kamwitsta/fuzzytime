@@ -4,7 +4,11 @@ TODO
 	halv midnatt -> Swedish
 	config file (+ when to play the sound/s)
 	read default language from $LANG (hFlush!)
+	daemon?
 
+
+0.7.1
+	improved cabal
 
 0.7		2011.01.24
 	added Norwegian (thanks arnvidr)

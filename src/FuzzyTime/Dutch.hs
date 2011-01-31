@@ -4,6 +4,7 @@
 module FuzzyTime.Dutch (showFuzzyTimeNl) where
 
 import {-# SOURCE #-} FuzzyTime
+import Prelude hiding (min)
 
 
 -- showFuzzyTimeNl ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -15,14 +16,14 @@ showFuzzyTimeNl :: FuzzyTime -> String
 
 showFuzzyTimeNl fc@(FuzzyClock _ clock hour _ min style)
 	| min == 0				= if getHour hour == "middernacht" then getHour hour else getHour hour ++ " uur"
-	| min `elem` [20..29]	
+	| min `elem` [20..29]
 		&& style == 2		= getMin (30-min) ++ " voor half " ++ getHour (nextFTHour fc)
 	| min < 30				= getMin min ++ " over " ++ getHour hour
 	| min `elem` [31..40]
 		&& style == 2		= getMin (min-30) ++ " over half " ++ getHour (nextFTHour fc)
 	| min == 30				= "half " ++ getHour (nextFTHour fc)
 	| min > 30				= getMin (60-min) ++ " voor " ++ getHour (nextFTHour fc)
-	| otherwise	= 			"Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
+	| otherwise	=			"Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
 	getHour h
@@ -56,7 +57,7 @@ showFuzzyTimeNl (FuzzyTimer _ mins)
 		| mm == 1	= "een minuut"
 		| otherwise	= "Oops, it looks like there's " ++ show mins ++ " left."
 	hours :: Int
-	hours = round $ fromIntegral mm / 60
+	hours = round $ (fromIntegral mm :: Float) / 60
 	mm :: Int
 	mm = abs mins
 	half :: Bool

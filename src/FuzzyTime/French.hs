@@ -4,6 +4,7 @@
 module FuzzyTime.French (showFuzzyTimeFr) where
 
 import {-# SOURCE #-} FuzzyTime
+import Prelude hiding (min)
 
 
 -- showFuzzyTimeFr ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -53,7 +54,7 @@ showFuzzyTimeFr (FuzzyTimer _ mins)
 		| mm == 1	= "une minute"
 		| otherwise	= "Oops, it looks like there's " ++ show mins ++ " left."
 	hours :: Int
-	hours = round $ fromIntegral mm / 60
+	hours = round $ (fromIntegral mm :: Float) / 60
 	mm :: Int
 	mm = abs mins
 	half :: Bool

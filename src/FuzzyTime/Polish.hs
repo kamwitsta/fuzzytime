@@ -4,6 +4,7 @@
 module FuzzyTime.Polish (showFuzzyTimePl) where
 
 import {-# SOURCE #-} FuzzyTime
+import Prelude hiding (min)
 
 
 -- showFuzzyTimePl ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,7 +67,7 @@ showFuzzyTimePl (FuzzyTimer _ mins)
 		| mm == 1		= "minutę"
 		| otherwise		= "Oops, it looks like there's " ++ show mins ++ " left."
 	hours :: Int
-	hours = round $ fromIntegral mm / 60
+	hours = round $ (fromIntegral mm :: Float) / 60
 	mm :: Int
 	mm = abs mins
 	half :: Bool
@@ -92,9 +93,9 @@ numeralPlCard n
 
 
 numeralPlOrd :: Case -> Int -> String
-numeralPlOrd c n
-	| n <= 20			= numeralPlOrdHelper1 c n
-	| otherwise			= numeralPlOrdHelper10 c ++ " " ++ numeralPlOrdHelper1 c (n `mod` 10)
+numeralPlOrd c num
+	| num <= 20			= numeralPlOrdHelper1 c num
+	| otherwise			= numeralPlOrdHelper10 c ++ " " ++ numeralPlOrdHelper1 c (num `mod` 10)
 	where
 	numeralPlOrdHelper1 :: Case -> Int -> String
 	numeralPlOrdHelper1 Nom n = ["pierwsza", "druga", "trzecia", "czwarta", "piąta", "szósta", "siódma", "ósma", "dziewiąta", "dziesiąta", "jedenasta", "dwunasta", "trzynasta", "czternasta", "piętnasta", "szesnasta", "siedemnasta", "osiemnasta", "dziewiętnasta", "dwudziesta"] !! (n-1)

@@ -4,6 +4,7 @@
 module FuzzyTime.Norwegian (showFuzzyTimeNb) where
 
 import {-# SOURCE #-} FuzzyTime
+import Prelude hiding (min)
 
 
 -- showFuzzyTimeNb ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ showFuzzyTimeNb (FuzzyTimer _ mins)
 		| mm == 1	= "en minutt"
 		| otherwise	= "Oops, it looks like there's " ++ show mins ++ " left."
 	hours :: Int
-	hours = round $ fromIntegral mm / 60
+	hours = round $ (fromIntegral mm :: Float) / 60
 	mm :: Int
 	mm = abs mins
 	half :: Bool

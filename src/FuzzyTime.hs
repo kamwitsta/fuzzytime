@@ -22,6 +22,7 @@ module FuzzyTime (
 
 
 import Data.Data
+import Prelude hiding (min)
 
 import FuzzyTime.Danish
 import FuzzyTime.Dutch
@@ -74,7 +75,7 @@ instance Show FuzzyTime where
 		"nl" -> showFuzzyTimeNl ft
 		"pl" -> showFuzzyTimePl ft
 		"tr" -> showFuzzyTimeTr ft
-		otherwise -> "Language " ++ ftLang ft ++ " is not supported."
+		_ -> "Language " ++ ftLang ft ++ " is not supported."
 
 
 -- | Turns a FuzzyTimeConf into a FuzzyTime. Works for both FuzzyClock and FuzzyTimer.
@@ -82,46 +83,46 @@ instance Show FuzzyTime where
 -- In the timer mode, only language and left minutes need to be set.
 toFuzzyTime :: FuzzyTimeConf -> FuzzyTime
 toFuzzyTime ftc = case ftc of
-	cc@(ClockConf cClock cLang cPrec cTime cStyle)
-		-> FuzzyClock am cClock fuzzdHour cLang fuzzdMin cStyle
+	(ClockConf clock lang prec time style)
+		-> FuzzyClock am clock fuzzdHour lang fuzzdMin style
 			where
 			fuzzdHour :: Int
-			fuzzdHour = let hh = if min+cPrec>=60 && fuzzdMin==0 then hour+1 else hour in
-				if cClock==24 then
+			fuzzdHour = let hh = if min+prec>=60 && fuzzdMin==0 then hour+1 else hour in
+				if clock==24 then
 					if hh==0 then 24 else hh
 				else
 					if hh==12 then hh else hh `mod` 12
 			fuzzdMin :: Int
 			fuzzdMin =
 				let
-					mf = fromIntegral min
-					cf = fromIntegral cPrec
+					mf = fromIntegral min :: Float
+					cf = fromIntegral prec :: Float
 				in
-					(round(mf/cf) * cPrec) `mod` 60
+					(round(mf/cf) * prec) `mod` 60
 			hour :: Int
-			hour = read $ fst (break (==':') cTime)
+			hour = read $ fst (break (==':') time)
 			min :: Int
-			min = read $ drop 1 $ snd (break (==':') cTime)
+			min = read $ drop 1 $ snd (break (==':') time)
 			am :: Bool
 			am = hour < 12
-	tc@(TimerConf cEnd cLang cNow)
-		-> FuzzyTimer cLang fuzzdMins
+	(TimerConf end lang now)
+		-> FuzzyTimer lang fuzzdMins
 			where
 			fuzzdMins :: Int
 			fuzzdMins = 
 				let
-					mf = fromIntegral minsDiff
-					cf = fromIntegral getPrec
+					mf = fromIntegral minsDiff :: Float
+					cf = fromIntegral getPrec :: Float
 				in
 					round(mf/cf) * getPrec
 			hourNow :: Int
-			hourNow = read $ fst (break (==':') cNow)
+			hourNow = read $ fst (break (==':') now)
 			minNow :: Int
-			minNow = read $ drop 1 $ snd (break (==':') cNow)
+			minNow = read $ drop 1 $ snd (break (==':') now)
 			hourEnd :: Int
-			hourEnd = read $ fst (break (==':') cEnd)
+			hourEnd = read $ fst (break (==':') end)
 			minEnd :: Int
-			minEnd = read $ drop 1 $ snd (break (==':') cEnd)
+			minEnd = read $ drop 1 $ snd (break (==':') end)
 			minsDiff :: Int
 			minsDiff = (hourEnd*60 + minEnd) - (hourNow*60 + minNow)
 			getPrec :: Int
@@ -139,6 +140,7 @@ nextFTHour (FuzzyClock am clock hour _ _  _)
 	| clock == 12 && hour == 11		= if am then 12 else 0
 	| clock == hour					= 1
 	| otherwise						= hour + 1
+nextFTHour (FuzzyTimer _ _) = 0		-- this should never happen; just to get rid of the warning
 
 
 -- | Reports whether timer is now at zero. (Needed for the interface to know when to play a sound.)
@@ -153,15 +155,15 @@ isTimerZero (FuzzyTimer _ mins)			= mins == 0
 -- | Data for CmdArgs. Has the two modes of module FuzzyTime: showing the current time and showing the time left. Note that this is not the same as the two modes of module Main.
 data FuzzyTimeConf
 	= ClockConf {
-	  clock	:: Int
-	, lang	:: String
-	, prec	:: Int
-	, time	:: Time
-	, style	:: Int
+	  cClock	:: Int
+	, cLang	:: String
+	, cPrec	:: Int
+	, cTime	:: Time
+	, cStyle	:: Int
 	}
 	| TimerConf {
-	  end	:: Time
-	, lang	:: String
-	, now	:: Time
+	  cEnd	:: Time
+	, cLang	:: String
+	, cNow	:: Time
 	}
 	deriving (Data, Show, Typeable)

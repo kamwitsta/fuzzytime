@@ -4,6 +4,7 @@
 module FuzzyTime.Danish (showFuzzyTimeDa) where
 
 import {-# SOURCE #-} FuzzyTime
+import Prelude hiding (min)
 
 
 -- showFuzzyTimeDa ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -30,11 +31,11 @@ showFuzzyTimeDa fc@(FuzzyClock _ clock hour _ min style)
 	getMin :: Int -> String
 	getMin m
 		| m `elem` [15, 45]	= "kvart"
-		| otherwise 		= numeralDa m
+		| otherwise			= numeralDa m
 
 -- FuzzyTimer
 
-showFuzzyTimeDa (FuzzyTimer _ mins) = "Danish is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
+showFuzzyTimeDa (FuzzyTimer _ _) = "Danish is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
 -- numeralDa ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

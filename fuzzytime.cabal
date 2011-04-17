@@ -10,7 +10,7 @@ maintainer:          kamil.stachowski@gmail.com
 build-type:          Simple
 stability:           Experimental
 cabal-version:       >=1.8
-tested-with:         GHC == 7.02
+tested-with:         GHC == 7.0.2
 extra-source-files:  CHANGELOG, INSTALL, README, fuzzytime.1, sound.wav
 
 

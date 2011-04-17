@@ -14,14 +14,14 @@ showFuzzyTimeNb :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeNb fc@(FuzzyClock _ clock hour _ min style)
-	| min == 0				= getHour hour
-	| min `elem` [20..29]	= getMin (30-min) ++ " på halv " ++ getHour (nextFTHour fc)
-	| min < 30				= getMin min ++ " over " ++ getHour hour
-	| min `elem` [31..40]	= getMin (min-30) ++ " over halv " ++ getHour (nextFTHour fc)
-	| min == 30				= "halv " ++ getHour (nextFTHour fc)
-	| min > 30				= getMin (60-min) ++ " på " ++ getHour (nextFTHour fc)
-	| otherwise				= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
+showFuzzyTimeNb fc@(FuzzyClock _ caps clock hour _ min style)
+	| min == 0				= capsizeDef caps $ getHour hour
+	| min `elem` [20..29]	= capsizeDef caps $ getMin (30-min) ++ " på halv " ++ getHour (nextFTHour fc)
+	| min < 30				= capsizeDef caps $ getMin min ++ " over " ++ getHour hour
+	| min `elem` [31..40]	= capsizeDef caps $ getMin (min-30) ++ " over halv " ++ getHour (nextFTHour fc)
+	| min == 30				= capsizeDef caps $ "halv " ++ getHour (nextFTHour fc)
+	| min > 30				= capsizeDef caps $ getMin (60-min) ++ " på " ++ getHour (nextFTHour fc)
+	| otherwise				= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
 	getHour h

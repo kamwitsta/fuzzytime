@@ -13,6 +13,7 @@ Apart from the above, two functions are exported: isTimerZero which can be used 
 
 module FuzzyTime (
 	  FuzzyTime (..)
+	, capsizeDef
 	, toFuzzyTime
 	, isTimerZero
 	, nextFTHour
@@ -21,7 +22,9 @@ module FuzzyTime (
 	) where
 
 
+import Data.Char (toLower, toUpper)
 import Data.Data
+import Data.List (intersperse)
 import Prelude hiding (min)
 
 import FuzzyTime.Danish
@@ -48,6 +51,7 @@ type Time = String
 data FuzzyTime
 	= FuzzyClock {
 	  ftAm		:: Bool
+	, ftCaps	:: Int
 	, ftClock	:: Int
 	, ftHour	:: Int
 	, ftLang	:: String
@@ -83,8 +87,8 @@ instance Show FuzzyTime where
 -- In the timer mode, only language and left minutes need to be set.
 toFuzzyTime :: FuzzyTimeConf -> FuzzyTime
 toFuzzyTime ftc = case ftc of
-	(ClockConf clock lang prec time style)
-		-> FuzzyClock am clock fuzzdHour lang fuzzdMin style
+	(ClockConf caps clock lang prec time style)
+		-> FuzzyClock am caps clock fuzzdHour lang fuzzdMin style
 			where
 			fuzzdHour :: Int
 			fuzzdHour = let hh = if min+prec>=60 && fuzzdMin==0 then hour+1 else hour in
@@ -134,9 +138,18 @@ toFuzzyTime ftc = case ftc of
 				| otherwise				= 1
 
 
+-- | Capitalizes the string in one of the four ways: 0. all small; 1. default; 2. sentence case; 3. all caps
+capsizeDef :: Int -> String -> String
+capsizeDef caps str
+	| caps == 0 	= map toLower str
+	| caps == 2		= concat . intersperse " " $ map (\w -> toUpper (head w) : tail w) (words str)
+	| caps == 3		= map toUpper str
+	| otherwise		= str
+
+
 -- | Makes sure that noon is always represented as 0, and midnight – always as 0 or 24 (depending on the clock).
 nextFTHour :: FuzzyTime -> Int
-nextFTHour (FuzzyClock am clock hour _ _  _)
+nextFTHour (FuzzyClock am _ clock hour _ _ _)
 	| clock == 12 && hour == 11		= if am then 12 else 0
 	| clock == hour					= 1
 	| otherwise						= hour + 1
@@ -145,7 +158,7 @@ nextFTHour (FuzzyTimer _ _) = 0		-- this should never happen; just to get rid of
 
 -- | Reports whether timer is now at zero. (Needed for the interface to know when to play a sound.)
 isTimerZero :: FuzzyTime -> Bool
-isTimerZero (FuzzyClock _ _ _ _ _ _)	= False
+isTimerZero (FuzzyClock _ _ _ _ _ _ _)	= False
 isTimerZero (FuzzyTimer _ mins)			= mins == 0
 
 
@@ -155,15 +168,16 @@ isTimerZero (FuzzyTimer _ mins)			= mins == 0
 -- | Data for CmdArgs. Has the two modes of module FuzzyTime: showing the current time and showing the time left. Note that this is not the same as the two modes of module Main.
 data FuzzyTimeConf
 	= ClockConf {
-	  cClock	:: Int
-	, cLang	:: String
-	, cPrec	:: Int
-	, cTime	:: Time
-	, cStyle	:: Int
+	  caps	:: Int
+	, clock	:: Int
+	, lang	:: String
+	, prec	:: Int
+	, time	:: Time
+	, style	:: Int
 	}
 	| TimerConf {
-	  cEnd	:: Time
-	, cLang	:: String
-	, cNow	:: Time
+	  end	:: Time
+	, lang	:: String
+	, now	:: Time
 	}
 	deriving (Data, Show, Typeable)

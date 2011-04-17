@@ -14,11 +14,11 @@ showFuzzyTimeEl :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeEl fc@(FuzzyClock _ clock hour _ min _)
-	| min == 0	= getHour hour
-	| min <= 30	= getHour hour ++ " και " ++ getMin min
-	| min > 30	= getHour (nextFTHour fc) ++ " παρά " ++ getMin (60-min)
-	| otherwise	= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
+showFuzzyTimeEl fc@(FuzzyClock _ caps clock hour _ min _)
+	| min == 0	= capsizeDef caps $ getHour hour
+	| min <= 30	= capsizeDef caps $ getHour hour ++ " και " ++ getMin min
+	| min > 30	= capsizeDef caps $ getHour (nextFTHour fc) ++ " παρά " ++ getMin (60-min)
+	| otherwise	= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
 	getHour h

@@ -14,12 +14,12 @@ showFuzzyTimeDa :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeDa fc@(FuzzyClock _ clock hour _ min style)
-	| min == 0	= getHour hour
-	| min < 30	= getMin min ++ " over " ++ getHour hour
-	| min == 30	= "halv " ++ getHour (nextFTHour fc)
-	| min > 30	= getMin (60-min) ++ " i " ++ getHour (nextFTHour fc)
-	| otherwise	= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
+showFuzzyTimeDa fc@(FuzzyClock _ caps clock hour _ min style)
+	| min == 0	= capsizeDef caps $ getHour hour
+	| min < 30	= capsizeDef caps $ getMin min ++ " over " ++ getHour hour
+	| min == 30	= capsizeDef caps $ "halv " ++ getHour (nextFTHour fc)
+	| min > 30	= capsizeDef caps $ getMin (60-min) ++ " i " ++ getHour (nextFTHour fc)
+	| otherwise	= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
 	getHour h

@@ -1,5 +1,6 @@
 module FuzzyTime (
 	  FuzzyTime (..)
+	, capsizeDef
 	, toFuzzyTime
 	, isTimerZero
 	, nextFTHour
@@ -16,6 +17,7 @@ type Time = String
 data FuzzyTime
 	= FuzzyClock {
 	  ftAm		:: Bool
+	, ftCaps	:: Int
 	, ftClock	:: Int
 	, ftHour	:: Int
 	, ftLang	:: String
@@ -30,6 +32,8 @@ data FuzzyTime
 
 toFuzzyTime :: FuzzyTimeConf -> FuzzyTime
 
+capsizeDef :: Int -> String -> String
+
 isTimerZero :: FuzzyTime -> Bool
 
 nextFTHour :: FuzzyTime -> Int
@@ -37,14 +41,15 @@ nextFTHour :: FuzzyTime -> Int
 
 data FuzzyTimeConf
 	= ClockConf {
-	  cClock	:: Int
-	, cLang	:: String
-	, cPrec	:: Int
-	, cTime	:: Time
-	, cStyle	:: Int
+	  caps	:: Int
+	, clock	:: Int
+	, lang	:: String
+	, prec	:: Int
+	, time	:: Time
+	, style	:: Int
 	}
 	| TimerConf {
-	  cEnd	:: Time
-	, cLang	:: String
-	, cNow	:: Time
+	  end	:: Time
+	, lang	:: String
+	, now	:: Time
 	}

@@ -4,6 +4,8 @@
 module FuzzyTime.English (showFuzzyTimeEn) where
 
 import {-# SOURCE #-} FuzzyTime
+import Data.Char (toLower, toUpper)
+import Data.List (intersperse)
 import Prelude hiding (min)
 
 
@@ -14,12 +16,19 @@ showFuzzyTimeEn :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeEn fc@(FuzzyClock _ clock hour _ min style)
-	| min == 0	= if getHour hour `elem` ["midnight", "noon"] then getHour hour else getHour hour ++ " o’clock"
-	| min <= 30	= getMin min ++ " past " ++ getHour hour
-	| min > 30	= getMin (60-min) ++ " to " ++ getHour (nextFTHour fc)
-	| otherwise	= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
+showFuzzyTimeEn fc@(FuzzyClock _ caps clock hour _ min style)
+	| min == 0	= capsize $ if getHour hour `elem` ["midnight", "noon"] then getHour hour else getHour hour ++ " o’clock"
+	| min <= 30	= capsize $ getMin min ++ " past " ++ getHour hour
+	| min > 30	= capsize $ getMin (60-min) ++ " to " ++ getHour (nextFTHour fc)
+	| otherwise	= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
+	capsize :: String -> String
+	capsize s
+		| caps == 0			= map toLower s
+		| caps == 1			= concat . intersperse " " $ map (\w -> if w `elem` ["o’clock","past","to"] then w else toUpper (head w) : tail w) (words s)
+		| caps == 2			= concat . intersperse " " $ map (\w -> toUpper (head w) : tail w) (words s)
+		| caps == 3			= map toUpper s
+		| otherwise			= "Oops, looks like caps = " ++ show caps ++ "."
 	getHour :: Int -> String
 	getHour h
 		| h `elem` [0, 24]	= if style==1 then numeralEn clock else "midnight"

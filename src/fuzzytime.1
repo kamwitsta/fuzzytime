@@ -1,4 +1,4 @@
-.TH fuzzytime 1 "January 24, 2011" "version 0.7" "A fuzzy clock and timer"
+.TH fuzzytime 1 "April 17, 2011" "version 0.7.2" "A fuzzy clock and timer"
 
 .\" -------------------------------------------------------------------------------------
 
@@ -38,11 +38,15 @@ There are two: time-showing (clock) and timer-setting (timer). The name of the m
 
 .SS Clock mode (print the time)
 .TP
+    \--caps
+Capital letters; should be between 0 and 3; the default is one. Does not affect timer.
+0: all lowercase; 1: default for the lang; 2: Sentence Case; 3: ALL CAPS.
+.TP
 \-c \--clock
 12 or 24-hour clock (22:00 -> "ten" or "twenty-two"); the default is 12. Does not affect timer.
 .TP
 \-l \--lang
-Language; currently Danish (da), English (en), French (fr), German (de) and Polish (pl); the default is en. Affects timer.
+Language; currently Danish (da), Dutch (nl), English (en), French (fr), German (de), Greek (el), Norwegian (nb), Polish (pl), Spanish (es) and Turkish (tr); the default is en. Affects timer.
 .TP
 \-p \--prec
 Precision; should be between 1 and 60 [minutes]; the default is 5. Does not affect timer.
@@ -175,9 +179,9 @@ Timer: translation needed
 
 .TP
 English
-Style 1: 11:45 = 23:45 = quarter to twelve.
+Style 1: 11:45 = 23:45 = Quarter to Twelve.
 .IP
-Style 2: 11:45 = quarter to noon, 23:45 = quarter to midnight.
+Style 2: 11:45 = Quarter to Noon, 23:45 = Quarter to Midnight.
 .IP
 Timer: 90 = in an hour and a half, 15 = in a quarter, -20 = ! twenty minutes ago !
 

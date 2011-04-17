@@ -14,16 +14,16 @@ showFuzzyTimeTr :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeTr ft@(FuzzyClock _ clock hour _ min style)
-	| min == 0			= "saat " ++ getHour Nom hour
+showFuzzyTimeTr ft@(FuzzyClock _ caps clock hour _ min style)
+	| min == 0			= capsizeDef caps $ "saat " ++ getHour Nom hour
 	| min `elem` [20..29]
-		&& style == 2	= getHour Nom hour ++ " buçuğa " ++ getMin (30-min) ++ " var"
-	| min < 30			= getHour Acc hour ++ " " ++ getMin min ++ " geçiyor"
-	| min == 30			= if hour `mod` 12 == 0 then "saat yarım" else getHour Nom hour ++ " buçuk"
+		&& style == 2	= capsizeDef caps $ getHour Nom hour ++ " buçuğa " ++ getMin (30-min) ++ " var"
+	| min < 30			= capsizeDef caps $ getHour Acc hour ++ " " ++ getMin min ++ " geçiyor"
+	| min == 30			= capsizeDef caps $ if hour `mod` 12 == 0 then "saat yarım" else getHour Nom hour ++ " buçuk"
 	| min `elem` [31..40]
-		&& style == 2	= getHour Nom hour ++ " buçuğu " ++ getMin (min-30) ++ " geçiyor"
-	| min > 30			= getHour Dat (nextFTHour ft) ++ " " ++ getMin (60-min) ++ " var"
-	| otherwise			= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
+		&& style == 2	= capsizeDef caps $ getHour Nom hour ++ " buçuğu " ++ getMin (min-30) ++ " geçiyor"
+	| min > 30			= capsizeDef caps $ getHour Dat (nextFTHour ft) ++ " " ++ getMin (60-min) ++ " var"
+	| otherwise			= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Case -> Int -> String
 	getHour c h

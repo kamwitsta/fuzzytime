@@ -14,20 +14,20 @@ showFuzzyTimeDe :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeDe fc@(FuzzyClock _ clock hour _ min style)
-	| min == 0				= if getHour hour `elem` ["Mitternacht", "Mittag"] then getHour hour else getHour hour ++ " Uhr"
+showFuzzyTimeDe fc@(FuzzyClock _ caps clock hour _ min style)
+	| min == 0				= capsizeDef caps $ if getHour hour `elem` ["Mitternacht", "Mittag"] then getHour hour else getHour hour ++ " Uhr"
 	| min == 15
-		&& style == 3		= "Viertel " ++ getHour (nextFTHour fc)
+		&& style == 3		= capsizeDef caps $ "Viertel " ++ getHour (nextFTHour fc)
 	| min `elem` [23..29]	
-		&& style >= 2		= getMin (30-min) ++ " vor halb " ++ getHour (nextFTHour fc)
-	| min < 30				= getMin min ++ " nach " ++ getHour hour
+		&& style >= 2		= capsizeDef caps $ getMin (30-min) ++ " vor halb " ++ getHour (nextFTHour fc)
+	| min < 30				= capsizeDef caps $ getMin min ++ " nach " ++ getHour hour
 	| min `elem` [31..37]
-		&& style >= 2		= getMin (min-30) ++ " nach halb " ++ getHour (nextFTHour fc)
-	| min == 30				= "halb " ++ getHour (nextFTHour fc)
+		&& style >= 2		= capsizeDef caps $ getMin (min-30) ++ " nach halb " ++ getHour (nextFTHour fc)
+	| min == 30				= capsizeDef caps $ "halb " ++ getHour (nextFTHour fc)
 	| min == 45
-		&& style == 3		= "Dreiviertel " ++ getHour (nextFTHour fc)
-	| min > 30				= getMin (60-min) ++ " vor " ++ getHour (nextFTHour fc)
-	| otherwise				= "Oops, it looks like it's " ++ show hour ++ ":" ++ show min ++ "."
+		&& style == 3		= capsizeDef caps $ "Dreiviertel " ++ getHour (nextFTHour fc)
+	| min > 30				= capsizeDef caps $ getMin (60-min) ++ " vor " ++ getHour (nextFTHour fc)
+	| otherwise				= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
 	getHour h

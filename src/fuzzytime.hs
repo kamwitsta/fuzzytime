@@ -68,6 +68,10 @@ confAvailLangs = ["da", "de", "el", "en", "es", "fr", "nb", "nl", "pl", "tr"]
 confDefLang :: String
 confDefLang = "en"
 
+-- | \[config] The default for capitals (should be in [0..3]; see the man page). Clock mode only.
+confDefClockCaps :: Int
+confDefClockCaps = 1
+
 -- | \[config] The default clock (12 vs. 24-hour) for the clock mode.
 confDefClockClock :: Int
 confDefClockClock = 12
@@ -87,11 +91,12 @@ getDefClockConf = do
 	nowClock <- getClockTime
 	let nowString = take 5 . drop 11 $ show nowClock
 	return $ ClockConf {
-		  cClock	= confDefClockClock	&= help confHelpClockClock
-		, cLang		= confDefLang		&= help confHelpClockLang
-		, cPrec		= confDefClockPrec	&= help confHelpClockPrec
-		, cTime		= nowString			&= help confHelpClockTime
-		, cStyle	= confDefClockStyle	&= help confHelpClockStyle
+		  caps	= confDefClockCaps	&= help confHelpClockCaps
+		, clock	= confDefClockClock	&= help confHelpClockClock	&= name "c"
+		, lang	= confDefLang		&= help confHelpClockLang
+		, prec	= confDefClockPrec	&= help confHelpClockPrec
+		, time	= nowString			&= help confHelpClockTime
+		, style	= confDefClockStyle	&= help confHelpClockStyle
 		} &= name "clock" &= help confHelpClock
 
 -- | \[config] Get the default config for either showing the time or setting the timer.
@@ -102,9 +107,9 @@ getDefTimerConf = do
 	endFile <- (readFile =<< confTimerFileLoc) `catch` (\_ -> return "empty")
 	let endString = take 5 endFile
 	return $ TimerConf {
-		  cEnd		= endString			&= args &= typ "END"
-		, cLang		= confDefLang		&= ignore				-- will be taken from ClockConf anyway
-		, cNow		= nowString			&= ignore				-- will be taken from ClockConf anyway
+		  end		= endString			&= args &= typ "END"
+		, lang		= confDefLang		&= ignore				-- will be taken from ClockConf anyway
+		, now		= nowString			&= ignore				-- will be taken from ClockConf anyway
 		} &= name "timer" &= help confHelpTimer
 
 
@@ -138,6 +143,10 @@ showAvailLangs i = case length confAvailLangs of
 confHelpClock :: String
 confHelpClock = "Print fuzzy time if timer is not set, and countdown if it is."
 
+-- | \[config] Help message for --caps.
+confHelpClockCaps :: String
+confHelpClockCaps = "Capital letters; default " ++ show confDefClockCaps ++ " (see the man page)."
+
 -- | \[config] Help message for --clock.
 confHelpClockClock :: String
 confHelpClockClock = "12 or 24-hour clock; default " ++ show confDefClockClock ++ "-hour."
@@ -156,7 +165,7 @@ confHelpClockTime = "Time to fuzzify as HH:MM; default current time."
 
 -- | \[config] Help message for --style.
 confHelpClockStyle :: String
-confHelpClockStyle = "How the time is told (seem the man page); default " ++ show confDefClockStyle ++ "."
+confHelpClockStyle = "How the time is told (see the man page); default " ++ show confDefClockStyle ++ "."
 
 
 -- | \[config] Help message for the timer (setting) mode.
@@ -170,7 +179,7 @@ confHelpProgram = "fuzzytime"
 
 -- | \[config] Help message for summary
 confHelpSummary :: String
-confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7, 2011.01.24, kamil.stachowski@gmail.com, GPL3+"
+confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.2, 2011.04.17, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- check --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -179,13 +188,14 @@ confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0
 -- | \[config] Check that arguments given at cli or read from the timer file are correct.
 checkFTConf :: FuzzyTimeConf -> Either String FuzzyTimeConf
 
-checkFTConf c@(ClockConf clock lang prec time style)
-	| clock `notElem` [12, 24]	= Left "--clock must be either 12 or 24."
+checkFTConf c@(ClockConf caps clock lang prec time style)
+	| caps < 0 || caps > 3			= Left "--caps must be in [0..3] (see the man page)."
+	| clock `notElem` [12, 24]		= Left "--clock must be either 12 or 24."
 	| lang `notElem` confAvailLangs = Left ("--lang must be " ++ showAvailLangs "or" ++ ".")
-	| prec < 1 || prec > 60		= Left "--prec must be in [1..60]."
-	| not (checkTimeOk time)	= Left "--time must be given as HH:MM, where HH is in [0..23] and MM is in [0..59]."
-	| style < 1 || style > 3	= Left "--style must be in [1..3] (see the man page)."
-	| otherwise					= Right c
+	| prec < 1 || prec > 60			= Left "--prec must be in [1..60]."
+	| not (checkTimeOk time)		= Left "--time must be given as HH:MM, where HH is in [0..23] and MM is in [0..59]."
+	| style < 1 || style > 3		= Left "--style must be in [1..3] (see the man page)."
+	| otherwise						= Right c
 
 checkFTConf t@(TimerConf end _ now)
 	| not (checkTimeOk end)
@@ -226,12 +236,12 @@ main = do
 	timerConf <- getDefTimerConf
 	conf <- cmdArgs (modes [clockConf, timerConf] &= program confHelpProgram &= summary confHelpSummary)
 	case conf of
-		(ClockConf _ _ _ _ _)	-> runModeShow $ if cEnd timerConf == "empty" then
+		(ClockConf _ _ _ _ _ _)	-> runModeShow $ if end timerConf == "empty" then
 														conf
 														else
 														timerConf {
-															cLang = cLang conf,
-															cNow = cTime conf
+															lang = lang conf,
+															now = time conf
 														}
 		tc@(TimerConf _ _ _)	-> runModeTimer tc
 
@@ -263,4 +273,4 @@ runModeTimer conf@(TimerConf end _ _) =
 						else do
 						writeFile path end
 						putStrLn $ "Timer has been set to " ++ end ++ "."
-runModeTimer (ClockConf _ _ _ _ _) = exitWithError "The timer mode shouldn't have been given a ClockConf."
+runModeTimer (ClockConf _ _ _ _ _ _) = exitWithError "The timer mode shouldn't have been given a ClockConf."

@@ -14,15 +14,19 @@ showFuzzyTimePl :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimePl fc@(FuzzyClock _ caps clock hour _ min style)
-	| min == 0			= capsizeDef caps $ getHourEven hour
+showFuzzyTimePl fc@(FuzzyClock _ caps _ _ _ _ _) = capsizeDef caps (showFuzzyTimePlHlp fc)
+showFuzzyTimePl ft@(FuzzyTimer _ _) = showFuzzyTimePlHlp ft
+
+showFuzzyTimePlHlp :: FuzzyTime -> String
+showFuzzyTimePlHlp fc@(FuzzyClock _ _ clock hour _ min style)
+	| min == 0			= getHourEven hour
 	| min `elem` [23..29]
-		&& style == 2	= capsizeDef caps $ "za " ++ getMin (30-min) ++ " w pół do " ++ getHourOdd (nextFTHour fc)
-	| min < 30			= capsizeDef caps $ getMin min ++ " po " ++ getHourOdd hour
-	| min == 30			= capsizeDef caps $ "w pół do " ++ getHourOdd (nextFTHour fc)
+		&& style == 2	= "za " ++ getMin (30-min) ++ " w pół do " ++ getHourOdd (nextFTHour fc)
+	| min < 30			= getMin min ++ " po " ++ getHourOdd hour
+	| min == 30			= "w pół do " ++ getHourOdd (nextFTHour fc)
 	| min `elem` [31..37]
-		&& style == 2	= capsizeDef caps $ getMin (min-30) ++ " po w pół do " ++ getHourOdd (nextFTHour fc)
-	| min > 30			= capsizeDef caps $ "za " ++ getMin (60-min) ++ " " ++ getHourEven (nextFTHour fc)
+		&& style == 2	= getMin (min-30) ++ " po w pół do " ++ getHourOdd (nextFTHour fc)
+	| min > 30			= "za " ++ getMin (60-min) ++ " " ++ getHourEven (nextFTHour fc)
 	| otherwise			= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHourEven :: Int -> String
@@ -43,7 +47,7 @@ showFuzzyTimePl fc@(FuzzyClock _ caps clock hour _ min style)
 
 -- FuzzyTimer
 
-showFuzzyTimePl (FuzzyTimer _ mins)
+showFuzzyTimePlHlp (FuzzyTimer _ mins)
 	| mins > 0	= "za " ++ showHelper
 	| mins == 0	= "teraz!"
 	| mins < 0	= "! " ++ showHelper ++ " temu !"

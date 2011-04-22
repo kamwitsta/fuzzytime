@@ -14,10 +14,14 @@ showFuzzyTimeEl :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeEl fc@(FuzzyClock _ caps clock hour _ min _)
-	| min == 0	= capsizeDef caps $ getHour hour
-	| min <= 30	= capsizeDef caps $ getHour hour ++ " και " ++ getMin min
-	| min > 30	= capsizeDef caps $ getHour (nextFTHour fc) ++ " παρά " ++ getMin (60-min)
+showFuzzyTimeEl fc@(FuzzyClock _ caps _ _ _ _ _) = capsizeDef caps (showFuzzyTimeElHlp fc)
+showFuzzyTimeEl ft@(FuzzyTimer _ _) = showFuzzyTimeElHlp ft
+
+showFuzzyTimeElHlp :: FuzzyTime -> String
+showFuzzyTimeElHlp fc@(FuzzyClock _ _ clock hour _ min _)
+	| min == 0	= getHour hour
+	| min <= 30	= getHour hour ++ " και " ++ getMin min
+	| min > 30	= getHour (nextFTHour fc) ++ " παρά " ++ getMin (60-min)
 	| otherwise	= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
@@ -32,7 +36,7 @@ showFuzzyTimeEl fc@(FuzzyClock _ caps clock hour _ min _)
 
 -- FuzzyTimer
 
-showFuzzyTimeEl (FuzzyTimer _ _) = "Greek is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
+showFuzzyTimeElHlp (FuzzyTimer _ _) = "Greek is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
 -- numeralEl ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -58,7 +58,7 @@ import FuzzyTime
 
 -- | \[config] Languages available.
 confAvailLangs :: [String]
-confAvailLangs = ["da", "de", "el", "en", "es", "fr", "nb", "nl", "pl", "tr"]
+confAvailLangs = ["da", "de", "el", "en", "es", "fr", "nb", "nl", "pl", "se", "tr"]
 
 
 -- defaults -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -107,9 +107,9 @@ getDefTimerConf = do
 	endFile <- (readFile =<< confTimerFileLoc) `catch` (\_ -> return "empty")
 	let endString = take 5 endFile
 	return $ TimerConf {
-		  end		= endString			&= args &= typ "END"
-		, lang		= confDefLang		&= ignore				-- will be taken from ClockConf anyway
-		, now		= nowString			&= ignore				-- will be taken from ClockConf anyway
+		  end	= endString			&= args &= typ "END"
+		, lang	= confDefLang		&= ignore				-- will be taken from ClockConf anyway
+		, now	= nowString			&= ignore				-- will be taken from ClockConf anyway
 		} &= name "timer" &= help confHelpTimer
 
 
@@ -179,7 +179,7 @@ confHelpProgram = "fuzzytime"
 
 -- | \[config] Help message for summary
 confHelpSummary :: String
-confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.2, 2011.04.17, kamil.stachowski@gmail.com, GPL3+"
+confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.3, 2011.04.22, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- check --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -197,10 +197,10 @@ checkFTConf c@(ClockConf caps clock lang prec time style)
 	| style < 1 || style > 3		= Left "--style must be in [1..3] (see the man page)."
 	| otherwise						= Right c
 
-checkFTConf t@(TimerConf end _ now)
-	| not (checkTimeOk end)
-		&& end /= "unset"		= Left "END must be given and in the same format as --time."
-	| not (checkTimeOk now)		= Left "--time must be given as HH:MM, where HH is in [0..23] and MM is in [0..59]."
+checkFTConf t@(TimerConf aEnd _ aNow)
+	| not (checkTimeOk aEnd)
+		&& aEnd /= "unset"		= Left "END must be given and in the same format as --time."
+	| not (checkTimeOk aNow)	= Left "--time must be given as HH:MM, where HH is in [0..23] and MM is in [0..59]."
 	| otherwise					= Right t
 
 

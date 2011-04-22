@@ -36,6 +36,7 @@ import FuzzyTime.French
 import FuzzyTime.Norwegian
 import FuzzyTime.Polish
 import FuzzyTime.Spanish
+import FuzzyTime.Swedish
 import FuzzyTime.Turkish
 
 
@@ -78,6 +79,7 @@ instance Show FuzzyTime where
 		"nb" -> showFuzzyTimeNb ft
 		"nl" -> showFuzzyTimeNl ft
 		"pl" -> showFuzzyTimePl ft
+		"se" -> showFuzzyTimeSe ft
 		"tr" -> showFuzzyTimeTr ft
 		_ -> "Language " ++ ftLang ft ++ " is not supported."
 

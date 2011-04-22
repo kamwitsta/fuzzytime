@@ -14,13 +14,17 @@ showFuzzyTimeNb :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeNb fc@(FuzzyClock _ caps clock hour _ min style)
-	| min == 0				= capsizeDef caps $ getHour hour
-	| min `elem` [20..29]	= capsizeDef caps $ getMin (30-min) ++ " på halv " ++ getHour (nextFTHour fc)
-	| min < 30				= capsizeDef caps $ getMin min ++ " over " ++ getHour hour
-	| min `elem` [31..40]	= capsizeDef caps $ getMin (min-30) ++ " over halv " ++ getHour (nextFTHour fc)
-	| min == 30				= capsizeDef caps $ "halv " ++ getHour (nextFTHour fc)
-	| min > 30				= capsizeDef caps $ getMin (60-min) ++ " på " ++ getHour (nextFTHour fc)
+showFuzzyTimeNb fc@(FuzzyClock _ caps _ _ _ _ _) = capsizeDef caps (showFuzzyTimeNbHlp fc)
+showFuzzyTimeNb ft@(FuzzyTimer _ _) = showFuzzyTimeNbHlp ft
+
+showFuzzyTimeNbHlp :: FuzzyTime -> String
+showFuzzyTimeNbHlp fc@(FuzzyClock _ _ clock hour _ min style)
+	| min == 0				= getHour hour
+	| min `elem` [20..29]	= getMin (30-min) ++ " på halv " ++ getHour (nextFTHour fc)
+	| min < 30				= getMin min ++ " over " ++ getHour hour
+	| min `elem` [31..40]	= getMin (min-30) ++ " over halv " ++ getHour (nextFTHour fc)
+	| min == 30				= "halv " ++ getHour (nextFTHour fc)
+	| min > 30				= getMin (60-min) ++ " på " ++ getHour (nextFTHour fc)
 	| otherwise				= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
@@ -34,7 +38,7 @@ showFuzzyTimeNb fc@(FuzzyClock _ caps clock hour _ min style)
 
 -- FuzzyTimer
 
-showFuzzyTimeNb (FuzzyTimer _ mins)
+showFuzzyTimeNbHlp (FuzzyTimer _ mins)
 	| mins > 0	= "om " ++ showHelper
 	| mins == 0	= "nå!"
 	| mins < 0	= "! for " ++ showHelper ++ " siden !"

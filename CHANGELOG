@@ -6,6 +6,9 @@ TODO
 	read default language from $LANG (hFlush!)
 	daemon?
 
+0.7.3	2011.04.22
+	added Swedish (thanks Closey)
+
 0.7.2	2011.04.17
 	added case control
 

@@ -14,10 +14,14 @@ showFuzzyTimeEs :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeEs fc@(FuzzyClock am caps clock hour _ min style)
-	| min == 0	= capsizeDef caps $ if getHour hour == "la medianoche" then getHour hour else getHour hour ++ getAm hour
-	| min <= 30	= capsizeDef caps $ getHour hour ++ " y " ++ getMin min ++ getAm hour
-	| min > 30	= capsizeDef caps $ getHour (nextFTHour fc) ++ " menos " ++ getMin (60-min) ++ getAm (nextFTHour fc)
+showFuzzyTimeEs fc@(FuzzyClock _ caps _ _ _ _ _) = capsizeDef caps (showFuzzyTimeEsHlp fc)
+showFuzzyTimeEs ft@(FuzzyTimer _ _) = showFuzzyTimeEsHlp ft
+
+showFuzzyTimeEsHlp :: FuzzyTime -> String
+showFuzzyTimeEsHlp fc@(FuzzyClock am _ clock hour _ min style)
+	| min == 0	= if getHour hour == "la medianoche" then getHour hour else getHour hour ++ getAm hour
+	| min <= 30	= getHour hour ++ " y " ++ getMin min ++ getAm hour
+	| min > 30	= getHour (nextFTHour fc) ++ " menos " ++ getMin (60-min) ++ getAm (nextFTHour fc)
 	| otherwise	= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getAm :: Int -> String
@@ -42,7 +46,7 @@ showFuzzyTimeEs fc@(FuzzyClock am caps clock hour _ min style)
 
 -- FuzzyTimer
 
-showFuzzyTimeEs (FuzzyTimer _ _) = "Spanish is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
+showFuzzyTimeEsHlp (FuzzyTimer _ _) = "Spanish is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
 -- numeralEs ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

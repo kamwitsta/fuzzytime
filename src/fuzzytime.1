@@ -1,4 +1,4 @@
-.TH fuzzytime 1 "April 17, 2011" "version 0.7.2" "A fuzzy clock and timer"
+.TH fuzzytime 1 "April 22, 2011" "version 0.7.3" "A fuzzy clock and timer"
 
 .\" -------------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ Capital letters; should be between 0 and 3; the default is one. Does not affect 
 12 or 24-hour clock (22:00 -> "ten" or "twenty-two"); the default is 12. Does not affect timer.
 .TP
 \-l \--lang
-Language; currently Danish (da), Dutch (nl), English (en), French (fr), German (de), Greek (el), Norwegian (nb), Polish (pl), Spanish (es) and Turkish (tr); the default is en. Affects timer.
+Language; currently Danish (da), Dutch (nl), English (en), French (fr), German (de), Greek (el), Norwegian (nb), Polish (pl), Spanish (es), Swedish (se) and Turkish (tr); the default is en. Affects timer.
 .TP
 \-p \--prec
 Precision; should be between 1 and 60 [minutes]; the default is 5. Does not affect timer.
@@ -107,7 +107,7 @@ As of now, styles are not available (= the setting is ignored) in the timer mode
               midnight  noon    half   quarter  hour    base   am/pm
 
 Danish
-    style 1      –        –       +       +      –       –       – 
+    style 1      –        –       +       +      –       –       –
     style 2    [≠ 30]     –       +       +      –       –       –
 
 Dutch
@@ -142,6 +142,10 @@ Spanish
     style 1      –        –       +       +      –       –       –
     style 2      +        –       +       +      –       –       –
     style 3      +        –       +       +      –       –   [13/21/0]
+
+Swedish
+    style 1      –        –       +       +      –      [±7]     –
+	style 2      +        –       +       +      –      [±7]     –
 
 Turkish
     style 1      –        –       +       + [0, 12:30]   –       –
@@ -236,6 +240,14 @@ Style 3: 11:30 = las once y media de la mañana, 13:00 = la una de la tarde, 23:
 Timer: translation needed
 
 .TP
+Swedish (thanks Closey)
+Style 1: 11:45 = 23:45 = kvart i tolv, 10:25 = fem i halv elva.
+.IP
+Style 2: 11:30 = halv tolv, 11:45 = kvart i tolv, 23:30 = halv midnatt, 23:45 = kvart i midnatt, 10:25 = fem i halv elva.
+.IP
+Timer: 90 = ome en och en halv timme, 15 = om en kvart, -20 = ! för tjugo minuter sedan !
+
+.TP
 Turkish
 Style 1: 11:45 = 23:45 = on ikiye çeyrek var.
 .IP
@@ -285,6 +297,8 @@ Boris27 from forums.gentoo.org for Dutch.
 Brent Yorger from beginners@haskell.org for Haskell help.
 
 Clad in the sky from forums.gentoo.org for German.
+
+Closey from forums.gentoo.org for Swedish.
 
 Daniel Fischer from beginners@haskell.org for Haskell help.
 

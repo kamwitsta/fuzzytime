@@ -14,11 +14,15 @@ showFuzzyTimeDa :: FuzzyTime -> String
 
 -- FuzzyClock
 
-showFuzzyTimeDa fc@(FuzzyClock _ caps clock hour _ min style)
-	| min == 0	= capsizeDef caps $ getHour hour
-	| min < 30	= capsizeDef caps $ getMin min ++ " over " ++ getHour hour
-	| min == 30	= capsizeDef caps $ "halv " ++ getHour (nextFTHour fc)
-	| min > 30	= capsizeDef caps $ getMin (60-min) ++ " i " ++ getHour (nextFTHour fc)
+showFuzzyTimeDa fc@(FuzzyClock _ caps _ _ _ _ _) = capsizeDef caps (showFuzzyTimeDaHlp fc)
+showFuzzyTimeDa ft@(FuzzyTimer _ _) = showFuzzyTimeDaHlp ft
+
+showFuzzyTimeDaHlp :: FuzzyTime -> String
+showFuzzyTimeDaHlp fc@(FuzzyClock _ _ clock hour _ min style)
+	| min == 0	= getHour hour
+	| min < 30	= getMin min ++ " over " ++ getHour hour
+	| min == 30	= "halv " ++ getHour (nextFTHour fc)
+	| min > 30	= getMin (60-min) ++ " i " ++ getHour (nextFTHour fc)
 	| otherwise	= "Oops, looks like it's " ++ show hour ++ ":" ++ show min ++ "."
 	where
 	getHour :: Int -> String
@@ -35,7 +39,7 @@ showFuzzyTimeDa fc@(FuzzyClock _ caps clock hour _ min style)
 
 -- FuzzyTimer
 
-showFuzzyTimeDa (FuzzyTimer _ _) = "Danish is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
+showFuzzyTimeDaHlp (FuzzyTimer _ _) = "Danish is not yet available in the timer mode.\nIf you can provide a translation, please contact kamil.stachowski@gmail.com."
 
 
 -- numeralDa ----------------------------------------------------------------------------------------------------------------------------------------------------------------------

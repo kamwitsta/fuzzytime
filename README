@@ -15,7 +15,7 @@ Say you have fuzzytime piped to your status bar and it serves as a usual clock a
 
 ### --help
 A clock and timer that tell the time in a more human way.
-v0.7.2, 2011.04.17, *no spam*, GPL3+
+v0.7.3, 2011.04.22, *antispam*, GPL3+
 
 fuzzytime [COMMAND] ... [OPTIONS]
 
@@ -28,8 +28,8 @@ fuzzytime clock [OPTIONS]
 
      --caps=INT   Capital letters; default 1 (see the man page).
   -c --clock=INT  12 or 24-hour clock; default 12-hour.
-  -l --lang=ITEM  Language (currently da, de, el, en, es, fr, nb, nl, pl and
-                  tr); default en.
+  -l --lang=ITEM  Language (currently da, de, el, en, es, fr, nb, nl, pl, se
+                  and tr); default en.
   -p --prec=INT   Precision (1 <= prec <= 60 [minutes]); default 5.
   -t --time=ITEM  Time to fuzzify as HH:MM; default current time.
   -s --style=INT  How the time is told (see the man page); default 1.

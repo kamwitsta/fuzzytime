@@ -32,6 +32,7 @@ import FuzzyTime.Dutch
 import FuzzyTime.English
 import FuzzyTime.German
 import FuzzyTime.Greek
+import FuzzyTime.Italian
 import FuzzyTime.French
 import FuzzyTime.Norwegian
 import FuzzyTime.Polish
@@ -75,6 +76,7 @@ instance Show FuzzyTime where
 		"el" -> showFuzzyTimeEl ft
 		"en" -> showFuzzyTimeEn ft
 		"es" -> showFuzzyTimeEs ft
+		"it" -> showFuzzyTimeIt ft
 		"fr" -> showFuzzyTimeFr ft
 		"nb" -> showFuzzyTimeNb ft
 		"nl" -> showFuzzyTimeNl ft

@@ -1,10 +1,13 @@
 TODO
 	check Spanish: 21 (las? la?), halves
-	timer for Danish, Greek and Spanish
+	timer for Danish, Greek, Italian and Spanish
 	halv midnatt -> Swedish
 	config file (+ when to play the sound/s)
 	read default language from $LANG (hFlush!)
 	daemon?
+
+0.7.4	2011.04.26
+	added Italian (thanks erm67)
 
 0.7.3	2011.04.22
 	added Swedish (thanks Closey)

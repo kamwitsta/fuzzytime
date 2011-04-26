@@ -1,4 +1,4 @@
-.TH fuzzytime 1 "April 22, 2011" "version 0.7.3" "A fuzzy clock and timer"
+.TH fuzzytime 1 "April 26, 2011" "version 0.7.4" "A fuzzy clock and timer"
 
 .\" -------------------------------------------------------------------------------------
 
@@ -130,6 +130,10 @@ German
 Greek
                  –        –       +       +      –       –       –
 
+Italian
+    style 1      –        –       +       +      –       –       –
+    style 2      +        +       +       +      –       –  [13/19/0/5]
+
 Norwegian
     style 1      –        –       +       +      –     [±10]     –
     style 2      +        –       +       +      –     [±10]     –
@@ -145,7 +149,7 @@ Spanish
 
 Swedish
     style 1      –        –       +       +      –      [±7]     –
-	style 2      +        –       +       +      –      [±7]     –
+    style 2      +        –       +       +      –      [±7]     –
 
 Turkish
     style 1      –        –       +       + [0, 12:30]   –       –
@@ -210,6 +214,14 @@ Timer: 90 = in eineinhalb Stunden, 15 = in einer Viertel Stunde, -20 = ! vor zwa
 .TP
 Greek (thanks Gbak)
 Clock: 11:45 = 23:45 = δώδεκα παρά τέταρτο.
+.IP
+Timer: translation needed
+
+.TP
+Italian (thanks erm67)
+Style 1: 11:30 = le undici e mezzo, 23:45 = le dodici meno un quarto
+.IP
+Style 2: 01:00 = l’una di notte, 05:00 = le cinque del mattino, 12:00 = mezzogiorno, 13:00 = l’una del pomeriggio, 19:00 = le sette di sera
 .IP
 Timer: translation needed
 
@@ -301,6 +313,8 @@ Clad in the sky from forums.gentoo.org for German.
 Closey from forums.gentoo.org for Swedish.
 
 Daniel Fischer from beginners@haskell.org for Haskell help.
+
+erm67 from forums.gentoo.org for Italian.
 
 Gbak from bbs.archlinux.org for Greek.
 

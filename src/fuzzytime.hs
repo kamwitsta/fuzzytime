@@ -161,7 +161,7 @@ confHelpClockPrec = "Precision (1 <= prec <= 60 [minutes]); default " ++ show co
 
 -- | \[config] Help message for --time.
 confHelpClockTime :: String
-confHelpClockTime = "Time to fuzzify as HH:MM; default current time." 
+confHelpClockTime = "Time to fuzzify as HH:MM; default current time."
 
 -- | \[config] Help message for --style.
 confHelpClockStyle :: String
@@ -179,7 +179,7 @@ confHelpProgram = "fuzzytime"
 
 -- | \[config] Help message for summary
 confHelpSummary :: String
-confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.4, 2011.04.26, kamil.stachowski@gmail.com, GPL3+"
+confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.4.1, 2011.04.26, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- check --------------------------------------------------------------------------------------------------------------------------------------------------------------------------

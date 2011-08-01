@@ -6,6 +6,9 @@ TODO
 	read default language from $LANG (hFlush!)
 	daemon?
 
+0.7.4.1	2011.08.01
+	fixed cabal (thanks Simon Hengel)
+
 0.7.4	2011.04.26
 	added Italian (thanks erm67)
 

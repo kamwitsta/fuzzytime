@@ -1,7 +1,7 @@
 name:                fuzzytime
-version:             0.7.4
-description:         A clock and timer that tell the time in a more human way
-synopsis:            A clock and timer that tell the time in a more human way
+version:             0.7.4.1
+description:         A clock and timer that tell the time in a more human way (the 'ten past six' style)
+synopsis:            A 'ten past six' style clock
 category:            Utils
 license:             GPL
 license-file:        LICENSE
@@ -17,14 +17,28 @@ extra-source-files:  CHANGELOG, INSTALL, README, src/fuzzytime.1, src/sound.wav
 library
     buildable:       True
     build-depends:   base >= 4 && < 5
-    exposed-modules: FuzzyTime
+    exposed-modules: FuzzyTime,
+                     FuzzyTime.Danish,
+                     FuzzyTime.Dutch,
+                     FuzzyTime.English,
+                     FuzzyTime.German,
+                     FuzzyTime.Greek,
+                     FuzzyTime.Italian,
+                     FuzzyTime.French,
+                     FuzzyTime.Norwegian,
+                     FuzzyTime.Polish,
+                     FuzzyTime.Spanish,
+                     FuzzyTime.Swedish,
+                     FuzzyTime.Turkish
     hs-source-dirs:  src
-    -- ghc-options:     -O2
 
 executable fuzzytime
     buildable:       True
     main-is:         fuzzytime.hs
     build-depends:   base >= 4 && < 5, cmdargs, haskell98, old-time, process
     hs-source-dirs:  src
-    -- ghc-options:     -Wall -O2
-    -- ghc-options:     -O2
+
+source-repository this
+    type:            git
+    location:        https://github.com/caminoix/fuzzytime
+    tag:             0.7.4.1

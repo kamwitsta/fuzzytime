@@ -6,7 +6,7 @@ category:            Utils
 license:             GPL
 license-file:        LICENSE
 author:              Kamil Stachowski
-maintainer:          kamil.stachowski@gmail.com
+maintainer:          kamil (a full stop) stachowski (an at sign) gmail (a full stop) com
 build-type:          Simple
 stability:           Experimental
 cabal-version:       >=1.8

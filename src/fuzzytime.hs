@@ -80,6 +80,10 @@ confDefClockClock = 12
 confDefClockPrec :: Int
 confDefClockPrec = 5
 
+-- | \[config] The default command for playing the timer sound.
+confDefClockSound :: String
+confDefClockSound = "aplay /usr/share/fuzzytime/sound.wav &> /dev/null"
+
 -- | \[config] The default style for the clock mode (see the man page).
 confDefClockStyle :: Int
 confDefClockStyle = 1
@@ -91,12 +95,13 @@ getDefClockConf = do
 	nowClock <- getClockTime
 	let nowString = take 5 . drop 11 $ show nowClock
 	return $ ClockConf {
-		  caps	= confDefClockCaps	&= help confHelpClockCaps
+		  caps	= confDefClockCaps	&= help confHelpClockCaps	&= name "a"
 		, clock	= confDefClockClock	&= help confHelpClockClock	&= name "c"
 		, lang	= confDefLang		&= help confHelpClockLang
 		, prec	= confDefClockPrec	&= help confHelpClockPrec
 		, time	= nowString			&= help confHelpClockTime
-		, style	= confDefClockStyle	&= help confHelpClockStyle
+		, sound = confDefClockSound	&= help confHelpClockSound	&= name "o"
+		, style	= confDefClockStyle	&= help confHelpClockStyle	&= name "s"
 		} &= name "clock" &= help confHelpClock
 
 -- | \[config] Get the default config for either showing the time or setting the timer.
@@ -121,11 +126,6 @@ confTimerFileLoc :: IO String
 confTimerFileLoc = do
 	home <- getEnv "HOME"
 	return $ home ++ "/.fuzzytimer"
-
-
--- | \[config] The default command for playing the timer sound.
-confTimerSoundCmd :: String
-confTimerSoundCmd = "aplay /usr/share/fuzzytime/sound.wav &> /dev/null"
 
 
 -- | Print nicely what languages are available.
@@ -163,6 +163,10 @@ confHelpClockPrec = "Precision (1 <= prec <= 60 [minutes]); default " ++ show co
 confHelpClockTime :: String
 confHelpClockTime = "Time to fuzzify as HH:MM; default current time."
 
+-- | \[config] Help message for --sound.
+confHelpClockSound :: String
+confHelpClockSound = "Command to play the alarm sound; see man for the default."
+
 -- | \[config] Help message for --style.
 confHelpClockStyle :: String
 confHelpClockStyle = "How the time is told (see the man page); default " ++ show confDefClockStyle ++ "."
@@ -179,7 +183,7 @@ confHelpProgram = "fuzzytime"
 
 -- | \[config] Help message for summary
 confHelpSummary :: String
-confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.4.1, 2011.04.26, kamil.stachowski@gmail.com, GPL3+"
+confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.5, 2011.11.28, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- check --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -188,12 +192,13 @@ confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0
 -- | \[config] Check that arguments given at cli or read from the timer file are correct.
 checkFTConf :: FuzzyTimeConf -> Either String FuzzyTimeConf
 
-checkFTConf c@(ClockConf caps clock lang prec time style)
+checkFTConf c@(ClockConf caps clock lang prec time sound style)
 	| caps < 0 || caps > 3			= Left "--caps must be in [0..3] (see the man page)."
 	| clock `notElem` [12, 24]		= Left "--clock must be either 12 or 24."
 	| lang `notElem` confAvailLangs = Left ("--lang must be " ++ showAvailLangs "or" ++ ".")
 	| prec < 1 || prec > 60			= Left "--prec must be in [1..60]."
 	| not (checkTimeOk time)		= Left "--time must be given as HH:MM, where HH is in [0..23] and MM is in [0..59]."
+	| sound == ""					= Left "--sound cannot be empty."
 	| style < 1 || style > 3		= Left "--style must be in [1..3] (see the man page)."
 	| otherwise						= Right c
 
@@ -236,14 +241,14 @@ main = do
 	timerConf <- getDefTimerConf
 	conf <- cmdArgs (modes [clockConf, timerConf] &= program confHelpProgram &= summary confHelpSummary)
 	case conf of
-		(ClockConf _ _ _ _ _ _)	-> runModeShow $ if end timerConf == "empty" then
+		(ClockConf _ _ _ _ _ _ _)	-> runModeShow $ if end timerConf == "empty" then
 														conf
 														else
 														timerConf {
 															lang = lang conf,
 															now = time conf
 														}
-		tc@(TimerConf _ _ _)	-> runModeTimer tc
+		tc@(TimerConf _ _ _)		-> runModeTimer tc
 
 
 -- modes --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -256,7 +261,7 @@ runModeShow conf =
 		Left e	->	exitWithError e
 		Right c	->	do
 					let ftime = toFuzzyTime c
-					when (isTimerZero ftime) (do _ <- system confTimerSoundCmd; return ())
+					when (isTimerZero ftime) (do _ <- system (sound conf); return ())
 					print ftime
 
 
@@ -273,4 +278,4 @@ runModeTimer conf@(TimerConf end _ _) =
 						else do
 						writeFile path end
 						putStrLn $ "Timer has been set to " ++ end ++ "."
-runModeTimer (ClockConf _ _ _ _ _ _) = exitWithError "The timer mode shouldn't have been given a ClockConf."
+runModeTimer (ClockConf _ _ _ _ _ _ _) = exitWithError "The timer mode shouldn't have been given a ClockConf."

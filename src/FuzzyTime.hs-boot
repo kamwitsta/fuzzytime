@@ -46,6 +46,7 @@ data FuzzyTimeConf
 	, lang	:: String
 	, prec	:: Int
 	, time	:: Time
+	, sound :: String
 	, style	:: Int
 	}
 	| TimerConf {

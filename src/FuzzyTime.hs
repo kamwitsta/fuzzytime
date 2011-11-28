@@ -91,7 +91,7 @@ instance Show FuzzyTime where
 -- In the timer mode, only language and left minutes need to be set.
 toFuzzyTime :: FuzzyTimeConf -> FuzzyTime
 toFuzzyTime ftc = case ftc of
-	(ClockConf caps clock lang prec time style)
+	(ClockConf caps clock lang prec time sound style)
 		-> FuzzyClock am caps clock fuzzdHour lang fuzzdMin style
 			where
 			fuzzdHour :: Int
@@ -177,6 +177,7 @@ data FuzzyTimeConf
 	, lang	:: String
 	, prec	:: Int
 	, time	:: Time
+	, sound :: String
 	, style	:: Int
 	}
 	| TimerConf {

@@ -183,7 +183,7 @@ confHelpProgram = "fuzzytime"
 
 -- | \[config] Help message for summary
 confHelpSummary :: String
-confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.5, 2011.11.28, kamil.stachowski@gmail.com, GPL3+"
+confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.5.1, 2011.11.29, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- check --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -241,13 +241,13 @@ main = do
 	timerConf <- getDefTimerConf
 	conf <- cmdArgs (modes [clockConf, timerConf] &= program confHelpProgram &= summary confHelpSummary)
 	case conf of
-		(ClockConf _ _ _ _ _ _ _)	-> runModeShow $ if end timerConf == "empty" then
-														conf
-														else
-														timerConf {
-															lang = lang conf,
-															now = time conf
-														}
+		(ClockConf _ _ _ _ _ _ _)	-> runModeShow (if end timerConf == "empty" then
+													conf
+													else
+													timerConf {
+														lang = lang conf,
+														now = time conf
+													}) (sound conf)
 		tc@(TimerConf _ _ _)		-> runModeTimer tc
 
 
@@ -255,13 +255,13 @@ main = do
 
 
 -- | The time-showing mode.
-runModeShow :: FuzzyTimeConf -> IO ()
-runModeShow conf =
+runModeShow :: FuzzyTimeConf -> String -> IO ()
+runModeShow conf snd =
 	case checkFTConf conf of
 		Left e	->	exitWithError e
 		Right c	->	do
 					let ftime = toFuzzyTime c
-					when (isTimerZero ftime) (do _ <- system (sound conf); return ())
+					when (isTimerZero ftime) (do _ <- system snd; return ())
 					print ftime
 
 

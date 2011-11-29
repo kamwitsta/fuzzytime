@@ -1,5 +1,5 @@
 name:                fuzzytime
-version:             0.7.5
+version:             0.7.5.1
 description:         A clock and timer that tell the time in a more human way (the 'ten past six' style)
 synopsis:            A 'ten past six' style clock
 category:            Utils
@@ -41,4 +41,4 @@ executable fuzzytime
 source-repository this
     type:            git
     location:        https://github.com/caminoix/fuzzytime
-    tag:             0.7.5
+    tag:             0.7.5.1

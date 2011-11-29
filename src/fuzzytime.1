@@ -1,4 +1,4 @@
-.TH fuzzytime 1 "November 28, 2011" "version 0.7.5" "A fuzzy clock and timer"
+.TH fuzzytime 1 "November 29, 2011" "version 0.7.5.1" "A fuzzy clock and timer"
 
 .\" -------------------------------------------------------------------------------------
 
@@ -55,7 +55,7 @@ Precision; should be between 1 and 60 [minutes]; the default is 5. Does not affe
 Time to fuzzify as HH:MM; the default is the current time. Affects timer.
 .TP
 \-o \--sound
-Command to play the alarm sound; the default is "aplay /usr/share/fuzzytime/sound.wav &> /dev/null" to reduce the dependencies.
+Command to play the alarm sound; the default is "aplay /usr/share/fuzzytime/sound.wav &> /dev/null" so as to avoid mp3 players and such in the dependencies. The "&> /dev/null" bit is there to avoid having fuzzytime display the output from the player instead of the time.
 .TP
 \-s \--style
 How the time is told; see below; the default is 1. Does not affect timer.

@@ -6,6 +6,9 @@ TODO
 	read default language from $LANG (hFlush!)
 	daemon?
 
+0.7.6	2011.12.30
+	added Japanese (Jens Petersen)
+
 0.7.5.1	2011.11.29
 	bugfix (thanks Sara)
 

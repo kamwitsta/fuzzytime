@@ -58,7 +58,7 @@ import FuzzyTime
 
 -- | \[config] Languages available.
 confAvailLangs :: [String]
-confAvailLangs = ["da", "de", "el", "en", "es", "fr", "it", "nb", "nl", "pl", "se", "tr"]
+confAvailLangs = ["da", "de", "el", "en", "es", "fr", "it", "ja", "nb", "nl", "pl", "se", "tr"]
 
 
 -- defaults -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ confHelpProgram = "fuzzytime"
 
 -- | \[config] Help message for summary
 confHelpSummary :: String
-confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.5.1, 2011.11.29, kamil.stachowski@gmail.com, GPL3+"
+confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.6, 2011.12.30, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- check --------------------------------------------------------------------------------------------------------------------------------------------------------------------------

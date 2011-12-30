@@ -30,10 +30,11 @@ import Prelude hiding (min)
 import FuzzyTime.Danish
 import FuzzyTime.Dutch
 import FuzzyTime.English
+import FuzzyTime.French
 import FuzzyTime.German
 import FuzzyTime.Greek
 import FuzzyTime.Italian
-import FuzzyTime.French
+import FuzzyTime.Japanese
 import FuzzyTime.Norwegian
 import FuzzyTime.Polish
 import FuzzyTime.Spanish
@@ -76,8 +77,9 @@ instance Show FuzzyTime where
 		"el" -> showFuzzyTimeEl ft
 		"en" -> showFuzzyTimeEn ft
 		"es" -> showFuzzyTimeEs ft
-		"it" -> showFuzzyTimeIt ft
 		"fr" -> showFuzzyTimeFr ft
+		"it" -> showFuzzyTimeIt ft
+		"ja" -> showFuzzyTimeJa ft
 		"nb" -> showFuzzyTimeNb ft
 		"nl" -> showFuzzyTimeNl ft
 		"pl" -> showFuzzyTimePl ft

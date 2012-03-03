@@ -41,9 +41,9 @@ module Main (
 import Control.Monad (when)
 import Data.Char (isDigit)
 import Data.List (intercalate)
-import Directory (removeFile)
 import System.Cmd (system)
 import System.Console.CmdArgs
+import System.Directory (removeFile)
 import System.Environment (getEnv)
 import System.Exit (ExitCode (ExitFailure), exitFailure)
 import System.Time (getClockTime)
@@ -183,7 +183,7 @@ confHelpProgram = "fuzzytime"
 
 -- | \[config] Help message for summary
 confHelpSummary :: String
-confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.6, 2011.12.30, kamil.stachowski@gmail.com, GPL3+"
+confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.7, 2012.03.03, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- check --------------------------------------------------------------------------------------------------------------------------------------------------------------------------

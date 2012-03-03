@@ -6,6 +6,9 @@ TODO
 	read default language from $LANG (hFlush!)
 	daemon?
 
+0.7.7	2011.03.03
+	deps update (no more haskell98)
+
 0.7.6	2011.12.30
 	added Japanese (Jens Petersen)
 

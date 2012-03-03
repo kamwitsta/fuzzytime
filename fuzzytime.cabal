@@ -1,5 +1,5 @@
 name:                fuzzytime
-version:             0.7.6
+version:             0.7.7
 description:         A clock and timer that tell the time in a more human way (the 'ten past six' style)
 synopsis:            A 'ten past six' style clock
 category:            Utils
@@ -36,10 +36,10 @@ library
 executable fuzzytime
     buildable:       True
     main-is:         fuzzytime.hs
-    build-depends:   base >= 4 && < 5, cmdargs, haskell98, old-time, process
+    build-depends:   base >= 4 && < 5, cmdargs, directory, old-time, process
     hs-source-dirs:  src
 
 source-repository this
     type:            git
     location:        https://github.com/caminoix/fuzzytime
-    tag:             0.7.6
+    tag:             0.7.7

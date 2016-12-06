@@ -1,5 +1,5 @@
 name:                fuzzytime
-version:             0.7.7
+version:             0.7.8
 description:         A clock and timer that tell the time in a more human way (the 'ten past six' style)
 synopsis:            A 'ten past six' style clock
 category:            Utils
@@ -10,7 +10,7 @@ maintainer:          kamil (a full stop) stachowski (an at sign) gmail (a full s
 build-type:          Simple
 stability:           Experimental
 cabal-version:       >=1.8
-tested-with:         GHC == 7.0.2
+tested-with:         GHC == 8.0.1
 extra-source-files:  CHANGELOG, INSTALL, README, src/fuzzytime.1, src/sound.wav
 
 
@@ -41,5 +41,5 @@ executable fuzzytime
 
 source-repository this
     type:            git
-    location:        https://github.com/caminoix/fuzzytime
-    tag:             0.7.7
+    location:        https://github.com/kamwitsta/fuzzytime
+    tag:             0.7.8

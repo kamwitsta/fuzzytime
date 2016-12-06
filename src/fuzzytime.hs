@@ -27,17 +27,19 @@ To add a new language, two things need to be done:
 ---- Maintainer		: Kamil Stachowski <kamil.stachowski@gmail.com>
 ---- Stability		: unstable
 ---- Portability	: unportable
----- A clock that ells the time in a more human way (the \"ten past six\"-style).
+---- A clock that tells the time in a more human way (the \"ten past six\"-style).
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Main (
 	  main
 	) where
 
 
+import Control.Exception (catch, IOException)
 import Control.Monad (when)
 import Data.Char (isDigit)
 import Data.List (intercalate)
@@ -109,7 +111,7 @@ getDefTimerConf :: IO FuzzyTimeConf
 getDefTimerConf = do
 	nowClock <- getClockTime
 	let nowString = take 5 . drop 11 $ show nowClock
-	endFile <- (readFile =<< confTimerFileLoc) `catch` (\_ -> return "empty")
+	endFile <- (readFile =<< confTimerFileLoc) `catch` (\(_ :: IOException) -> return "empty")
 	let endString = take 5 endFile
 	return $ TimerConf {
 		  end	= endString			&= args &= typ "END"
@@ -183,7 +185,7 @@ confHelpProgram = "fuzzytime"
 
 -- | \[config] Help message for summary
 confHelpSummary :: String
-confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.7, 2012.03.03, kamil.stachowski@gmail.com, GPL3+"
+confHelpSummary = "A clock and timer that tell the time in a more human way.\nv0.7.8, 2016.12.06, kamil.stachowski@gmail.com, GPL3+"
 
 
 -- check --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -272,7 +274,7 @@ runModeTimer conf@(TimerConf end _ _) =
 		Left e	-> 	exitWithError e
 		Right _	->	do
 					path <- confTimerFileLoc
-					removeFile path `catch` (\_ -> return ())
+					removeFile path `catch` (\(_ :: IOException) -> return ())
 					if end == "unset" then
 						putStrLn "Timer has been unset."
 						else do

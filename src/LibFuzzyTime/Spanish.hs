@@ -1,9 +1,9 @@
 -- Spanish (thanks xenofungus and itsbrad212 from bbs.archlinux.org) --------------------------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.Spanish (showFuzzyTimeEs) where
+module LibFuzzyTime.Spanish (showFuzzyTimeEs) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

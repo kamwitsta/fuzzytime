@@ -1,4 +1,4 @@
-module FuzzyTime (
+module LibFuzzyTime (
 	  FuzzyTime (..)
 	, capsizeDef
 	, toFuzzyTime

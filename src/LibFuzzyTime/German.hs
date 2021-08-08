@@ -1,9 +1,9 @@
 -- German (thanks Clad in the sky, ichbinsisyphos and marens from forums.gentoo.org) ----------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.German (showFuzzyTimeDe) where
+module LibFuzzyTime.German (showFuzzyTimeDe) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

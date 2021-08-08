@@ -1,9 +1,9 @@
 -- Japanese (petersen at fedoraproject.org) ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.Japanese (showFuzzyTimeJa) where
+module LibFuzzyTime.Japanese (showFuzzyTimeJa) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Data.Char (toLower, toUpper)
 import Data.List (intersperse)
 import Prelude hiding (min)

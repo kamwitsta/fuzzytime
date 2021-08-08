@@ -1,9 +1,9 @@
 -- Italian (thanks erm67 from forums.gentoo.org) ----------------------------------------------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.Italian (showFuzzyTimeIt) where
+module LibFuzzyTime.Italian (showFuzzyTimeIt) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

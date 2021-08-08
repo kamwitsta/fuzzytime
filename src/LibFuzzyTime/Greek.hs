@@ -1,9 +1,9 @@
 -- Greek (thanks Gbak from bbs.archlinux.org) -------------------------------------------------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.Greek (showFuzzyTimeEl) where
+module LibFuzzyTime.Greek (showFuzzyTimeEl) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

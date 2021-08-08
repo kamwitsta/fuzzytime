@@ -1,9 +1,9 @@
 -- Polish -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.Polish (showFuzzyTimePl) where
+module LibFuzzyTime.Polish (showFuzzyTimePl) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

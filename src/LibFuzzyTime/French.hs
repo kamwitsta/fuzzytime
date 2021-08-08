@@ -1,9 +1,9 @@
 -- French -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.French (showFuzzyTimeFr) where
+module LibFuzzyTime.French (showFuzzyTimeFr) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

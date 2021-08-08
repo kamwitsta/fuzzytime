@@ -1,9 +1,9 @@
 -- Swedish (thanks Closey from forums.gentoo.org) ---------------------------------------------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.Swedish (showFuzzyTimeSe) where
+module LibFuzzyTime.Swedish (showFuzzyTimeSe) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

@@ -1,9 +1,9 @@
 -- Norwegian (Bokmål) (thanks arnvidr from forums.gentoo.org) ---------------------------------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.Norwegian (showFuzzyTimeNb) where
+module LibFuzzyTime.Norwegian (showFuzzyTimeNb) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

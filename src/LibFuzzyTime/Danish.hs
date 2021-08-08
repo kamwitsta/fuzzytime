@@ -1,9 +1,9 @@
 -- Danish (thanks M_ller from bbs.archlinux.org) ----------------------------------------------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.Danish (showFuzzyTimeDa) where
+module LibFuzzyTime.Danish (showFuzzyTimeDa) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

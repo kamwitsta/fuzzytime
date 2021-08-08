@@ -1,9 +1,9 @@
 -- Dutch (thanks Boris from forums.gentoo.org and litemotiv from bbs.archlinux.org) -----------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.Dutch (showFuzzyTimeNl) where
+module LibFuzzyTime.Dutch (showFuzzyTimeNl) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

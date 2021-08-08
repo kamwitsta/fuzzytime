@@ -1,9 +1,9 @@
 -- Turkish ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-module FuzzyTime.Turkish (showFuzzyTimeTr) where
+module LibFuzzyTime.Turkish (showFuzzyTimeTr) where
 
-import {-# SOURCE #-} FuzzyTime
+import {-# SOURCE #-} LibFuzzyTime
 import Prelude hiding (min)
 
 

@@ -11,7 +11,7 @@ Apart from the above, two functions are exported: isTimerZero which can be used 
 
 {-# LANGUAGE DeriveDataTypeable #-}
 
-module FuzzyTime (
+module LibFuzzyTime (
 	  FuzzyTime (..)
 	, capsizeDef
 	, toFuzzyTime
@@ -27,19 +27,19 @@ import Data.Data
 import Data.List (intersperse)
 import Prelude hiding (min)
 
-import FuzzyTime.Danish
-import FuzzyTime.Dutch
-import FuzzyTime.English
-import FuzzyTime.French
-import FuzzyTime.German
-import FuzzyTime.Greek
-import FuzzyTime.Italian
-import FuzzyTime.Japanese
-import FuzzyTime.Norwegian
-import FuzzyTime.Polish
-import FuzzyTime.Spanish
-import FuzzyTime.Swedish
-import FuzzyTime.Turkish
+import LibFuzzyTime.Danish
+import LibFuzzyTime.Dutch
+import LibFuzzyTime.English
+import LibFuzzyTime.French
+import LibFuzzyTime.German
+import LibFuzzyTime.Greek
+import LibFuzzyTime.Italian
+import LibFuzzyTime.Japanese
+import LibFuzzyTime.Norwegian
+import LibFuzzyTime.Polish
+import LibFuzzyTime.Spanish
+import LibFuzzyTime.Swedish
+import LibFuzzyTime.Turkish
 
 
 -- FuzzyTime =======================================================================================================================================================================

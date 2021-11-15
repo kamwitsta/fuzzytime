@@ -43,6 +43,7 @@ import Control.Exception (catch, IOException)
 import Control.Monad (when)
 import Data.Char (isDigit)
 import Data.List (intercalate)
+import System.Process (system)
 import System.Console.CmdArgs
 import System.Directory (removeFile)
 import System.Environment (getEnv)
@@ -50,7 +51,7 @@ import System.Exit (ExitCode (ExitFailure), exitFailure)
 import System.Process (system)
 import System.Time (getClockTime)
 
-import LibFuzzyTime
+import FuzzyTime
 
 
 -- config =========================================================================================================================================================================

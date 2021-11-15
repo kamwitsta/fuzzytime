@@ -1,5 +1,5 @@
 name:                fuzzytime
-version:             0.7.9
+version:             0.7.10
 description:         A clock and timer that tell the time in a more human way (the 'ten past six' style)
 synopsis:            A 'ten past six' style clock
 category:            Utils
@@ -17,20 +17,20 @@ extra-source-files:  CHANGELOG, INSTALL, README, src/fuzzytime.1, src/sound.wav
 library
     buildable:       True
     build-depends:   base >= 4 && < 5
-    exposed-modules: LibFuzzyTime,
-                     LibFuzzyTime.Danish,
-                     LibFuzzyTime.Dutch,
-                     LibFuzzyTime.English,
-                     LibFuzzyTime.French,
-                     LibFuzzyTime.German,
-                     LibFuzzyTime.Greek,
-                     LibFuzzyTime.Italian,
-                     LibFuzzyTime.Japanese,
-                     LibFuzzyTime.Norwegian,
-                     LibFuzzyTime.Polish,
-                     LibFuzzyTime.Spanish,
-                     LibFuzzyTime.Swedish,
-                     LibFuzzyTime.Turkish
+    exposed-modules: FuzzyTime,
+                     FuzzyTime.Danish,
+                     FuzzyTime.Dutch,
+                     FuzzyTime.English,
+                     FuzzyTime.French,
+                     FuzzyTime.German,
+                     FuzzyTime.Greek,
+                     FuzzyTime.Italian,
+                     FuzzyTime.Japanese,
+                     FuzzyTime.Norwegian,
+                     FuzzyTime.Polish,
+                     FuzzyTime.Spanish,
+                     FuzzyTime.Swedish,
+                     FuzzyTime.Turkish
     hs-source-dirs:  src
     ghc-options: -Wno-tabs
 
@@ -38,24 +38,24 @@ executable fuzzytime
     buildable:       True
     main-is:         main.hs
     build-depends:   base >= 4 && < 5, cmdargs, directory, old-time, process
-    other-modules:   LibFuzzyTime,
-                     LibFuzzyTime.Danish,
-                     LibFuzzyTime.Dutch,
-                     LibFuzzyTime.English,
-                     LibFuzzyTime.French,
-                     LibFuzzyTime.German,
-                     LibFuzzyTime.Greek,
-                     LibFuzzyTime.Italian,
-                     LibFuzzyTime.Japanese,
-                     LibFuzzyTime.Norwegian,
-                     LibFuzzyTime.Polish,
-                     LibFuzzyTime.Spanish,
-                     LibFuzzyTime.Swedish,
-                     LibFuzzyTime.Turkish
+    other-modules:   FuzzyTime,
+                     FuzzyTime.Danish,
+                     FuzzyTime.Dutch,
+                     FuzzyTime.English,
+                     FuzzyTime.French,
+                     FuzzyTime.German,
+                     FuzzyTime.Greek,
+                     FuzzyTime.Italian,
+                     FuzzyTime.Japanese,
+                     FuzzyTime.Norwegian,
+                     FuzzyTime.Polish,
+                     FuzzyTime.Spanish,
+                     FuzzyTime.Swedish,
+                     FuzzyTime.Turkish
     hs-source-dirs:  src
     ghc-options: -Wno-tabs
 
 source-repository this
     type:            git
     location:        https://github.com/kamwitsta/fuzzytime
-    tag:             0.7.9
+    tag:             0.7.10

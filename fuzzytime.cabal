@@ -1,5 +1,5 @@
 name:                fuzzytime
-version:             0.7.8
+version:             0.7.10
 description:         A clock and timer that tell the time in a more human way (the 'ten past six' style)
 synopsis:            A 'ten past six' style clock
 category:            Utils
@@ -35,11 +35,25 @@ library
 
 executable fuzzytime
     buildable:       True
-    main-is:         fuzzytime.hs
+    main-is:         main.hs
     build-depends:   base >= 4 && < 5, cmdargs, directory, old-time, process
     hs-source-dirs:  src
+    other-modules:	 FuzzyTime,
+                     FuzzyTime.Danish,
+                     FuzzyTime.Dutch,
+                     FuzzyTime.English,
+                     FuzzyTime.French,
+                     FuzzyTime.German,
+                     FuzzyTime.Greek,
+                     FuzzyTime.Italian,
+                     FuzzyTime.Japanese,
+                     FuzzyTime.Norwegian,
+                     FuzzyTime.Polish,
+                     FuzzyTime.Spanish,
+                     FuzzyTime.Swedish,
+                     FuzzyTime.Turkish
 
 source-repository this
     type:            git
     location:        https://github.com/kamwitsta/fuzzytime
-    tag:             0.7.8
+    tag:             0.7.10

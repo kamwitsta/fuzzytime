@@ -33,6 +33,7 @@ To add a new language, two things need to be done:
 
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module Main (
 	  main
@@ -43,7 +44,7 @@ import Control.Exception (catch, IOException)
 import Control.Monad (when)
 import Data.Char (isDigit)
 import Data.List (intercalate)
-import System.Cmd (system)
+import System.Process (system)
 import System.Console.CmdArgs
 import System.Directory (removeFile)
 import System.Environment (getEnv)

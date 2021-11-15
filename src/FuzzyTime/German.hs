@@ -1,5 +1,6 @@
 -- German (thanks Clad in the sky, ichbinsisyphos and marens from forums.gentoo.org) ----------------------------------------------------------------------------------------------
 
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module FuzzyTime.German (showFuzzyTimeDe) where
 
@@ -22,7 +23,7 @@ showFuzzyTimeDeHlp fc@(FuzzyClock _ _ clock hour _ min style)
 	| min == 0				= if getHour hour `elem` ["Mitternacht", "Mittag"] then getHour hour else getHour hour ++ " Uhr"
 	| min == 15
 		&& style == 3		= "Viertel " ++ getHour (nextFTHour fc)
-	| min `elem` [23..29]	
+	| min `elem` [23..29]
 		&& style >= 2		= getMin (30-min) ++ " vor halb " ++ getHour (nextFTHour fc)
 	| min < 30				= getMin min ++ " nach " ++ getHour hour
 	| min `elem` [31..37]

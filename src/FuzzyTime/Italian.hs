@@ -1,5 +1,6 @@
 -- Italian (thanks erm67 from forums.gentoo.org) ----------------------------------------------------------------------------------------------------------------------------------
 
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module FuzzyTime.Italian (showFuzzyTimeIt) where
 

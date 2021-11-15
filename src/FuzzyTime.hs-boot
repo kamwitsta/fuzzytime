@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-tabs #-}
+
 module FuzzyTime (
 	  FuzzyTime (..)
 	, capsizeDef

@@ -1,5 +1,6 @@
 -- Swedish (thanks Closey from forums.gentoo.org) ---------------------------------------------------------------------------------------------------------------------------------
 
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module FuzzyTime.Swedish (showFuzzyTimeSe) where
 

@@ -10,6 +10,7 @@ Apart from the above, two functions are exported: isTimerZero which can be used 
 
 
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module FuzzyTime (
 	  FuzzyTime (..)

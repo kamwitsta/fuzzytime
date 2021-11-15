@@ -1,5 +1,6 @@
 -- Danish (thanks M_ller from bbs.archlinux.org) ----------------------------------------------------------------------------------------------------------------------------------
 
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module FuzzyTime.Danish (showFuzzyTimeDa) where
 

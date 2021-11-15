@@ -6,6 +6,14 @@ TODO
 	read default language from $LANG (hFlush!)
 	daemon?
 
+0.7.10	2021.11.15
+	renamed LibFuzzyTime back to FuzzyTime (thanks sternenseemann)
+	fixed some warnings
+
+0.7.9	2021.08.08
+	renamed fuzzytime.hs to main.hs
+	renamed FuzzyTime to LibFuzzyTime
+
 0.7.8	2016.12.06
 	bugfix
 

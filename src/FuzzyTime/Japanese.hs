@@ -1,5 +1,6 @@
 -- Japanese (petersen at fedoraproject.org) ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module FuzzyTime.Japanese (showFuzzyTimeJa) where
 

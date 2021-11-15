@@ -1,5 +1,6 @@
 -- Spanish (thanks xenofungus and itsbrad212 from bbs.archlinux.org) --------------------------------------------------------------------------------------------------------------
 
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module FuzzyTime.Spanish (showFuzzyTimeEs) where
 

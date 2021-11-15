@@ -1,5 +1,6 @@
 -- Greek (thanks Gbak from bbs.archlinux.org) -------------------------------------------------------------------------------------------------------------------------------------
 
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module FuzzyTime.Greek (showFuzzyTimeEl) where
 

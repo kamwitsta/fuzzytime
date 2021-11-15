@@ -1,5 +1,6 @@
 -- Norwegian (Bokmål) (thanks arnvidr from forums.gentoo.org) ---------------------------------------------------------------------------------------------------------------------
 
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module FuzzyTime.Norwegian (showFuzzyTimeNb) where
 

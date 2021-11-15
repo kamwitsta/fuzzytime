@@ -1,5 +1,6 @@
 -- Dutch (thanks Boris from forums.gentoo.org and litemotiv from bbs.archlinux.org) -----------------------------------------------------------------------------------------------
 
+{-# OPTIONS_GHC -Wno-tabs #-}
 
 module FuzzyTime.Dutch (showFuzzyTimeNl) where
 
